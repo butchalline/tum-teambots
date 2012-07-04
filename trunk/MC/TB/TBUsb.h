@@ -21,6 +21,11 @@
 #ifndef __TBUSB_H__
 #define __TBUSB_H__
 
+#include <AndroidAccessory.h>
+#include <ch9.h>
+#include <Max3421e.h>
+#include <Max3421e_constants.h>
+#include <UsbHost.h>
  
  class TBUsb
  {

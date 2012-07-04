@@ -26,6 +26,16 @@ void TBStateMachine::Init()
   
 }
 
+void TBStateMachine::preHandle()
+{
+  //usb.receive(iBuf, iSize);
+}
+
+void TBStateMachine::postHandle()
+{
+  //usb.send(oBuf, oSize);
+}
+
 void TBStateMachine::Call()
 {
   this->preHandle();

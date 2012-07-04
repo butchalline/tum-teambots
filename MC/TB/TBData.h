@@ -28,7 +28,7 @@
 #define TBUSB_MC_MotorsEncoderDiff    0x0002 /*Data = 4 Byte | MotorLeftDiff | MotorRightDiff |*/
 
 //Send direction from SP to MC
-#define TBUSB_SP_RequiereState        0x8000 /*Data = 1 Byte | requiredState |*/
+#define TBUSB_SP_RequieredState        0x8000 /*Data = 1 Byte | requiredState |*/
 #define TBUSB_SP_TargetPosition       0x8001 /*Data = 4 Byte | */
 #define TBUSB_SP_TargetVelocity       0x8002 /* */
 #define TBUSB_SP_ResetMC              0x8100 /*Data = 0 Byte */

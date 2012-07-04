@@ -42,3 +42,4 @@ struct TBUsbData
 }
 
 #endif /*__TBDATA_H__/
+

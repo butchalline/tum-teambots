@@ -18,11 +18,13 @@
  */
 
 #include "TBStateMachine.h"
+#include "TBUsb.h"
 
 // Inits
 void setup()
 {
   stateMachine.Init();
+  usb.Init("Huawei", "U8655");
 //  motors.Init();
 }
 
@@ -34,3 +36,4 @@ void loop()
     stateMachine.Call();
   }
 }
+

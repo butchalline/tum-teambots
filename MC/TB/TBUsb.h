@@ -20,18 +20,29 @@
  
 #ifndef __TBUSB_H__
 #define __TBUSB_H__
-
-#include <AndroidAccessory.h>
-#include <ch9.h>
-#include <Max3421e.h>
-#include <Max3421e_constants.h>
-#include <UsbHost.h>
+ 
+ #include <AndroidAccessory.h>
  
  class TBUsb
  {
    public:
-   
+     TBUsb();
+     void Init(const char* manufacturer, const char* model);
+     int read();
+     void send();
+     bool putData(u_char data);
+     bool putData(u_char* data, u_char size);
+     bool isConnected();
+     int sizeData();
+   private:
+     u_char amountSendBytes;
+     u_char sendOffset;
+     u_char putPointer;
+     u_char sendBuf[255];
+     AndroidAccessory android;
  };
  
+ extern TBUsb* usb;
  
  #endif /* __TBUSB_H__ */
+

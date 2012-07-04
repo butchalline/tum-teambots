@@ -1,7 +1,7 @@
 package teambots.smartphone.usbInterface;
 
 import teambot.smartphone.usbInterface.R;
-import teambots.smartphone.utilities.RandomStuff;
+import teambots.smartphone.utilities.RandomGenerator;
 import android.app.Activity;
 import android.os.Bundle;
 import android.os.Debug;
@@ -20,7 +20,7 @@ public class UsbInterfaceActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
         
-        Debug.startMethodTracing("traceFile");
+        //Debug.startMethodTracing("traceFile");
         //---------------trace-----------------//
         
     	proxy = new MockUsbInterface();
@@ -31,7 +31,7 @@ public class UsbInterfaceActivity extends Activity {
     	
     	for(int i = 0; i < 10; i++)
     	{
-	    	Message randomMessage = RandomStuff.randomDataMessage(1);
+	    	Message randomMessage = RandomGenerator.randomDataMessage(1);
 	    	PackageBuilder.threadPool.execute(new HighPriorityPackageBuilderThread(randomMessage, sender));
 	    	try {
 				Thread.sleep((long)(Math.random() * 1000));
@@ -42,6 +42,6 @@ public class UsbInterfaceActivity extends Activity {
     	}
     	
         //-------------end trace---------------//
-        Debug.stopMethodTracing();
+        //Debug.stopMethodTracing();
     }
 }

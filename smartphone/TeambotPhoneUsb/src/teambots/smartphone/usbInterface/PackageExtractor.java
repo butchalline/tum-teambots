@@ -3,16 +3,19 @@ package teambots.smartphone.usbInterface;
 import java.util.ArrayList;
 import org.apache.commons.lang3.ArrayUtils;
 
+import teambots.smartphone.utilities.Transformations;
+
 import android.util.Log;
+
 
 public class PackageExtractor {
 
 	static final String TAG = "PackageExtractor";
 	
-	byte packageId;
+	int packageId;
 	int fullPackageLength;
 	int numberOfProcessedBytes = 0;
-	byte[] header = new byte[2];
+	byte[] header = new byte[UsbPackage.headerSize];
 	int headerIndex = 0;
 	ArrayList<byte[]> data = new ArrayList<byte[]>(Receiver.MAX_PACKAGE_SIZE); //TODO Check if big waste of ram
 	public ArrayList<UsbPackage> finishedPackages = new ArrayList<UsbPackage>(10);
@@ -28,8 +31,9 @@ public class PackageExtractor {
 			if(fillUpHeader(buffer))
 			{
 				buffer = ArrayUtils.subarray(buffer, numberOfRemainingHeaderBytes, buffer.length);
-				packageId = header[0];
-				fullPackageLength = header[1] + header.length;
+				packageId = Transformations.signedByteToUnsignedInt(header[0]) << 8;
+				packageId += header[1];
+				fullPackageLength = Message.IntIdToType.get(packageId).packageLength + header.length;
 				numberOfProcessedBytes += numberOfRemainingHeaderBytes;
 				Log.v(TAG, "Received Package - id: " + packageId + "; length: " + fullPackageLength);
 			}
@@ -56,7 +60,7 @@ public class PackageExtractor {
 		
 		if(numberOfProcessedBytes == fullPackageLength)
 		{
-			finishedPackages.add(new UsbPackage(packageId, concatedCurrentPackageData()));
+			finishedPackages.add(new UsbPackage(packageId, concatedCurrentPackageData())); //TODO don't convert to byte
 			this.data.clear();
 			numberOfProcessedBytes = 0;
 			Log.v(TAG, "Extraction of package finished, id = " + packageId);

@@ -6,21 +6,23 @@ public class Message {
 
 	public enum Type
 	{
-	    Data ("data", 1),
-	    Info ("info", 2);
+	    Data ("data", 1, 2),
+	    Info ("info", 2, 3);
 
 	    public final String name;
 	    public final int id;
-	    Type(String name, int id) {
+	    public final int packageLength;
+	    Type(String name, int id, int packageLength) {
 	        this.name = name;
 	        this.id = id;
+	        this.packageLength = packageLength;
 	    }
 	}
 	
-	public static HashMap<Integer, Type> IntToType = new HashMap<Integer, Type>(30);
+	public static HashMap<Integer, Type> IntIdToType = new HashMap<Integer, Type>(30);
     static {
-    	IntToType.put(1, Type.Data);
-    	IntToType.put(2, Type.Info);
+    	IntIdToType.put(1, Type.Data);
+    	IntIdToType.put(2, Type.Info);
     }
     
     public Type type;
@@ -30,6 +32,11 @@ public class Message {
     public Message()
     {
     	
+    }
+    
+    public Message(Type type)
+    {
+    	this.type = type;
     }
     
     public Message(Type type, byte[] data)

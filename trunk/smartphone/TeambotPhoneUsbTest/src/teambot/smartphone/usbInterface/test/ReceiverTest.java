@@ -8,7 +8,7 @@ import teambots.smartphone.usbInterface.PackageBuilder;
 import teambots.smartphone.usbInterface.Receiver;
 import teambots.smartphone.usbInterface.Sender;
 import teambots.smartphone.usbInterface.UsbProxy;
-import teambots.smartphone.utilities.RandomStuff;
+import teambots.smartphone.utilities.RandomGenerator;
 import android.util.Log;
 
 public class ReceiverTest extends TestCase {
@@ -24,12 +24,12 @@ public class ReceiverTest extends TestCase {
 		sender = new Sender(proxy);
 	}
 	
-    public void testTrivialSendAndReceive() throws Throwable {
+    public void testTrivialSendAndReceive() throws Throwable {    	
     	new Thread(receiver).start();
     	new Thread(sender).start();
-    	Message randomMessage = RandomStuff.randomDataMessage(1);
+    	Message randomMessage = RandomGenerator.randomDataMessage(1);
     	PackageBuilder.threadPool.execute(new HighPriorityPackageBuilderThread(randomMessage, sender));
-    	Thread.sleep(2000);
+    	Thread.sleep(200);
     	
     	Log.d("testTrivialSendAndReceive", "Length rand: " + randomMessage.data.length + "; result length: " + MockReceiverWorkerThread.result.length);
     	Assert.assertTrue(randomMessage.data.length == MockReceiverWorkerThread.result.length);

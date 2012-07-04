@@ -2,11 +2,11 @@ package teambots.smartphone.utilities;
 
 import teambots.smartphone.usbInterface.Message;
 
-public class RandomStuff {
+public class RandomGenerator {
 
 	public static Message randomDataMessage(int type)
 	{
-		return new Message(Message.IntToType.get(type), randomLengthRandomByteArray());
+		return new Message(Message.IntIdToType.get(type), randomLengthRandomByteArray());
 	}
 	
 	public static byte[] randomLengthRandomByteArray()

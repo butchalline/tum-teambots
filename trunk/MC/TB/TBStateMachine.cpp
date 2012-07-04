@@ -23,17 +23,24 @@ TBStateMachine stateMachine; //Global StateMachine Object
 
 void TBStateMachine::Init()
 {
-  
+  currentState = PhoneDisconnected;
+  requiredState = ;
 }
 
 void TBStateMachine::preHandle()
 {
-  //usb.receive(iBuf, iSize);
+  if(currentState != PhoneDisconnected)
+  {
+  //usb.read();
+  }
 }
 
 void TBStateMachine::postHandle()
 {
-  //usb.send(oBuf, oSize);
+  if(currentState != PhoneDisconnected)
+  {
+    usb.send();
+  }
 }
 
 void TBStateMachine::Call()
@@ -49,6 +56,15 @@ void TBStateMachine::Call()
     break;
     case PositionReached:
     break;
+    case PhoneDisconnected:
+    {
+      if(usb.isConnected())
+        this->requireState(Idle);
+      else
+        delay(1000);
+    } break;
+    case Error
+    break;
   }
   this->postHandle();
 }
@@ -57,3 +73,4 @@ TBState TBStateMachine::requireState(TBState state)
 {
   
 }
+

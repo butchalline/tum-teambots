@@ -28,7 +28,8 @@ DrivePosition = 1,
 DriveVelocity = 2,
 PositionReached = 3,
 /*...*/
-Error = 42
+Error = 42,
+PhoneDisconnected = 43
 };
    
    
@@ -52,3 +53,4 @@ class TBStateMachine
 extern TBStateMachine stateMachine; //Global StateMachine Object
 
 #endif /*__TBSTATEMACHINE_H__*/
+

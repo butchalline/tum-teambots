@@ -1,0 +1,14 @@
+Root the smartphone.
+Put the com.android.future.usb.accessory.jar and the android.hardware.usb.accessory.xml into the android-sdk-windows\tools folder
+
+Run cmd in the tools folder:
+
+adb shell
+su
+mount -o rw,remount -t yaffs2 /dev/block/mtdblock3 /system
+chmod 777 /etc/permissions/
+chmod 777 /system/framework/
+exit
+exit
+adb push android.hardware.usb.accessory.xml /etc/permissions
+adb push com.android.future.usb.accessory.jar /system/framework/

@@ -4,11 +4,23 @@
 
 module Communication
 {
+	enum DataTypeIce {
+		PICTURE,
+		DEBUG,
+		INFO,
+		LOGGERINFO,
+		ACCELEROMETER,
+		GYROSCOPE,
+		UNSPECIFIED
+	};
+
 	sequence<byte> dataSequence;
 	class Data
 	{
+		DataTypeIce type;
+		long timeStamp;	
 		dataSequence byteArrayData;
-		long timeStamp;		
+			
 	};
 
 	interface DataInterface

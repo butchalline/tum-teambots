@@ -6,6 +6,7 @@ import teambotData.Data;
 
 public class LogDistributionManager {
 	
+	int botId = -1;
 	protected IDataLogger networkLogger;
 	protected IDataLogger localLogger;
 	protected IDataLogger ramMemoryLogger;
@@ -57,10 +58,10 @@ public class LogDistributionManager {
 				saveLocation = SaveLocation.RAM;
 				
 				if (memoryStatus == LoggerStatus.CRITICAL)
-					networkLogger.log(new teambotData.LoggerInfo("ramLogger is critical"));
+					networkLogger.log(new teambotData.LoggerInfo(botId, "ramLogger is critical"));
 				
 				if(memoryStatus == LoggerStatus.AT_LIMIT)
-					networkLogger.log(new teambotData.LoggerInfo("ramLogger is at limit"));
+					networkLogger.log(new teambotData.LoggerInfo(botId, "ramLogger is at limit"));
 				
 				try {
 					wait(100);
@@ -75,32 +76,33 @@ public class LogDistributionManager {
 	}
 	
 	
-	public LogDistributionManager()
+	public LogDistributionManager(int botId, NetworkAccess networkAccess)
 	{
-		this.networkLogger = new BufferedLogger("NetworkLogger", new NetworkAccess(), 10);
-		this.localLogger = new BufferedLogger("NetworkLogger", new NetworkAccess(), 10);
-		this.ramMemoryLogger = new BufferedLogger("NetworkLogger", new NetworkAccess(), 10);
+		initialize(botId, new BufferedLogger(botId, "NetworkLogger", networkAccess, 100),
+				new DisabledDataLogger(),
+				new DisabledDataLogger());
+	}
+	
+	public LogDistributionManager(int botId, NetworkAccess networkAccess, IDataLogger localLogger, IDataLogger ramMemoryLogger)
+	{
+		initialize(botId, new BufferedLogger(botId, "NetworkLogger", networkAccess, 100), localLogger, ramMemoryLogger);
+	}
+	
+	public LogDistributionManager(int botId, IDataLogger networkLogger, IDataLogger localLogger, IDataLogger ramMemoryLogger)
+	{
+		initialize(botId, networkLogger, localLogger, ramMemoryLogger);
+	}
+	
+	protected void initialize(int botId, IDataLogger networkLogger, IDataLogger localLogger, IDataLogger ramMemoryLogger)
+	{
+		this.networkLogger = networkLogger;
+		this.localLogger = localLogger;
+		this.ramMemoryLogger = ramMemoryLogger;
 		watcher = new LoggerWorkloadWatcher();
 		
 		new Thread(networkLogger).start();
 		new Thread(localLogger).start();
 		new Thread(ramMemoryLogger).start();
-		new Thread(watcher).start();
-	}
-	
-	public LogDistributionManager(IDataLogger localLogger, IDataLogger ramMemoryLogger)
-	{
-		this.networkLogger = new BufferedLogger("NetworkLogger", new NetworkAccess(), 10);
-		this.localLogger = localLogger;
-		this.ramMemoryLogger = ramMemoryLogger;
-		new Thread(watcher).start();
-	}
-	
-	public LogDistributionManager(IDataLogger networkLogger, IDataLogger localLogger, IDataLogger ramMemoryLogger)
-	{
-		this.networkLogger = networkLogger;
-		this.localLogger = localLogger;
-		this.ramMemoryLogger = ramMemoryLogger;
 		new Thread(watcher).start();
 	}
 	

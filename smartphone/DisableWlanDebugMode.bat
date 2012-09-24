@@ -1,0 +1,2 @@
+adb usb
+pause

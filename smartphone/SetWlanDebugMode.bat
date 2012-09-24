@@ -1,1 +1,3 @@
-adb shell "su -c 'mount -o rw,remount -t yaffs2 /dev/block/mtdblock3 /system; setprop service.adb.tcp.port 5555; adbd stop; adbd start;'"
+adb tcpip 6800
+echo "change to 5555 for old devices"
+pause

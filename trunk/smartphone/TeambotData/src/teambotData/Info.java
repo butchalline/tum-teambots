@@ -5,13 +5,13 @@ public class Info extends Data {
 	protected String infoText = "no text given";
 	protected DataType type = DataType.INFO;
 	
-	public Info(String infoText) {
-		super();
+	public Info(int botId, String infoText) {
+		super(botId);
 		this.infoText = infoText;
 	}
 	
-	public Info(long timestamp, String infoText) {
-		super(timestamp);
+	public Info(int botId, long timestamp, String infoText) {
+		super(botId, timestamp);
 		this.infoText = infoText;
 	}
 	

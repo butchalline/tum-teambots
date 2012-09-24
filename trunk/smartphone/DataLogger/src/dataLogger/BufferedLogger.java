@@ -9,6 +9,7 @@ import teambotData.LoggerInfo;
 public class BufferedLogger implements IDataLogger {
 
 	protected String loggerName = "Unspecified BufferedLogger";
+	protected int botId = -1;
 	
 	public AtomicBoolean running = new AtomicBoolean(true);
 	public AtomicBoolean vla;
@@ -18,8 +19,9 @@ public class BufferedLogger implements IDataLogger {
 	protected LinkedBlockingQueue<Data> dataQueue;
 	protected LinkedBlockingQueue<Data> backupQueue;
 	
-	public BufferedLogger(String loggerName, IMemoryAccess memoryAccess, int bufferSize)
+	public BufferedLogger(int botId, String loggerName, IMemoryAccess memoryAccess, int bufferSize)
 	{	
+		this.botId = botId;
 		new Thread(memoryAccess).start();
 		this.loggerName = loggerName;
 		this.memoryAccess = memoryAccess;
@@ -85,7 +87,7 @@ public class BufferedLogger implements IDataLogger {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		return new LoggerInfo(loggerName + " got InterruptedException while waiting for new data");
+		return new LoggerInfo(botId, loggerName + " got InterruptedException while waiting for new data");
 	}
 	
 	void sendData(Data data)

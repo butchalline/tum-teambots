@@ -6,9 +6,22 @@ import teambotData.Data;
 import Communication.*;
 
 public class NetworkAccess extends Ice.Application implements IMemoryAccess {
-
+	
+	String hostname = "localhost";
+	String port = "10000";
+	
 	public AtomicBoolean running = new AtomicBoolean(false);
 	protected DataInterfacePrx networkDataProxy;
+	
+	NetworkAccess()
+	{
+	}
+	
+	public NetworkAccess(String hostnameOrIp, String port)
+	{
+		this.hostname = hostnameOrIp;
+		this.port = port;
+	}
 	
 	@Override
 	public void save(Data data) {
@@ -17,9 +30,7 @@ public class NetworkAccess extends Ice.Application implements IMemoryAccess {
 			//cause I can
 		}
 		
-        Ice.AsyncResult r = networkDataProxy.begin_sendData(new Communication.Data(data.dataAsByteArray(), data.getTimestamp()));
-        r.waitForSent();
-        r.waitForCompleted();
+        networkDataProxy.sendData(IceDataMapper.map(data));
 	}
 
 	@Override
@@ -46,7 +57,7 @@ public class NetworkAccess extends Ice.Application implements IMemoryAccess {
 //			e.printStackTrace();
 //		}        
 		        
-        Ice.ObjectPrx prx = communicator().stringToProxy("DataLogger:tcp -h 192.168.0.107 -p 10000").ice_oneway();
+        Ice.ObjectPrx prx = communicator().stringToProxy("DataLogger:udp -h "+ hostname + " -p "+ port).ice_datagram();
         networkDataProxy = Communication.DataInterfacePrxHelper.uncheckedCast(prx);
         running.set(true);
         communicator().waitForShutdown();

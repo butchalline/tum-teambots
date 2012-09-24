@@ -18,8 +18,8 @@
 // </auto-generated>
 //
 
-#ifndef __C__Users_user_documents_visual_studio_2010_Projects_TeambotLogIceServer_TeambotLogIceServer_DataInterface_h__
-#define __C__Users_user_documents_visual_studio_2010_Projects_TeambotLogIceServer_TeambotLogIceServer_DataInterface_h__
+#ifndef __D__NVPACK_tum_teambots_Windows_TeambotLogIceServer_TeambotLogIceServer_DataInterface_h__
+#define __D__NVPACK_tum_teambots_Windows_TeambotLogIceServer_TeambotLogIceServer_DataInterface_h__
 
 #include <Ice/LocalObjectF.h>
 #include <Ice/ProxyF.h>

@@ -1,28 +1,26 @@
 package teambotData;
 
+import teambot.smartphone.Bot;
+
 public abstract class Data {
 
 	protected long timestamp;
-	protected int botId = -1;
+	protected int botId = Bot.getId();
 	protected DataType type = DataType.UNSPECIFIED;
 
-	public Data(int botId) {
-		this.botId = botId;
+	public Data() {
 		this.timestamp = System.currentTimeMillis();
 	}
 	
-	public Data(int botId, long timestamp) {
-		this.botId = botId;
+	public Data(long timestamp) {
 		this.timestamp = timestamp;
 	}
 	
-	public Data(int botId, DataType type) {
-		this.botId = botId;
+	public Data(DataType type) {
 		this.timestamp = System.currentTimeMillis();
 	}
 	
-	public Data(int botId, long timestamp, DataType type) {
-		this.botId = botId;
+	public Data(long timestamp, DataType type) {
 		this.timestamp = timestamp;
 		this.type = type;
 	}
@@ -35,5 +33,7 @@ public abstract class Data {
 		return type;
 	}
 	
-	abstract public byte[] dataAsByteArray();
+	public int getBotId() {
+		return botId;
+	}
 }

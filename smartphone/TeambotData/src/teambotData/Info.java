@@ -1,23 +1,17 @@
 package teambotData;
 
-public class Info extends Data {
+public class Info extends ByteArrayData {
 
 	protected String infoText = "no text given";
 	protected DataType type = DataType.INFO;
 	
-	public Info(int botId, String infoText) {
-		super(botId);
+	public Info(String infoText) {
+		super(infoText.getBytes());
 		this.infoText = infoText;
 	}
 	
 	public Info(int botId, long timestamp, String infoText) {
-		super(botId, timestamp);
+		super(timestamp, infoText.getBytes());
 		this.infoText = infoText;
 	}
-	
-	@Override
-	public byte[] dataAsByteArray() {
-		return infoText.getBytes();
-	}
-
 }

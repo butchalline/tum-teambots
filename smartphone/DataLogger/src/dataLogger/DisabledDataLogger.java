@@ -10,12 +10,13 @@ public class DisabledDataLogger implements IDataLogger {
 	}
 
 	@Override
-	public void log(Data data) {		
+	public boolean log(Data data) {
+		return false;
 	}
 
 	@Override
 	public LoggerStatus getStatus() {
-		return LoggerStatus.AT_LIMIT;
+		return LoggerStatus.IDLE;
 	}
 
 }

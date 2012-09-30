@@ -9,6 +9,6 @@
 			<attribute name="javadoc_location" value="jar:file:/D:/NVPACK/workspace/commons-lang3-3.1/commons-lang3-3.1-javadoc.jar!/"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="/jars/TeambotData.jar"/>
+	<classpathentry exported="true" kind="lib" path="/jars/TeambotData.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

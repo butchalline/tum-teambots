@@ -11,6 +11,6 @@ enum LoggerStatus {
 
 public interface IDataLogger extends Runnable {
 	
-	public void log(Data data);
+	public boolean log(Data data);
 	public LoggerStatus getStatus();
 }

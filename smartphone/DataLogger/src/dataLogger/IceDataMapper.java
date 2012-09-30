@@ -2,39 +2,42 @@ package dataLogger;
 
 import java.util.Map;
 
-import teambotData.Data;
+import teambotData.ByteArrayData;
 import teambotData.DataType;
+import teambotData.FloatArrayData;
 
 public class IceDataMapper {
 
 	static protected Map<DataType, Communication.DataTypeIce> dataToIceDataMap;
 
-	static public Communication.Data map(Data data)
+	static public Communication.ByteData map(ByteArrayData data)
+	{	
+		return new Communication.ByteData(mapType(data.getType()), data.getTimestamp(), data.getData());
+	}
+	
+	static public Communication.FloatData map(FloatArrayData data)
+	{	
+		return new Communication.FloatData(mapType(data.getType()), data.getTimestamp(), data.getData());
+	}
+	
+	static protected Communication.DataTypeIce mapType(teambotData.DataType type)
 	{
-		Communication.DataTypeIce iceType = Communication.DataTypeIce.UNSPECIFIED;
-		 
-		switch (data.getType())
+		switch (type)
 		{
 		case PICTURE:
-			iceType = Communication.DataTypeIce.PICTURE;
-			break;
+			return Communication.DataTypeIce.PICTURE;
 		case DEBUG:
-			iceType = Communication.DataTypeIce.DEBUG;
-			break;
+			return Communication.DataTypeIce.DEBUG;
 		case INFO:
-			iceType = Communication.DataTypeIce.INFO;
-			break;
+			return Communication.DataTypeIce.INFO;
 		case LOGGER_INFO:
-			iceType = Communication.DataTypeIce.LOGGERINFO;
-			break;
+			return Communication.DataTypeIce.LOGGERINFO;
 		case ACCELEROMETER:
-			iceType = Communication.DataTypeIce.ACCELEROMETER;
-			break;
+			return Communication.DataTypeIce.ACCELEROMETER;
 		case GYROSCOPE:
-			iceType = Communication.DataTypeIce.GYROSCOPE;
-			break;
+			return Communication.DataTypeIce.GYROSCOPE;
 		}
 		
-		return new Communication.Data(iceType, data.getTimestamp(), data.dataAsByteArray());
+		return Communication.DataTypeIce.UNSPECIFIED;
 	}
 }

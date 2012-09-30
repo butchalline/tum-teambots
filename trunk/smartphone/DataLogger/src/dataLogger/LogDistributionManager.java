@@ -6,7 +6,6 @@ import teambotData.Data;
 
 public class LogDistributionManager {
 	
-	int botId = -1;
 	protected IDataLogger networkLogger;
 	protected IDataLogger localLogger;
 	protected IDataLogger ramMemoryLogger;
@@ -38,17 +37,32 @@ public class LogDistributionManager {
 		
 		@Override
 		public void run() {
+			LoggerStatus lastNetworkStatus = LoggerStatus.IDLE;
+			LoggerStatus lastRamStatus = LoggerStatus.IDLE;
 			
 			while(running.get())
-			{
-				networkStatus = networkLogger.getStatus();
-				
-				if (networkStatus != LoggerStatus.CRITICAL && networkStatus != LoggerStatus.AT_LIMIT)
-				{
-					saveLocation = SaveLocation.NETWORK;
-					continue;
+			{	
+				try {
+					Thread.sleep(10);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
 				}
 				
+				networkStatus = networkLogger.getStatus();			
+//				networkLogger.log(new teambotData.LoggerInfo("!!!! network load: " + networkStatus));
+				if (networkStatus != LoggerStatus.CRITICAL && networkStatus != LoggerStatus.AT_LIMIT)
+				{														
+					saveLocation = SaveLocation.NETWORK;
+					lastNetworkStatus = networkStatus;
+					continue;
+				}
+				if (networkStatus == LoggerStatus.CRITICAL && lastNetworkStatus != LoggerStatus.CRITICAL)
+				{
+					networkLogger.log(new teambotData.LoggerInfo("!!!! networkLogger is critical !!!!!!!!"));
+					lastNetworkStatus = LoggerStatus.CRITICAL;
+				}
+				
+				diskStatus = localLogger.getStatus();
 				if (diskStatus != LoggerStatus.CRITICAL && diskStatus != LoggerStatus.AT_LIMIT)
 				{
 					saveLocation = SaveLocation.LOCAL;
@@ -57,17 +71,13 @@ public class LogDistributionManager {
 				
 				saveLocation = SaveLocation.RAM;
 				
-				if (memoryStatus == LoggerStatus.CRITICAL)
-					networkLogger.log(new teambotData.LoggerInfo(botId, "ramLogger is critical"));
+				if (memoryStatus == LoggerStatus.CRITICAL && lastRamStatus != LoggerStatus.CRITICAL)
+					networkLogger.log(new teambotData.LoggerInfo("!!!! ramLogger is critical"));
 				
-				if(memoryStatus == LoggerStatus.AT_LIMIT)
-					networkLogger.log(new teambotData.LoggerInfo(botId, "ramLogger is at limit"));
+				if(memoryStatus == LoggerStatus.AT_LIMIT && lastRamStatus != LoggerStatus.AT_LIMIT)
+					networkLogger.log(new teambotData.LoggerInfo("!!!! ramLogger is at limit"));
 				
-				try {
-					wait(100);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
+				lastRamStatus = memoryStatus;
 				
 			}
 			
@@ -76,24 +86,24 @@ public class LogDistributionManager {
 	}
 	
 	
-	public LogDistributionManager(int botId, NetworkAccess networkAccess)
+	public LogDistributionManager(NetworkAccess networkAccess)
 	{
-		initialize(botId, new BufferedLogger(botId, "NetworkLogger", networkAccess, 100),
+		initialize(new BufferedLogger("NetworkLogger", networkAccess, 1000),
 				new DisabledDataLogger(),
 				new DisabledDataLogger());
 	}
 	
-	public LogDistributionManager(int botId, NetworkAccess networkAccess, IDataLogger localLogger, IDataLogger ramMemoryLogger)
+	public LogDistributionManager(NetworkAccess networkAccess, IDataLogger localLogger, IDataLogger ramMemoryLogger)
 	{
-		initialize(botId, new BufferedLogger(botId, "NetworkLogger", networkAccess, 100), localLogger, ramMemoryLogger);
+		initialize(new BufferedLogger("NetworkLogger", networkAccess, 100), localLogger, ramMemoryLogger);
 	}
 	
-	public LogDistributionManager(int botId, IDataLogger networkLogger, IDataLogger localLogger, IDataLogger ramMemoryLogger)
+	public LogDistributionManager(IDataLogger networkLogger, IDataLogger localLogger, IDataLogger ramMemoryLogger)
 	{
-		initialize(botId, networkLogger, localLogger, ramMemoryLogger);
+		initialize(networkLogger, localLogger, ramMemoryLogger);
 	}
 	
-	protected void initialize(int botId, IDataLogger networkLogger, IDataLogger localLogger, IDataLogger ramMemoryLogger)
+	protected void initialize(IDataLogger networkLogger, IDataLogger localLogger, IDataLogger ramMemoryLogger)
 	{
 		this.networkLogger = networkLogger;
 		this.localLogger = localLogger;
@@ -113,17 +123,18 @@ public class LogDistributionManager {
 	
 	public void log(Data data) {
 		
+		
 		switch (saveLocation)
 		{
 		case NETWORK:
-			networkLogger.log(data);
-			break;
+			if(networkLogger.log(data))
+				break;
 		case LOCAL:
-			localLogger.log(data);
-			break;
+			if(localLogger.log(data))
+				break;
 		case RAM:
-			ramMemoryLogger.log(data);
-			break;
+			if(ramMemoryLogger.log(data))
+				break;
 		}
 	}
 	

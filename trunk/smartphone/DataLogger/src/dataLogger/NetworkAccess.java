@@ -1,8 +1,7 @@
 package dataLogger;
 
-import java.util.concurrent.atomic.AtomicBoolean;
-
-import teambotData.Data;
+import teambotData.ByteArrayData;
+import teambotData.FloatArrayData;
 import Communication.*;
 
 public class NetworkAccess extends Ice.Application implements IMemoryAccess {
@@ -10,7 +9,6 @@ public class NetworkAccess extends Ice.Application implements IMemoryAccess {
 	String hostname = "localhost";
 	String port = "10000";
 	
-	public AtomicBoolean running = new AtomicBoolean(false);
 	protected DataInterfacePrx networkDataProxy;
 	
 	NetworkAccess()
@@ -24,13 +22,31 @@ public class NetworkAccess extends Ice.Application implements IMemoryAccess {
 	}
 	
 	@Override
-	public void save(Data data) {
-		while(!running.get())
-		{
-			//cause I can
+	public void save(ByteArrayData data) {
+		while(networkDataProxy == null) 
+		{//wait for networkDataProxy initialization
+			try {
+				Thread.sleep(300);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 		}
 		
-        networkDataProxy.sendData(IceDataMapper.map(data));
+        networkDataProxy.sendByteData(IceDataMapper.map(data));
+	}
+	
+	@Override
+	public void save(FloatArrayData data) {
+		while(networkDataProxy == null)
+		{//wait for networkDataProxy initialization
+			try {
+				Thread.sleep(300);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+		
+        networkDataProxy.sendFloatData(IceDataMapper.map(data));
 	}
 
 	@Override
@@ -59,7 +75,6 @@ public class NetworkAccess extends Ice.Application implements IMemoryAccess {
 		        
         Ice.ObjectPrx prx = communicator().stringToProxy("DataLogger:udp -h "+ hostname + " -p "+ port).ice_datagram();
         networkDataProxy = Communication.DataInterfacePrxHelper.uncheckedCast(prx);
-        running.set(true);
         communicator().waitForShutdown();
         return 0;
 	}

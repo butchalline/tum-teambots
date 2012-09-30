@@ -3,114 +3,94 @@ package dataLogger;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import teambotData.ByteArrayData;
 import teambotData.Data;
-import teambotData.LoggerInfo;
+import teambotData.FloatArrayData;
 
 public class BufferedLogger implements IDataLogger {
 
 	protected String loggerName = "Unspecified BufferedLogger";
-	protected int botId = -1;
-	
+
 	public AtomicBoolean running = new AtomicBoolean(true);
 	public AtomicBoolean vla;
 	protected LoggerStatus status = LoggerStatus.IDLE;
 	IMemoryAccess memoryAccess;
-	protected int bufferSize; 
+	protected int bufferSize;
 	protected LinkedBlockingQueue<Data> dataQueue;
 	protected LinkedBlockingQueue<Data> backupQueue;
-	
-	public BufferedLogger(int botId, String loggerName, IMemoryAccess memoryAccess, int bufferSize)
-	{	
-		this.botId = botId;
+
+	public BufferedLogger(String loggerName, IMemoryAccess memoryAccess,
+			int bufferSize) {
 		new Thread(memoryAccess).start();
 		this.loggerName = loggerName;
 		this.memoryAccess = memoryAccess;
-		
+
 		this.bufferSize = bufferSize;
 		dataQueue = new LinkedBlockingQueue<Data>(bufferSize);
 		backupQueue = new LinkedBlockingQueue<Data>(bufferSize / 4);
 	}
 
-	protected void finalize() throws Throwable 
-	{
+	protected void finalize() throws Throwable {
 		memoryAccess.stop();
 	}
-	
+
 	@Override
 	public void run() {
-		long timeAtStatusUpdate = 0;
 		
-		while(running.get())
-		{
-			if(System.currentTimeMillis() - timeAtStatusUpdate > 100)
-			{
-				updateStatus();
-				timeAtStatusUpdate = System.currentTimeMillis();
-			}
-			
-			if(backupQueue.isEmpty())
-				sendData(getDataQueueElement());
-			else
-			{
+		while (running.get()) {
+			updateStatus();
+			if (!backupQueue.isEmpty())
+				sendData(backupQueue.poll());
+			else {
 				try {
-					sendData(backupQueue.take());
+					sendData(dataQueue.take());
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
 			}
-		}		
+
+		}
 	}
-	
-	protected void updateStatus()
-	{
-		float dataQueueUsagePercentage = 1.0f - getDataQueueRemainingCapacity() / (float)bufferSize;
-		
-		if(dataQueueUsagePercentage < 0.1)
+
+	protected void updateStatus() {
+		float dataQueueUsagePercentage = 1.0f - dataQueue.remainingCapacity()
+				/ (float) bufferSize;
+
+		if (dataQueueUsagePercentage < 0.1)
 			setStatus(LoggerStatus.IDLE);
-		else if(dataQueueUsagePercentage < 0.8)
+		else if (dataQueueUsagePercentage < 0.8)
 			setStatus(LoggerStatus.OCCUPIED);
-		else if(dataQueueUsagePercentage < 0.9)
+		else if (dataQueueUsagePercentage < 0.9)
 			setStatus(LoggerStatus.CRITICAL);
 		else
 			setStatus(LoggerStatus.AT_LIMIT);
 	}
-	
-	protected synchronized int getDataQueueRemainingCapacity()
-	{
-		return dataQueue.remainingCapacity();
-	}
-	
-	protected Data getDataQueueElement()
-	{
-		try {
-			return dataQueue.take();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		return new LoggerInfo(botId, loggerName + " got InterruptedException while waiting for new data");
-	}
-	
-	void sendData(Data data)
-	{
-		memoryAccess.save(data);
+
+	void sendData(Data data) {
+		if (data == null)
+			return;
+
+		if (data instanceof FloatArrayData)
+			memoryAccess.save((FloatArrayData) data);
+		if (data instanceof ByteArrayData)
+			memoryAccess.save((ByteArrayData) data);
 	}
 
-	//TODO Check if this is thread save -> dataQueue.take() in getDataQueueElement() blocks
-	//so synchronizing getDataQueueElement() and log() would give a deadlock?
+	// TODO Check if this is thread save -> dataQueue.take() in
+	// getDataQueueElement() blocks
+	// so synchronizing getDataQueueElement() and log() would give a deadlock?
 	@Override
-	public void log(Data data) {
-		if(this.dataQueue.offer(data))
-			return;
-			
-		this.status = LoggerStatus.AT_LIMIT;
-		try {
-			this.backupQueue.put(data);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
+	public boolean log(Data data) {
+		if (this.dataQueue.offer(data))
+			return true;
+		else {
+			if(this.backupQueue.offer(data))
+				return true;
 		}
+		return false;
 	}
-	
-	private synchronized void setStatus(LoggerStatus status){
+
+	protected synchronized void setStatus(LoggerStatus status) {
 		this.status = status;
 	}
 

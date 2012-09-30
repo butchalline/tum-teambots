@@ -1,8 +1,10 @@
 package dataLogger;
 
-import teambotData.Data;
+import teambotData.ByteArrayData;
+import teambotData.FloatArrayData;
 
 public interface IMemoryAccess extends Runnable {
-	void save(Data data);
+	void save(ByteArrayData data);
+	void save(FloatArrayData data);
 	void stop();
 }

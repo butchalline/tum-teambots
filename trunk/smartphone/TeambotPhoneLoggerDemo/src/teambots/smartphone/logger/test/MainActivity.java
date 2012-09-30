@@ -1,6 +1,7 @@
-package teambots.smartphone.test;
+package teambots.smartphone.logger.test;
 
 import teambotData.Info;
+import teambots.smartphone.test.R;
 import dataLogger.LogDistributionManager;
 import dataLogger.NetworkAccess;
 import android.os.Bundle;
@@ -22,7 +23,7 @@ public class MainActivity extends Activity {
         Button buttonStart = (Button)findViewById(R.id.button1);       
         buttonStart.setOnClickListener(startListener); 
         
-		ldm = new LogDistributionManager(1, new NetworkAccess("192.168.0.107", "10000"));
+		ldm = new LogDistributionManager(new NetworkAccess("192.168.0.101", "10000"));
         
     }
 
@@ -36,7 +37,7 @@ public class MainActivity extends Activity {
     private OnClickListener startListener = new OnClickListener() {
 		@Override
         public void onClick(View v) {
-			ldm.log(new Info(1, "It works."));
+			ldm.log(new Info("It works."));
            } 
     };
 }

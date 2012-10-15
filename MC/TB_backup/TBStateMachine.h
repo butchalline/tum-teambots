@@ -16,61 +16,41 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
- 
-#include "TBStateMachine.h"
 
-TBStateMachine stateMachine; //Global StateMachine Object
+#ifndef __TBSTATEMACHINE_H__
+#define __TBSTATEMACHINE_H__
 
-void TBStateMachine::Init()
+#include "TBTypes.h"
+
+enum TBState {
+Idle = 0,
+DrivePosition = 1,
+DriveVelocity = 2,
+PositionReached = 3,
+/*...*/
+Error = 42,
+PhoneDisconnected = 43,
+PhoneConnect = 44
+};
+   
+   
+class TBStateMachine
 {
-  currentState = PhoneDisconnected;
-  requiredState = ;
-}
-
-void TBStateMachine::preHandle()
-{
-  if(currentState != PhoneDisconnected)
-  {
-  //usb.read();
-  }
-}
-
-void TBStateMachine::postHandle()
-{
-  if(currentState != PhoneDisconnected)
-  {
-    usb.send();
-  }
-}
-
-void TBStateMachine::Call()
-{
-  this->preHandle();
-  switch(currentState)
-  {
-    case Idle:
-    break;
-    case DrivePosition:
-    break;
-    case DriveVelocity:
-    break;
-    case PositionReached:
-    break;
-    case PhoneDisconnected:
-    {
-      if(usb.isConnected())
-        this->requireState(Idle);
-      else
-        delay(1000);
-    } break;
-    case Error
-    break;
-  }
-  this->postHandle();
-}
-
-TBState TBStateMachine::requireState(TBState state)
-{
+  public:
+  void Init();
+  void Call();
+  TBState requireState(TBState state);
+  TBState getState();
+    
+  private:
+  void preHandle();
+  void postHandle();
   
-}
+  private:
+  TBState currentState;
+};
+
+extern TBStateMachine stateMachine; //Global StateMachine Object
+
+#endif /*__TBSTATEMACHINE_H__*/
 

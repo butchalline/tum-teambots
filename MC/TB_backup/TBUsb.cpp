@@ -19,16 +19,24 @@
  
 #include "TBUsb.h"
  
-TBUsb::TBUsb() : amountSendBytes(0), sendOffset(0), putPointer(0)
+ // accessory descriptor. It's how Arduino identifies itself to Android
+#define APPLICATION_NAME "ArduinoBlinkLED" // the app on your phone
+#define ACCESSORY_NAME "Mega_ADK" // your Arduino board
+#define COMPANY_NAME "Arduino SA"
+
+// make up anything you want for these
+#define VERSIONN_NUMBER "1.0"
+#define SERIAL_NUMBER "1"
+#define URL "http://labs.arduino.cc/adk/ADK_count" // the URL of your app online
+
+ 
+TBUsb usb;
+ 
+TBUsb::TBUsb() : amountSendBytes(0), sendOffset(0), putPointer(0), android(COMPANY_NAME, APPLICATION_NAME, ACCESSORY_NAME, VERSIONN_NUMBER, URL, SERIAL_NUMBER) 
 {
 }
 
-void TBUsb::Init(const char* manufacturer, const char* model)
-{
-  android(manufacturer, model);
-}
-
-int TBUsb::read()
+u_char TBUsb::read()
 {
   return android.read();
 }
@@ -40,7 +48,7 @@ void TBUsb::send()
     if(putPointer < sendOffset) //buffer overflow
     {
       byte sendBytes = 255 - sendOffset;
-      android.write(sendBuf[sendOffset], sendBytes);
+      write(sendBuf[sendOffset], sendBytes);
       sendOffset = 0;
       amountSendBytes -= sendBytes;      
     }
@@ -52,26 +60,27 @@ void TBUsb::send()
 
 void TBUsb::reconnect()
 {
+  android.powerOn();
 }
 
-boolean TBUsb::putData(byte data)
+bool TBUsb::putData(u_char data)
 {
   sendBuf[putPointer++] = data;
   ++amountSendBytes;
 }
 
-boolean TBUsb::putData(byte* data, byte size)
+bool TBUsb::putData(u_char* data, u_char size)
 {
   for(int i = 0; i < size; i++)
   {
     sendBuf[putPointer++] = data[i];
-    ++amountSendBytes:
+    ++amountSendBytes;
   }
 }
 
-boolean TBUsb::isConnected()
+bool TBUsb::isConnected()
 {
-  return android.connected();  
+  return android.isConnected();  
 }
 
 int TBUsb::sizeData()

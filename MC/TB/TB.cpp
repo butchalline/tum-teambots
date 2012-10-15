@@ -4,6 +4,8 @@
 //The setup function is called once at startup of the sketch
 void setup() {
 	stateMachine.Init();
+	Serial.begin(115200);
+    pinMode(LED_PIN_13, OUTPUT);
 	// usb.Init("Huawei", "U8655");
     //  motors.Init();
 }
@@ -11,12 +13,4 @@ void setup() {
 // The loop function is called in an endless loop
 void loop() {
     stateMachine.Call();
-}
-
-int main() {
-	setup();
-	while(true) {
-		loop();
-	}
-	return 0;
 }

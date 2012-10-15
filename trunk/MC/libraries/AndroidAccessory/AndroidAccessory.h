@@ -18,8 +18,11 @@
 #define __AndroidAccessory_h__
 
 #include "Arduino.h"
+#include "Stream.h"
 
-class AndroidAccessory {
+#define DATA_BUFFER_SIZE 64
+
+class AndroidAccessory : public Stream {
 private:
     const char *manufacturer;
     const char *model;
@@ -36,7 +39,12 @@ private:
 
     EP_RECORD epRecord[8];
 
+    // TODO: Reuse `descBuff` after connection and/or stream descriptor?
     uint8_t descBuff[256];
+
+    byte dataBuff[DATA_BUFFER_SIZE];
+    unsigned int numBytesInDataBuff;
+    unsigned int nextByteInDataBuffOffset;
 
     bool isAccessoryDevice(USB_DEVICE_DESCRIPTOR *desc)
     {
@@ -50,6 +58,12 @@ private:
     bool findEndpoints(byte addr, EP_RECORD *inEp, EP_RECORD *outEp);
     bool configureAndroid(void);
 
+    bool dataBufferIsEmpty();
+    void refillDataBuffer();
+
+    // Private because it bypasses the data buffer.
+    int read(void *buff, int len, unsigned int nakLimit = USB_NAK_LIMIT);
+
 public:
     AndroidAccessory(const char *manufacturer,
                      const char *model,
@@ -61,8 +75,16 @@ public:
     void powerOn(void);
 
     bool isConnected(void);
-    int read(void *buff, int len, unsigned int nakLimit = USB_NAK_LIMIT);
-    int write(void *buff, int len);
+    virtual size_t write(uint8_t *buff, size_t len);
+
+    virtual int available(void);
+    virtual int peek(void);
+    virtual int read(void);
+
+    virtual void flush();
+    virtual size_t write(uint8_t);
+
+    using Print::write; // pull in write(str) and write(buf, size) from Print
 };
 
 #endif /* __AndroidAccessory_h__ */

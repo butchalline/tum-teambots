@@ -16,7 +16,7 @@
 
 
 #include <Max3421e.h>
-#include <UsbHost.h>
+#include <Usb.h>
 #include <AndroidAccessory.h>
 
 #define USB_ACCESSORY_VENDOR_ID         0x18D1
@@ -51,11 +51,6 @@ AndroidAccessory::AndroidAccessory(const char *manufacturer,
 
 }
 
-boolean AndroidAccessory::begin(void) {
-  powerOn();
-  return true; // For forward compatibility with v2.x of the library
-}
-
 void AndroidAccessory::powerOn(void)
 {
     max.powerOn();
@@ -88,12 +83,9 @@ bool AndroidAccessory::switchDevice(byte addr)
 {
     int protocol = getProtocol(addr);
 
-    if (protocol == 1) {
-        Serial.print(F("device supports protcol 1\n"));
-    } else {
-        Serial.print(F("could not read device protocol version\n"));
-        return false;
-    }
+	Serial.print(F("device supports protcol "));
+	Serial.print(protocol);
+	Serial.print(F("\n"));
 
     sendString(addr, ACCESSORY_STRING_MANUFACTURER, manufacturer);
     sendString(addr, ACCESSORY_STRING_MODEL, model);
@@ -228,17 +220,13 @@ bool AndroidAccessory::configureAndroid(void)
     return true;
 }
 
-void AndroidAccessory::refresh(void) {
-    max.Task();
-    usb.Task();
-}
-
 bool AndroidAccessory::isConnected(void)
 {
     USB_DEVICE_DESCRIPTOR *devDesc = (USB_DEVICE_DESCRIPTOR *) descBuff;
     byte err;
 
-    refresh();
+    max.Task();
+    usb.Task();
 
     if (!connected &&
         usb.getUsbTaskState() >= USB_STATE_CONFIGURING &&
@@ -257,12 +245,12 @@ bool AndroidAccessory::isConnected(void)
 
             connected = configureAndroid();
         } else {
-            Serial.print(F("found possible device. swithcing to serial mode\n"));
+            Serial.print(F("found possible device.\n switching to serial mode\n"));
             switchDevice(1);
         }
     } else if (usb.getUsbTaskState() == USB_DETACHED_SUBSTATE_WAIT_FOR_DEVICE) {
         if (connected)
-            Serial.println(F("disconnect\n"));
+            Serial.println(F("disconnected usb device\n"));
         connected = false;
     }
 

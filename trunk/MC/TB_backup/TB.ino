@@ -17,40 +17,23 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef __TBSTATEMACHINE_H__
-#define __TBSTATEMACHINE_H__
+#include "TBStateMachine.h"
+#include "TBUsb.h"
 
-#include "TBTypes.h"
-
-enum TBState {
-Idle = 0,
-DrivePosition = 1,
-DriveVelocity = 2,
-PositionReached = 3,
-/*...*/
-Error = 42,
-PhoneDisconnected = 43
-};
-   
-   
-class TBStateMachine
+// Inits
+void setup()
 {
-  public:
-  void Init();
-  void Call();
-  TBState requireState(TBState state);
-  TBState getState();
-    
-  private:
-  void preHandle();
-  void postHandle();
-  
-  private:
-  TBState currentState;
-  TBState requiredState;
-};
+  stateMachine.Init();
+ // usb.Init("Huawei", "U8655");
+//  motors.Init();
+}
 
-extern TBStateMachine stateMachine; //Global StateMachine Object
-
-#endif /*__TBSTATEMACHINE_H__*/
+// Main Loop calls the StateMachine
+void loop()
+{
+  while(true)
+  {
+    stateMachine.Call();
+  }
+}
 

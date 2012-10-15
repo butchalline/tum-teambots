@@ -1,3 +1,4 @@
+
 /*
  * TeamBots is a Student-Project of the Technical University Munich - 2012
  * Members: 
@@ -21,20 +22,27 @@
 #ifndef __TBUSB_H__
 #define __TBUSB_H__
  
- #include <AndroidAccessory.h>
+#include "TBTypes.h"
+
+#include <Max3421e.h>
+#include <Usb.h>
+#include <AndroidAccessory.h>
+
  
  class TBUsb
  {
    public:
      TBUsb();
-     void Init(const char* manufacturer, const char* model);
-     int read();
+     u_char read();
      void send();
      bool putData(u_char data);
      bool putData(u_char* data, u_char size);
      bool isConnected();
+     void reconnect();
      int sizeData();
    private:
+     void write(const u_char* data, u_char size);
+   
      u_char amountSendBytes;
      u_char sendOffset;
      u_char putPointer;
@@ -42,7 +50,7 @@
      AndroidAccessory android;
  };
  
- extern TBUsb* usb;
+ extern TBUsb usb;
  
  #endif /* __TBUSB_H__ */
 

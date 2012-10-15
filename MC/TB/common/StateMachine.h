@@ -20,7 +20,7 @@
 #ifndef __TBSTATEMACHINE_H__
 #define __TBSTATEMACHINE_H__
 
-#include "common/Types.h"
+#include "Config.h"
 
 enum TBState {
 	Idle = 0, DrivePosition = 1, DriveVelocity = 2, PositionReached = 3,

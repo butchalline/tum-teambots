@@ -20,7 +20,7 @@
 #ifndef __TBUSB_H__
 #define __TBUSB_H__
 
-#include "common/Types.h"
+#include "Config.h"
 
 #include <Max3421e.h>
 #include <Usb.h>

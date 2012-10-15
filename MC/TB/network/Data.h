@@ -20,7 +20,7 @@
 #ifndef __TBDATA_H__
 #define __TBDATA_H__
 
-#include "common/Types.h"
+#include "Config.h"
 
 //Send direction from MC to SP
 #define TBUSB_MC_Status               0x0000 /*Data = 1 Byte | Status Msg |*/

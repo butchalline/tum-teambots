@@ -33,6 +33,11 @@
 			<locationURI>PivateLibPath/AndroidAccessory</locationURI>
 		</link>
 		<link>
+			<name>Dynamixel_Serial</name>
+			<type>2</type>
+			<locationURI>PivateLibPath/Dynamixel_Serial</locationURI>
+		</link>
+		<link>
 			<name>USBHost</name>
 			<type>2</type>
 			<locationURI>PivateLibPath/USBHost</locationURI>

@@ -39,6 +39,8 @@ private:
 	void preHandle();
 	void postHandle();
 
+	void handleVelocity();
+
 private:
 	TBState currentState;
 };

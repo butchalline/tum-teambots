@@ -19,23 +19,53 @@
 
 #include "common/StateMachine.h"
 #include "network/Usb.h"
+#include "network/Data.h"
+#include "motion/Motor.h"
 
 StateMachine stateMachine; //Global StateMachine Object
+TBFrame* receiveFrame;
 
 void StateMachine::Init() {
-	currentState = PhoneDisconnected;
+	//currentState = PhoneDisconnected;
+	currentState = Idle;
+	receiveFrame = new TBFrame();
+}
+
+void StateMachine::handleVelocity() {
+	if(currentState != DriveVelocity)
+		return;
+	if(receiveFrame->head.SubId == TB_VELOCITY_FORWARD) {
+		motors.setVelocity(receiveFrame->data.velocity.speed, motors.Forwards);
+	}
+	else if(receiveFrame->head.SubId == TB_VELOCITY_BACKWARD) {
+		motors.setVelocity(receiveFrame->data.velocity.speed, motors.Backwards);
+	}
+	return;
 }
 
 void StateMachine::preHandle() {
 	if (currentState != PhoneDisconnected && usb.sizeData() > 0) {
-		u_char val = usb.read();
-	    Serial.print("Read from usb: ");
-	    Serial.print( val );
-	    Serial.print("\n\r");
-		if( val == 1 )
-		   digitalWrite(LED13, HIGH);
-		else
-		   digitalWrite(LED13, LOW);
+		u_char bytes = sizeof(TBHeader) - sizeof(u_char);
+		char* tmp = (char*)receiveFrame;
+		*tmp = usb.read();
+		switch(receiveFrame->head.Id) {
+		case TB_COMMAND_ID:
+			break;
+		case TB_VELOCITY_ID:
+			bytes += sizeof(TBVelocity);
+			for(int i = 0; i < bytes; ++i) {
+				++tmp;
+				*tmp = usb.read();
+			}
+			handleVelocity();
+			break;
+		case TB_TURN_ID:
+			break;
+		case TB_POSITION_ID:
+			break;
+		case TB_ERROR_ID:
+			break;
+		}
 	}
 }
 
@@ -50,10 +80,13 @@ void StateMachine::Call() {
 	switch (currentState) {
 	case Idle:
 		delay(100);
+		motors.setVelocity(200);
+		requireState(DriveVelocity);
 		break;
 	case DrivePosition:
 		break;
 	case DriveVelocity:
+		motors.driveVeloctiy();
 		break;
 	case PositionReached:
 		break;
@@ -86,6 +119,14 @@ void StateMachine::Call() {
 TBState StateMachine::requireState(TBState state) {
 	switch (currentState) {
 	case Idle:
+		switch (state) {
+		case DriveVelocity:
+			currentState = DriveVelocity;
+			break;
+		default:
+			//TODO: Log Error
+			break;
+		}
 		return currentState;
 	case DrivePosition:
 		return currentState;

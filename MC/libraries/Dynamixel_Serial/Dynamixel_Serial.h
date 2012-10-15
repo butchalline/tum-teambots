@@ -115,8 +115,8 @@
 #define AX_SYNC_WRITE               0x83
 
 	// Specials ///////////////////////////////////////////////////////////////
-#define OFF                         0x00
-#define ON                          0x01
+#define _OFF                         0x00
+#define _ON                          0x01
 #define LEFT						0x00
 #define RIGHT                       0x01
 #define AX_BYTE_READ                0x01

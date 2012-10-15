@@ -23,19 +23,52 @@
 #include "Config.h"
 
 //Send direction from MC to SP
-#define TBUSB_MC_Status               0x0000 /*Data = 1 Byte | Status Msg |*/
-#define TBUSB_MC_Error                0x0001 /*Data = 1 Byte | Error Msg | */
-#define TBUSB_MC_MotorsEncoderDiff    0x0002 /*Data = 4 Byte | MotorLeftDiff | MotorRightDiff |*/
 
-//Send direction from SP to MC
-#define TBUSB_SP_RequieredState       0x8000 /*Data = 1 Byte | requiredState |*/
-#define TBUSB_SP_TargetPosition       0x8001 /*Data = 4 Byte | */
-#define TBUSB_SP_TargetVelocity       0x8002 /* */
-#define TBUSB_SP_ResetMC              0x8100 /*Data = 0 Byte */
+#define TB_COMMAND_ID			  	  				0x00
+//------------------------------------------------------
+#define TB_COMMAND_REQUESTSTATE_VELOCITYDRIVE	  	0x00
+#define TB_COMMAND_REQUESTSTATE_POSITIONDRIVE		0x01
+#define TB_COMMAND_REQUESTSTATE_TURN				0x02
+#define TB_COMMAND_REQUESTSTATE_STOP				0x03
+#define TB_COMMAND_RESET			  				0x04
+//======================================================
+
+
+#define TB_VELOCITY_ID				  				0x01
+//------------------------------------------------------
+#define TB_VELOCITY_FORWARD			  				0x00 //Target Velocity
+#define TB_VELOCITY_BACKWARD	      				0x01 //Target Velocity
+//======================================================
+
+
+#define TB_TURN_ID					  				0x03
+//------------------------------------------------------
+#define TB_TURN_RIGHT				  				0x00
+#define TB_TURN_LEFT				  				0x01
+//======================================================
+
+
+#define TB_POSITION_ID				  				0x04
+//------------------------------------------------------
+#define TB_GLOBAL_POSITION			  				0x00
+#define TB_LOCAL_POSITION			  				0x01
+//======================================================
+
+
+#define TB_ERROR_ID					  				0x42
+//------------------------------------------------------
+#define TB_ERROR_TRACE								0x00
+#define TB_ERROR_DEBUG								0x01
+#define TB_ERROR_LOG								0x02
+#define TB_ERROR_INFO								0x03
+#define TB_ERROR_ERROR								0x04
+//======================================================
+
 
 
 struct TBVelocity {
-	char speed;
+	char direction; //-1 = backward | 1 = forward
+	u_char speed;
 };
 
 union TBData {
@@ -43,7 +76,8 @@ union TBData {
 };
 
 struct TBHeader {
-	u_short Id; //defined above
+	u_char  Id; //defined above
+	u_char  SubId;
 	u_short TimeStamp; //in 10ms
 };
 
@@ -54,5 +88,5 @@ struct TBFrame {
 
 
 
-#endif /*__TBDATA_H__/
+#endif /*__TBDATA_H__ */
 

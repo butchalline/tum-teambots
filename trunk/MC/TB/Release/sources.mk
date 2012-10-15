@@ -32,8 +32,10 @@ SIZEDUMMY :=
 # Every subdirectory with source files must be described here
 SUBDIRS := \
 network \
+motion \
 common \
 USBHost \
 . \
+Dynamixel_Serial \
 AndroidAccessory \
 

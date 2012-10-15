@@ -33,9 +33,9 @@ void StateMachine::preHandle() {
 	    Serial.print( val );
 	    Serial.print("\n\r");
 		if( val == 1 )
-		   digitalWrite(LED_PIN_13, HIGH);
+		   digitalWrite(LED13, HIGH);
 		else
-		   digitalWrite(LED_PIN_13, LOW);
+		   digitalWrite(LED13, LOW);
 	}
 }
 

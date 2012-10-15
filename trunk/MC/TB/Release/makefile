@@ -9,8 +9,10 @@ RM := rm -rf
 # All of the sources participating in the build are defined here
 -include sources.mk
 -include network/subdir.mk
+-include motion/subdir.mk
 -include common/subdir.mk
 -include USBHost/subdir.mk
+-include Dynamixel_Serial/subdir.mk
 -include AndroidAccessory/subdir.mk
 -include subdir.mk
 -include objects.mk

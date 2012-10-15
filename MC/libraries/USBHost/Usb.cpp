@@ -1,7 +1,7 @@
 /* Copyright 2009-2011 Oleg Mazurov, Circuits At Home, http://www.circuitsathome.com */
 /* USB functions */
 
-#include "UsbHost.h"
+#include "Usb.h"
 
 static byte usb_error = 0;
 static byte usb_task_state;
@@ -11,12 +11,12 @@ EP_RECORD dev0ep;           //Endpoint data structure used during enumeration fo
 
 /* constructor */
 
-UsbHost::UsbHost () {
+USB::USB () {
     usb_task_state = USB_DETACHED_SUBSTATE_INITIALIZE;  //set up state machine
     init(); 
 }
 /* Initialize data structures */
-void UsbHost::init()
+void USB::init()
 {
   byte i;
     for( i = 0; i < ( USB_NUMDEVICES + 1 ); i++ ) {
@@ -28,15 +28,15 @@ void UsbHost::init()
     dev0ep.sndToggle = bmSNDTOG0;   //set DATA0/1 toggles to 0
     dev0ep.rcvToggle = bmRCVTOG0;
 }
-byte UsbHost::getUsbTaskState( void )
+byte USB::getUsbTaskState( void )
 {
     return( usb_task_state );
 }
-void UsbHost::setUsbTaskState( byte state )
+void USB::setUsbTaskState( byte state )
 {
     usb_task_state = state;
 }     
-EP_RECORD* UsbHost::getDevTableEntry( byte addr, byte ep )
+EP_RECORD* USB::getDevTableEntry( byte addr, byte ep )
 {
   EP_RECORD* ptr;
     ptr = devtable[ addr ].epinfo;
@@ -45,7 +45,7 @@ EP_RECORD* UsbHost::getDevTableEntry( byte addr, byte ep )
 }
 /* set device table entry */
 /* each device is different and has different number of endpoints. This function plugs endpoint record structure, defined in application, to devtable */
-void UsbHost::setDevTableEntry( byte addr, EP_RECORD* eprecord_ptr )
+void USB::setDevTableEntry( byte addr, EP_RECORD* eprecord_ptr )
 {
     devtable[ addr ].epinfo = eprecord_ptr;
     //return();
@@ -55,7 +55,7 @@ void UsbHost::setDevTableEntry( byte addr, EP_RECORD* eprecord_ptr )
 /* return codes:                */
 /* 00       =   success         */
 /* 01-0f    =   non-zero HRSLT  */
-byte UsbHost::ctrlReq( byte addr, byte ep, byte bmReqType, byte bRequest, byte wValLo, byte wValHi, unsigned int wInd, unsigned int nbytes, char* dataptr, unsigned int nak_limit )
+byte USB::ctrlReq( byte addr, byte ep, byte bmReqType, byte bRequest, byte wValLo, byte wValHi, unsigned int wInd, unsigned int nbytes, char* dataptr, unsigned int nak_limit )
 {
  boolean direction = false;     //request direction, IN or OUT
  byte rcode;   
@@ -94,7 +94,7 @@ byte UsbHost::ctrlReq( byte addr, byte ep, byte bmReqType, byte bRequest, byte w
 }
 /* Control transfer with status stage and no data stage */
 /* Assumed peripheral address is already set */
-byte UsbHost::ctrlStatus( byte ep, boolean direction, unsigned int nak_limit )
+byte USB::ctrlStatus( byte ep, boolean direction, unsigned int nak_limit )
 {
   byte rcode;
     if( direction ) { //GET
@@ -106,7 +106,7 @@ byte UsbHost::ctrlStatus( byte ep, boolean direction, unsigned int nak_limit )
     return( rcode );
 }
 /* Control transfer with data stage. Stages 2 and 3 of control transfer. Assumes preipheral address is set and setup packet has been sent */
-byte UsbHost::ctrlData( byte addr, byte ep, unsigned int nbytes, char* dataptr, boolean direction, unsigned int nak_limit )
+byte USB::ctrlData( byte addr, byte ep, unsigned int nbytes, char* dataptr, boolean direction, unsigned int nak_limit )
 {
  byte rcode;
   if( direction ) {                      //IN transfer
@@ -124,7 +124,7 @@ byte UsbHost::ctrlData( byte addr, byte ep, unsigned int nbytes, char* dataptr, 
 /* Keep sending INs and writes data to memory area pointed by 'data'                                                           */
 /* rcode 0 if no errors. rcode 01-0f is relayed from dispatchPkt(). Rcode f0 means RCVDAVIRQ error,
             fe USB xfer timeout */
-byte UsbHost::inTransfer( byte addr, byte ep, unsigned int nbytes, char* data, unsigned int nak_limit )
+byte USB::inTransfer( byte addr, byte ep, unsigned int nbytes, char* data, unsigned int nak_limit )
 {
  byte rcode;
  byte pktsize;
@@ -161,7 +161,7 @@ byte UsbHost::inTransfer( byte addr, byte ep, unsigned int nbytes, char* data, u
 }
 
 /* Google variant of inTransfer. Pasted verbatim from ADK. Returns length instead of error code. Provided for compatibility with Google Open Accessory code */
-int UsbHost::newInTransfer( byte addr, byte ep, unsigned int nbytes, char* data, unsigned int nak_limit )
+int USB::newInTransfer( byte addr, byte ep, unsigned int nbytes, char* data, unsigned int nak_limit )
 {
  byte rcode;
  byte pktsize;
@@ -210,7 +210,7 @@ int UsbHost::newInTransfer( byte addr, byte ep, unsigned int nbytes, char* data,
 /* Handles NAK bug per Maxim Application Note 4000 for single buffer transfer   */
 /* rcode 0 if no errors. rcode 01-0f is relayed from HRSL                       */
 /* major part of this function borrowed from code shared by Richard Ibbotson    */
-byte UsbHost::outTransfer( byte addr, byte ep, unsigned int nbytes, char* data, unsigned int nak_limit )
+byte USB::outTransfer( byte addr, byte ep, unsigned int nbytes, char* data, unsigned int nak_limit )
 {
  byte rcode, retry_count;
  char* data_p = data;   //local copy of the data pointer
@@ -271,7 +271,7 @@ byte UsbHost::outTransfer( byte addr, byte ep, unsigned int nbytes, char* data, 
 /* If nak_limit == 0, do not count NAKs, exit after timeout                                         */
 /* If bus timeout, re-sends up to USB_RETRY_LIMIT times                                             */
 /* return codes 0x00-0x0f are HRSLT( 0x00 being success ), 0xff means timeout                       */
-byte UsbHost::dispatchPkt( byte token, byte ep, unsigned int nak_limit )
+byte USB::dispatchPkt( byte token, byte ep, unsigned int nak_limit )
 {
  unsigned long timeout = millis() + USB_XFER_TIMEOUT;
  byte tmpdata;   
@@ -314,7 +314,7 @@ byte UsbHost::dispatchPkt( byte token, byte ep, unsigned int nak_limit )
   return( rcode );
 }
 /* USB main task. Performs enumeration/cleanup */
-void UsbHost::Task( void )      //USB state machine
+void USB::Task( void )      //USB state machine
 {
   byte i;   
   byte rcode;

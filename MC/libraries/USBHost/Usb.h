@@ -1,7 +1,7 @@
 /* Copyright 2009-2011 Oleg Mazurov, Circuits At Home, http://www.circuitsathome.com */
 /* USB functions */
-#ifndef _usbhost_h_
-#define _usbhost_h_
+#ifndef _usb_h_
+#define _usb_h_
 
 #include <Max3421e.h>
 #include "ch9.h"
@@ -85,7 +85,7 @@ typedef struct {
 
 
 
-class UsbHost : public MAX3421E {
+class USB : public MAX3421E {
 //data structures    
 /* device table. Filled during enumeration              */
 /* index corresponds to device address                  */
@@ -97,7 +97,7 @@ class UsbHost : public MAX3421E {
 //byte usb_task_state;
 
     public:
-        UsbHost( void );
+        USB( void );
         byte getUsbTaskState( void );
         void setUsbTaskState( byte state );
         EP_RECORD* getDevTableEntry( byte addr, byte ep );
@@ -130,47 +130,47 @@ class UsbHost : public MAX3421E {
 };
 
 //get device descriptor
-inline byte UsbHost::getDevDescr( byte addr, byte ep, unsigned int nbytes, char* dataptr, unsigned int nak_limit ) {
+inline byte USB::getDevDescr( byte addr, byte ep, unsigned int nbytes, char* dataptr, unsigned int nak_limit ) {
     return( ctrlReq( addr, ep, bmREQ_GET_DESCR, USB_REQUEST_GET_DESCRIPTOR, 0x00, USB_DESCRIPTOR_DEVICE, 0x0000, nbytes, dataptr, nak_limit ));
 }
 //get configuration descriptor  
-inline byte UsbHost::getConfDescr( byte addr, byte ep, unsigned int nbytes, byte conf, char* dataptr, unsigned int nak_limit ) {
+inline byte USB::getConfDescr( byte addr, byte ep, unsigned int nbytes, byte conf, char* dataptr, unsigned int nak_limit ) {
         return( ctrlReq( addr, ep, bmREQ_GET_DESCR, USB_REQUEST_GET_DESCRIPTOR, conf, USB_DESCRIPTOR_CONFIGURATION, 0x0000, nbytes, dataptr, nak_limit ));
 }
 //get string descriptor
-inline byte UsbHost::getStrDescr( byte addr, byte ep, unsigned int nbytes, byte index, unsigned int langid, char* dataptr, unsigned int nak_limit ) {
+inline byte USB::getStrDescr( byte addr, byte ep, unsigned int nbytes, byte index, unsigned int langid, char* dataptr, unsigned int nak_limit ) {
     return( ctrlReq( addr, ep, bmREQ_GET_DESCR, USB_REQUEST_GET_DESCRIPTOR, index, USB_DESCRIPTOR_STRING, langid, nbytes, dataptr, nak_limit ));
 }
 //set address 
-inline byte UsbHost::setAddr( byte oldaddr, byte ep, byte newaddr, unsigned int nak_limit ) {
+inline byte USB::setAddr( byte oldaddr, byte ep, byte newaddr, unsigned int nak_limit ) {
     return( ctrlReq( oldaddr, ep, bmREQ_SET, USB_REQUEST_SET_ADDRESS, newaddr, 0x00, 0x0000, 0x0000, NULL, nak_limit ));
 }
 //set configuration
-inline byte UsbHost::setConf( byte addr, byte ep, byte conf_value, unsigned int nak_limit ) {
+inline byte USB::setConf( byte addr, byte ep, byte conf_value, unsigned int nak_limit ) {
     return( ctrlReq( addr, ep, bmREQ_SET, USB_REQUEST_SET_CONFIGURATION, conf_value, 0x00, 0x0000, 0x0000, NULL, nak_limit ));         
 }
 //class requests
-inline byte UsbHost::setProto( byte addr, byte ep, byte interface, byte protocol, unsigned int nak_limit ) {
+inline byte USB::setProto( byte addr, byte ep, byte interface, byte protocol, unsigned int nak_limit ) {
         return( ctrlReq( addr, ep, bmREQ_HIDOUT, HID_REQUEST_SET_PROTOCOL, protocol, 0x00, interface, 0x0000, NULL, nak_limit ));
 }
-inline byte UsbHost::getProto( byte addr, byte ep, byte interface, char* dataptr, unsigned int nak_limit ) {
+inline byte USB::getProto( byte addr, byte ep, byte interface, char* dataptr, unsigned int nak_limit ) {
         return( ctrlReq( addr, ep, bmREQ_HIDIN, HID_REQUEST_GET_PROTOCOL, 0x00, 0x00, interface, 0x0001, dataptr, nak_limit ));        
 }
 //get HID report descriptor 
-inline byte UsbHost::getReportDescr( byte addr, byte ep, unsigned int nbytes, char* dataptr, unsigned int nak_limit ) {
+inline byte USB::getReportDescr( byte addr, byte ep, unsigned int nbytes, char* dataptr, unsigned int nak_limit ) {
         return( ctrlReq( addr, ep, bmREQ_HIDREPORT, USB_REQUEST_GET_DESCRIPTOR, 0x00, HID_DESCRIPTOR_REPORT, 0x0000, nbytes, dataptr, nak_limit ));
 }
-inline byte UsbHost::setReport( byte addr, byte ep, unsigned int nbytes, byte interface, byte report_type, byte report_id, char* dataptr, unsigned int nak_limit ) {
+inline byte USB::setReport( byte addr, byte ep, unsigned int nbytes, byte interface, byte report_type, byte report_id, char* dataptr, unsigned int nak_limit ) {
     return( ctrlReq( addr, ep, bmREQ_HIDOUT, HID_REQUEST_SET_REPORT, report_id, report_type, interface, nbytes, dataptr, nak_limit ));
 }
-inline byte UsbHost::getReport( byte addr, byte ep, unsigned int nbytes, byte interface, byte report_type, byte report_id, char* dataptr, unsigned int nak_limit ) { // ** RI 04/11/09
+inline byte USB::getReport( byte addr, byte ep, unsigned int nbytes, byte interface, byte report_type, byte report_id, char* dataptr, unsigned int nak_limit ) { // ** RI 04/11/09
     return( ctrlReq( addr, ep, bmREQ_HIDIN, HID_REQUEST_GET_REPORT, report_id, report_type, interface, nbytes, dataptr, nak_limit ));
 }
 /* returns one byte of data in dataptr */
-inline byte UsbHost::getIdle( byte addr, byte ep, byte interface, byte reportID, char* dataptr, unsigned int nak_limit ) {
+inline byte USB::getIdle( byte addr, byte ep, byte interface, byte reportID, char* dataptr, unsigned int nak_limit ) {
         return( ctrlReq( addr, ep, bmREQ_HIDIN, HID_REQUEST_GET_IDLE, reportID, 0, interface, 0x0001, dataptr, nak_limit ));    
 }
-inline byte UsbHost::setIdle( byte addr, byte ep, byte interface, byte reportID, byte duration, unsigned int nak_limit ) {
+inline byte USB::setIdle( byte addr, byte ep, byte interface, byte reportID, byte duration, unsigned int nak_limit ) {
            return( ctrlReq( addr, ep, bmREQ_HIDOUT, HID_REQUEST_SET_IDLE, reportID, duration, interface, 0x0000, NULL, nak_limit ));
           }
-#endif //_usbhost_h_
+#endif //_usb_h_

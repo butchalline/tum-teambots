@@ -27,8 +27,15 @@ void StateMachine::Init() {
 }
 
 void StateMachine::preHandle() {
-	if (currentState != PhoneDisconnected) {
-		usb.read();
+	if (currentState != PhoneDisconnected && usb.sizeData() > 0) {
+		u_char val = usb.read();
+	    Serial.print("Read from usb: ");
+	    Serial.print( val );
+	    Serial.print("\n\r");
+		if( val == 1 )
+		   digitalWrite(LED_PIN_13, HIGH);
+		else
+		   digitalWrite(LED_PIN_13, LOW);
 	}
 }
 
@@ -42,6 +49,7 @@ void StateMachine::Call() {
 	this->preHandle();
 	switch (currentState) {
 	case Idle:
+		delay(100);
 		break;
 	case DrivePosition:
 		break;
@@ -51,15 +59,20 @@ void StateMachine::Call() {
 		break;
 
 	case PhoneConnect: {
+		Serial.print("Try Connect\n\r");
 		usb.reconnect();
 		if (!usb.isConnected())
 			requireState(PhoneDisconnected);
 		else
+		{
+			Serial.print("Connected\n\r");
 			requireState(Idle);
+		}
 		break;
 	}
 
 	case PhoneDisconnected: {
+		Serial.print("Phone Disconnected\n\r");
 		delay(1000);
 		this->requireState(PhoneConnect);
 	}

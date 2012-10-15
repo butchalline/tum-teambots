@@ -25,5 +25,10 @@ typedef unsigned short u_short;
 typedef unsigned int u_int;
 typedef unsigned long u_long;
 
+
+//LEDS
+
+#define LED_PIN_13 13
+
 #endif /*__TBTYPES_H__*/
 

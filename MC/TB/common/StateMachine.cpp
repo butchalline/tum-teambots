@@ -34,14 +34,19 @@ void StateMachine::handleVelocity() {
 	if(currentState != DriveVelocity)
 		return;
 	Serial.print("Speed: ");
-	Serial.print(receiveFrame->data.velocity.speed);
-	Serial.print("\n\r");
+
+
 	if(receiveFrame->head.SubId == TB_VELOCITY_FORWARD) {
-		motors.setVelocity(receiveFrame->data.velocity.speed, motors.Forwards);
+		motors.setVelocity(receiveFrame->data.velocity.speed * 10, motors.Forwards);
+		Serial.print(receiveFrame->data.velocity.speed);
+
 	}
 	else if(receiveFrame->head.SubId == TB_VELOCITY_BACKWARD) {
-		motors.setVelocity(receiveFrame->data.velocity.speed, motors.Backwards);
+		motors.setVelocity(receiveFrame->data.velocity.speed * 10, motors.Backwards);
+		Serial.print("-");
+		Serial.print(receiveFrame->data.velocity.speed);
 	}
+	Serial.print("\n\r");
 	return;
 }
 
@@ -89,6 +94,7 @@ void StateMachine::Call() {
 	case DrivePosition:
 		break;
 	case DriveVelocity:
+		Serial.print("Drive Velocity\n\r");
 		motors.driveVeloctiy();
 		break;
 	case PositionReached:

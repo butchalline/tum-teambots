@@ -67,7 +67,6 @@
 
 
 struct TBVelocity {
-	char direction; //-1 = backward | 1 = forward
 	u_char speed;
 };
 

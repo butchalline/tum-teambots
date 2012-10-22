@@ -26,14 +26,16 @@ StateMachine stateMachine; //Global StateMachine Object
 TBFrame* receiveFrame;
 
 void StateMachine::Init() {
-	//currentState = PhoneDisconnected;
-	currentState = Idle;
+	currentState = PhoneDisconnected;
 	receiveFrame = new TBFrame();
 }
 
 void StateMachine::handleVelocity() {
 	if(currentState != DriveVelocity)
 		return;
+	Serial.print("Speed: ");
+	Serial.print(receiveFrame->data.velocity.speed);
+	Serial.print("\n\r");
 	if(receiveFrame->head.SubId == TB_VELOCITY_FORWARD) {
 		motors.setVelocity(receiveFrame->data.velocity.speed, motors.Forwards);
 	}
@@ -45,15 +47,16 @@ void StateMachine::handleVelocity() {
 
 void StateMachine::preHandle() {
 	if (currentState != PhoneDisconnected && usb.sizeData() > 0) {
-		u_char bytes = sizeof(TBHeader) - sizeof(u_char);
+		u_char bytes = sizeof(TBHeader) - sizeof(u_char); //Head - Primary ID
 		char* tmp = (char*)receiveFrame;
 		*tmp = usb.read();
+
 		switch(receiveFrame->head.Id) {
 		case TB_COMMAND_ID:
 			break;
 		case TB_VELOCITY_ID:
 			bytes += sizeof(TBVelocity);
-			for(int i = 0; i < bytes; ++i) {
+			for(int i = 0; i < bytes; ++i) { //read rest
 				++tmp;
 				*tmp = usb.read();
 			}
@@ -80,7 +83,7 @@ void StateMachine::Call() {
 	switch (currentState) {
 	case Idle:
 		delay(100);
-		motors.setVelocity(200);
+		Serial.print("Idle\n\r");
 		requireState(DriveVelocity);
 		break;
 	case DrivePosition:

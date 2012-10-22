@@ -28,6 +28,7 @@ Motor::Motor(u_char idMotor1) :
 
 void Motor::Init() {
 	pinMode(MOTOR_POWER, OUTPUT);
+	pinMode(SERVO_ControlPin, OUTPUT);
 	digitalWrite(MOTOR_POWER, _ON);
 
 	for (int i = 1; i < 0xFF; i++) { // This "for" loop will take about 20 Sec to compelet and is used to loop though all speeds that Dynamixel can be and send reset instuction
@@ -41,10 +42,10 @@ void Motor::Init() {
 
 	if (motorId1 != 0) {
 		// Now that the Dynamixel is reset to factory setting we will program its Baudrate and ID
-		control.begin(57600, SERVO_ControlPin); // Set Ardiuno Serial speed to factory default speed of 57600
+		Serial.print("motorid1 init\n\r");
+		control.begin(1000000, SERVO_ControlPin); // Set Ardiuno Serial speed to factory default speed of 57600
 		control.setID(0xFE, SERVO_ID); // Broadcast to all Dynamixel IDs(0xFE) and set with new ID
 		control.setBD(SERVO_ID, SERVO_SET_Baudrate); // Set Dynamixel to new serial speed
-
 		control.begin(SERVO_SET_Baudrate, SERVO_ControlPin); // We now need to set Ardiuno to the new Baudrate speed
 		control.ledState(SERVO_ID, _ON);                 // Turn Dynamixel LED on
 		control.endlessEnable(SERVO_ID, _ON); // Turn Wheel mode OFF, must be on if using wheel mode
@@ -53,11 +54,8 @@ void Motor::Init() {
 }
 
 void Motor::setVelocity(u_char velocity, Direction direction) {
-	if (direction == Forwards) {
-		control.turn(motorId1, RIGHT, velocity);
-	} else {
-		control.turn(motorId1, LEFT, velocity);
-	}
+	targetVelocity = velocity;
+	targetDirection = direction;
 }
 
 

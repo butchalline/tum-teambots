@@ -33,20 +33,20 @@ void StateMachine::Init() {
 void StateMachine::handleVelocity() {
 	if(currentState != DriveVelocity)
 		return;
-	Serial.print("Speed: ");
-
 
 	if(receiveFrame->head.SubId == TB_VELOCITY_FORWARD) {
-		motors.setVelocity(receiveFrame->data.velocity.speed * 10, motors.Forwards);
-		Serial.print(receiveFrame->data.velocity.speed);
-
+		motors.setVelocity(receiveFrame->data.velocity.speedLeft * 2 + 50, receiveFrame->data.velocity.speedRight * 2 + 50, motors.Forwards, motors.Forwards);
 	}
 	else if(receiveFrame->head.SubId == TB_VELOCITY_BACKWARD) {
-		motors.setVelocity(receiveFrame->data.velocity.speed * 10, motors.Backwards);
-		Serial.print("-");
-		Serial.print(receiveFrame->data.velocity.speed);
+		motors.setVelocity(receiveFrame->data.velocity.speedLeft * 2 + 50, receiveFrame->data.velocity.speedRight * 2 + 50, motors.Backwards, motors.Backwards);
 	}
-	Serial.print("\n\r");
+	else if(receiveFrame->head.SubId == TB_VELOCITY_TURN_LEFT) {
+		motors.setVelocity(receiveFrame->data.velocity.speedLeft * 2 + 50, receiveFrame->data.velocity.speedRight * 2 + 50, motors.Backwards, motors.Forwards);
+	}
+	else if(receiveFrame->head.SubId == TB_VELOCITY_TURN_RIGHT) {
+		motors.setVelocity(receiveFrame->data.velocity.speedLeft * 2 + 50, receiveFrame->data.velocity.speedRight * 2 + 50, motors.Forwards, motors.Backwards);
+	}
+
 	return;
 }
 
@@ -90,6 +90,7 @@ void StateMachine::Call() {
 		delay(100);
 		Serial.print("Idle\n\r");
 		requireState(DriveVelocity);
+		//motors.setVelocity(0x1C2, Motor::Forwards);
 		break;
 	case DrivePosition:
 		break;

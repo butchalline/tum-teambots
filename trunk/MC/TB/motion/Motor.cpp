@@ -21,52 +21,72 @@
 
 Motor motors;
 
-Motor::Motor(u_char idMotor1) :
-		motorId1(idMotor1), targetVelocity(0), currentVelocity(0), targetDirection(Forwards), currentDirection(Forwards) {
+Motor::Motor(u_char idMotor1, u_char idMotor2) :
+		motorIdLeft(idMotor1), motorIdRight(idMotor2), targetVelocityLeft(0), currentVelocityLeft(-1), targetDirectionLeft(Forwards), currentDirectionLeft(Forwards),
+		targetVelocityRight(0), currentVelocityRight(-1), targetDirectionRight(Forwards), currentDirectionRight(Forwards) {
 
 }
 
 void Motor::Init() {
 	pinMode(MOTOR_POWER, OUTPUT);
-	pinMode(SERVO_ControlPin, OUTPUT);
-	digitalWrite(MOTOR_POWER, _ON);
+	digitalWrite(MOTOR_POWER, HIGH);
 
-	for (int i = 1; i < 0xFF; i++) { // This "for" loop will take about 20 Sec to compelet and is used to loop though all speeds that Dynamixel can be and send reset instuction
-		long Baudrate_BPS = 0;
-		Baudrate_BPS = 2000000 / (i + 1); // Calculate Baudrate as ber "Robotis e-manual"
-		control.begin(Baudrate_BPS, SERVO_ControlPin); // Set Ardiuno Serial speed and control pin
-		delay(10);
-		control.reset(0xFE); // Broadcast to all Dynamixel IDs(0xFE is the ID for all Dynamixel to responed) and Reset Dynamixel to factory default
-		delay(100);
+	control.begin(SERVO_SET_Baudrate, SERVO_ControlPin); // Set Ardiuno Serial speed to factory default speed of 57600
+
+	if (motorIdLeft != 0) {
+		// Now that the Dynamixel is reset to factory setting we will program its Baudrate and ID
+		Serial.print("\n\rmotorid1 init\n\r");
+		control.ledState(motorIdLeft, HIGH);                 // Turn Dynamixel LED on
+		control.endlessEnable(motorIdLeft, HIGH); // Turn Wheel mode OFF, must be on if using wheel mode
+		control.torqueMax(motorIdLeft, 0x2FF); // Set Dynamixel to max torque limit
 	}
 
-	if (motorId1 != 0) {
+	if (motorIdRight != 0) {
 		// Now that the Dynamixel is reset to factory setting we will program its Baudrate and ID
-		Serial.print("motorid1 init\n\r");
-		control.begin(1000000, SERVO_ControlPin); // Set Ardiuno Serial speed to factory default speed of 57600
-		control.setID(0xFE, SERVO_ID); // Broadcast to all Dynamixel IDs(0xFE) and set with new ID
-		control.setBD(SERVO_ID, SERVO_SET_Baudrate); // Set Dynamixel to new serial speed
-		control.begin(SERVO_SET_Baudrate, SERVO_ControlPin); // We now need to set Ardiuno to the new Baudrate speed
-		control.ledState(SERVO_ID, _ON);                 // Turn Dynamixel LED on
-		control.endlessEnable(SERVO_ID, _ON); // Turn Wheel mode OFF, must be on if using wheel mode
-		control.torqueMax(SERVO_ID, 0x2FF); // Set Dynamixel to max torque limit
+		Serial.print("motorIdRight init\n\r");
+		control.ledState(motorIdRight, HIGH);                 // Turn Dynamixel LED on
+		control.endlessEnable(motorIdRight, HIGH); // Turn Wheel mode OFF, must be on if using wheel mode
+		control.torqueMax(motorIdRight, 0x2FF); // Set Dynamixel to max torque limit
 	}
 }
 
-void Motor::setVelocity(u_char velocity, Direction direction) {
-	targetVelocity = velocity;
-	targetDirection = direction;
+void Motor::setVelocity(u_short velocityLeft,  u_short velocityRight, Direction directionLeft, Direction directionRight) {
+	targetVelocityLeft = velocityLeft;
+	targetDirectionLeft = directionLeft;
+	targetVelocityRight = velocityRight;
+	targetDirectionRight = directionRight;
 }
 
 
 void Motor::driveVeloctiy() {
-	if(currentVelocity != targetVelocity || currentDirection != targetDirection) {
-		currentVelocity = targetVelocity;
-		currentDirection = targetDirection;
-	}
-	if (targetDirection == Forwards) {
-		control.turn(motorId1, RIGHT, currentVelocity);
+	if(!(currentVelocityLeft != targetVelocityLeft || currentDirectionLeft != targetDirectionLeft || currentVelocityRight != targetVelocityRight || currentDirectionRight != targetDirectionRight))
+		return;
+	currentVelocityLeft = targetVelocityLeft;
+	currentDirectionLeft = targetDirectionLeft;
+	currentVelocityRight = targetVelocityRight;
+	currentDirectionRight = targetDirectionRight;
+	Serial.print("Motor Drive: ");
+	if (targetDirectionLeft == Forwards) {
+		control.turn(motorIdLeft, RIGHT, currentVelocityLeft);
+		Serial.print("MotorLeft Forwards ");
+		Serial.print(currentVelocityLeft);
+		Serial.print("\n\r");
 	} else {
-		control.turn(motorId1, LEFT, currentVelocity);
+		control.turn(motorIdLeft, LEFT, currentVelocityLeft);
+		Serial.print("MotorLeft Backwards ");
+		Serial.print(currentVelocityLeft);
+		Serial.print("\n\r");
+	}
+
+	if (targetDirectionRight == Forwards) {
+		control.turn(motorIdRight, RIGHT, currentVelocityRight);
+		Serial.print("MotorRight Forwards ");
+		Serial.print(currentVelocityRight);
+		Serial.print("\n\r");
+	} else {
+		control.turn(motorIdRight, LEFT, currentVelocityRight);
+		Serial.print("MotorRight Backwards ");
+		Serial.print(currentVelocityRight);
+		Serial.print("\n\r");
 	}
 }

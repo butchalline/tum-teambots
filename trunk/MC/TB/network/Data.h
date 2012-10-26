@@ -38,6 +38,8 @@
 //------------------------------------------------------
 #define TB_VELOCITY_FORWARD			  				0x00 //Target Velocity
 #define TB_VELOCITY_BACKWARD	      				0x01 //Target Velocity
+#define TB_VELOCITY_TURN_LEFT						0x02 //Right Forwards | Left Backwards
+#define TB_VELOCITY_TURN_RIGHT						0x03 //Left Forwards  | Right Backwards
 //======================================================
 
 
@@ -67,7 +69,8 @@
 
 
 struct TBVelocity {
-	u_char speed;
+	u_char speedLeft;
+	u_char speedRight;
 };
 
 union TBData {

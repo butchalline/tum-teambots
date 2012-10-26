@@ -30,19 +30,24 @@ public:
 		Backwards
 	};
 
-	Motor(u_char idMotor1 = MOTOR_ID_1); // if id != 0 then Motor
+	Motor(u_char idMotor1 = MOTOR_ID_1, u_char idMotor2 = MOTOR_ID_2); // if id != 0 then Motor
 	void Init();
-	void setVelocity(u_char velocity, Direction direction = Forwards);
+	void setVelocity(u_short velocityLeft, u_short velocityRight, Direction directionLeft = Forwards, Direction direchtionRight = Forwards);
 	void driveVeloctiy();
 private:
 	DynamixelClass control;
-	u_char motorId1;
+	u_char motorIdLeft;
+	u_char motorIdRight;
 
-	u_char targetVelocity;
-	u_char currentVelocity;
-	Direction targetDirection;
-	Direction currentDirection;
+	u_short targetVelocityLeft;
+	u_short currentVelocityLeft;
+	Direction targetDirectionLeft;
+	Direction currentDirectionLeft;
 
+	u_short targetVelocityRight;
+	u_short currentVelocityRight;
+	Direction targetDirectionRight;
+	Direction currentDirectionRight;
 };
 
 extern Motor motors;

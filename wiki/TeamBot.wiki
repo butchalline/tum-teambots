@@ -6,6 +6,7 @@ The project started in April 2012 by Robotic Masterstudents  with the idea to bu
 
 -> Goal of this student project
 -> Team
+-> External Code (+Link + Verwendung)
 
 MotorCircuit
 

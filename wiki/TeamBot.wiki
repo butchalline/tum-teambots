@@ -2,6 +2,11 @@
 
 = Introduction =
 
+The project started in April 2012 by Robotic Masterstudents  with the idea to build a real robot for a realistic application. After a creative concept phase we decided to build a team of small wheeled robots for rescue applications.
+
+-> Goal of this student project
+-> Team
+
 MotorCircuit
 
 = Details =

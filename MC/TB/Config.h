@@ -29,7 +29,7 @@
 #define LED13 0x0D                  // Pin of Visual indication for runing "heart beat" using onboard LED
 #define MOTOR_POWER 0x06
 
-#define MOTOR_ID_1 1
+#define MOTOR_ID_1 1  //right
 #define MOTOR_ID_2 2 //0 = deactivated
 
 

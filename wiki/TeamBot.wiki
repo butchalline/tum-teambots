@@ -1,4 +1,4 @@
-#summary One-sentence summary of this page.
+#summary This page descripes an example of how to construct a small wheeled robot for rescue applications.
 
 = Introduction =
 

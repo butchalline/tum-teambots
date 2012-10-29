@@ -35,16 +35,16 @@ void StateMachine::handleVelocity() {
 		return;
 
 	if(receiveFrame->head.SubId == TB_VELOCITY_FORWARD) {
-		motors.setVelocity(receiveFrame->data.velocity.speedLeft * 2 + 50, receiveFrame->data.velocity.speedRight * 2 + 50, motors.Forwards, motors.Forwards);
+		motors.setVelocity(receiveFrame->data.velocity.speedLeft * 4, receiveFrame->data.velocity.speedRight * 4, motors.Forwards, motors.Backwards);
 	}
 	else if(receiveFrame->head.SubId == TB_VELOCITY_BACKWARD) {
-		motors.setVelocity(receiveFrame->data.velocity.speedLeft * 2 + 50, receiveFrame->data.velocity.speedRight * 2 + 50, motors.Backwards, motors.Backwards);
+		motors.setVelocity(receiveFrame->data.velocity.speedLeft * 4, receiveFrame->data.velocity.speedRight * 4, motors.Backwards, motors.Forwards);
 	}
 	else if(receiveFrame->head.SubId == TB_VELOCITY_TURN_LEFT) {
-		motors.setVelocity(receiveFrame->data.velocity.speedLeft * 2 + 50, receiveFrame->data.velocity.speedRight * 2 + 50, motors.Backwards, motors.Forwards);
+		motors.setVelocity(receiveFrame->data.velocity.speedLeft * 4, receiveFrame->data.velocity.speedRight * 4, motors.Backwards, motors.Backwards);
 	}
 	else if(receiveFrame->head.SubId == TB_VELOCITY_TURN_RIGHT) {
-		motors.setVelocity(receiveFrame->data.velocity.speedLeft * 2 + 50, receiveFrame->data.velocity.speedRight * 2 + 50, motors.Forwards, motors.Backwards);
+		motors.setVelocity(receiveFrame->data.velocity.speedLeft * 4, receiveFrame->data.velocity.speedRight * 4, motors.Forwards, motors.Forwards);
 	}
 
 	return;

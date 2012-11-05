@@ -28,6 +28,7 @@ TBFrame* receiveFrame;
 void StateMachine::Init() {
 	currentState = Idle;//PhoneDisconnected;
 	receiveFrame = new TBFrame();
+	asdfsadf = 0;
 }
 
 void StateMachine::handleVelocity() {
@@ -35,16 +36,16 @@ void StateMachine::handleVelocity() {
 		return;
 
 	if(receiveFrame->head.SubId == TB_VELOCITY_FORWARD) {
-		motors.setVelocity(receiveFrame->data.velocity.speedLeft * 4, receiveFrame->data.velocity.speedRight * 4, motors.Forwards, motors.Backwards);
+		motors.setVelocity(receiveFrame->data.velocity.speedLeft * 4, receiveFrame->data.velocity.speedRight * 4, motors.Forwards, motors.Forwards);
 	}
 	else if(receiveFrame->head.SubId == TB_VELOCITY_BACKWARD) {
-		motors.setVelocity(receiveFrame->data.velocity.speedLeft * 4, receiveFrame->data.velocity.speedRight * 4, motors.Backwards, motors.Forwards);
-	}
-	else if(receiveFrame->head.SubId == TB_VELOCITY_TURN_LEFT) {
 		motors.setVelocity(receiveFrame->data.velocity.speedLeft * 4, receiveFrame->data.velocity.speedRight * 4, motors.Backwards, motors.Backwards);
 	}
+	else if(receiveFrame->head.SubId == TB_VELOCITY_TURN_LEFT) {
+		motors.setVelocity(receiveFrame->data.velocity.speedLeft * 4, receiveFrame->data.velocity.speedRight * 4, motors.Backwards, motors.Forwards);
+	}
 	else if(receiveFrame->head.SubId == TB_VELOCITY_TURN_RIGHT) {
-		motors.setVelocity(receiveFrame->data.velocity.speedLeft * 4, receiveFrame->data.velocity.speedRight * 4, motors.Forwards, motors.Forwards);
+		motors.setVelocity(receiveFrame->data.velocity.speedLeft * 4, receiveFrame->data.velocity.speedRight * 4, motors.Forwards, motors.Backwards);
 	}
 
 	return;
@@ -83,14 +84,41 @@ void StateMachine::postHandle() {
 	}
 }
 
+
 void StateMachine::Call() {
-	this->preHandle();
+//	this->preHandle();
 	switch (currentState) {
 	case Idle:
-		//delay(100);
+		delay(500);
 		Serial.print("Idle\n\r");
 		//requireState(DriveVelocity);
-		motors.setVelocity(0,0x1C2, Motor::Forwards, Motor::Backwards);
+		/*switch(asdfsadf) {
+		case 0:
+			motors.setVelocity(0,0x1C2, Motor::Forwards, Motor::Forwards);
+			++asdfsadf;
+			break;
+		case 1:
+			motors.setVelocity(0,0x1C2, Motor::Forwards, Motor::Backwards);
+			++asdfsadf;
+			break;
+		case 2:
+			motors.setVelocity(0x1C2,0, Motor::Forwards, Motor::Forwards);
+			++asdfsadf;
+			break;
+		case 3:
+			motors.setVelocity(0x1C2,0, Motor::Backwards, Motor::Forwards);
+			++asdfsadf;
+			break;
+		case 4:
+			motors.setVelocity(0x1C2,0x1C2, Motor::Forwards, Motor::Forwards);
+			++asdfsadf;
+			break;
+		case 5:
+			motors.setVelocity(0x1C2,0x1C2, Motor::Backwards, Motor::Backwards);
+			asdfsadf = 0;
+			break;
+		}*/
+
 		motors.readPosition();
 		motors.driveVeloctiy();
 		break;
@@ -125,7 +153,7 @@ void StateMachine::Call() {
 	case Error:
 		break;
 	}
-	this->postHandle();
+//	this->postHandle();
 }
 
 TBState StateMachine::requireState(TBState state) {

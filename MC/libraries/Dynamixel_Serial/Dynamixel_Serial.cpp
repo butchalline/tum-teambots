@@ -639,7 +639,7 @@ int DynamixelClass::readPosition(unsigned char ID)
     while(Serial1.available() < 5 ) {							// Wait for header data, ID Length and error data from Dynamixel									
 			if ( millis() >= Time_Counter) {
 				return(-254);									// time out error , exit with fauilt code
-			}					
+			}
 		if( Serial1.peek() != 0xFF )	{					
 			Serial1.read(); 										// Clear Present Byte so next Byte can be read as we are looking for header (start of Frame) data "0xFF"							
 		} 

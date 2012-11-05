@@ -30,9 +30,9 @@ public:
 		Backwards
 	};
 
-	Motor(u_char idMotor1 = MOTOR_ID_1, u_char idMotor2 = MOTOR_ID_2); // if id != 0 then Motor
+	Motor(u_char idMotor1 = MOTOR_ID_2, u_char idMotor2 = MOTOR_ID_1); // if id != 0 then Motor
 	void Init();
-	void setVelocity(u_short velocityLeft, u_short velocityRight, Direction directionLeft = Forwards, Direction direchtionRight = Forwards);
+	void setVelocity(u_short velocityRight, u_short velocityLeft, Direction directionRight = Forwards, Direction direchtionLeft = Forwards);
 	void driveVeloctiy();
 	void readPosition();
 private:

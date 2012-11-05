@@ -30,12 +30,12 @@ Motor::Motor(u_char idMotor1, u_char idMotor2) :
 void Motor::Init() {
 	pinMode(MOTOR_POWER, OUTPUT);
 	digitalWrite(MOTOR_POWER, HIGH);
-
+	delay(1500);
 	control.begin(SERVO_SET_Baudrate, SERVO_ControlPin); // Set Ardiuno Serial speed to factory default speed of 57600
 
 	if (motorIdLeft != 0) {
 		// Now that the Dynamixel is reset to factory setting we will program its Baudrate and ID
-		Serial.print("\n\rmotorid1 init\n\r");
+		Serial.print("\n\rmotorLeft init\n\r");
 		control.ledState(motorIdLeft, HIGH);                 // Turn Dynamixel LED on
 		control.endlessEnable(motorIdLeft, HIGH); // Turn Wheel mode OFF, must be on if using wheel mode
 		control.torqueMax(motorIdLeft, 0x2FF); // Set Dynamixel to max torque limit
@@ -48,6 +48,8 @@ void Motor::Init() {
 		control.endlessEnable(motorIdRight, HIGH); // Turn Wheel mode OFF, must be on if using wheel mode
 		control.torqueMax(motorIdRight, 0x2FF); // Set Dynamixel to max torque limit
 	}
+
+
 }
 
 void Motor::setVelocity(u_short velocityLeft,  u_short velocityRight, Direction directionLeft, Direction directionRight) {
@@ -65,14 +67,13 @@ void Motor::driveVeloctiy() {
 	currentDirectionLeft = targetDirectionLeft;
 	currentVelocityRight = targetVelocityRight;
 	currentDirectionRight = targetDirectionRight;
-	Serial.print("Motor Drive: ");
 	if (targetDirectionLeft == Forwards) {
-		control.turn(motorIdLeft, RIGHT, currentVelocityLeft);
+		control.turn(motorIdLeft, LEFT, currentVelocityLeft);
 		Serial.print("MotorLeft Forwards ");
 		Serial.print(currentVelocityLeft);
 		Serial.print("\n\r");
 	} else {
-		control.turn(motorIdLeft, LEFT, currentVelocityLeft);
+		control.turn(motorIdLeft, RIGHT, currentVelocityLeft);
 		Serial.print("MotorLeft Backwards ");
 		Serial.print(currentVelocityLeft);
 		Serial.print("\n\r");

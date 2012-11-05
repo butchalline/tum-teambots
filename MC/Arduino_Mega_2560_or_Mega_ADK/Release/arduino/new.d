@@ -1,5 +1,5 @@
 arduino/new.d arduino/new.o:  \
- C:/dev/tools/arduino-1.0.1/hardware/arduino/cores/arduino/new.cpp \
-  C:\dev\tools\arduino-1.0.1\hardware\arduino\cores\arduino/new.h
+ D:/01_Master_TUM/10_Teambots/arduino-1.0.1-windows/arduino-1.0.1/hardware/arduino/cores/arduino/new.cpp \
+  D:\01_Master_TUM\10_Teambots\arduino-1.0.1-windows\arduino-1.0.1\hardware\arduino\cores\arduino/new.h
 
-C:\dev\tools\arduino-1.0.1\hardware\arduino\cores\arduino/new.h:
+D:\01_Master_TUM\10_Teambots\arduino-1.0.1-windows\arduino-1.0.1\hardware\arduino\cores\arduino/new.h:

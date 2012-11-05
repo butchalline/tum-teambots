@@ -26,7 +26,7 @@ StateMachine stateMachine; //Global StateMachine Object
 TBFrame* receiveFrame;
 
 void StateMachine::Init() {
-	currentState = PhoneDisconnected;
+	currentState = Idle;//PhoneDisconnected;
 	receiveFrame = new TBFrame();
 }
 
@@ -87,10 +87,12 @@ void StateMachine::Call() {
 	this->preHandle();
 	switch (currentState) {
 	case Idle:
-		delay(100);
+		//delay(100);
 		Serial.print("Idle\n\r");
-		requireState(DriveVelocity);
-		//motors.setVelocity(0x1C2, Motor::Forwards);
+		//requireState(DriveVelocity);
+		motors.setVelocity(0,0x1C2, Motor::Forwards, Motor::Backwards);
+		motors.readPosition();
+		motors.driveVeloctiy();
 		break;
 	case DrivePosition:
 		break;

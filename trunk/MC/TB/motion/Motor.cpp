@@ -90,3 +90,25 @@ void Motor::driveVeloctiy() {
 		Serial.print("\n\r");
 	}
 }
+void Motor::readPosition(){
+
+	int posReturnValueRight = control.readPosition(motorIdRight);
+	int posReturnValueLeft = control.readPosition(motorIdLeft);
+
+	if (posReturnValueRight < 0 || posReturnValueLeft < 0){ //return failure
+		Serial.print("Motor right returns failure ");
+		Serial.print(posReturnValueRight);
+		Serial.print("\n\r");
+		Serial.print("Motor left returns failure ");
+		Serial.print(posReturnValueLeft);
+		Serial.print("\n\r");
+		return;
+	}
+	Serial.print("motor pos right: ");
+	Serial.print(posReturnValueRight);
+	Serial.print("\n\r");
+	Serial.print("motor pos left: ");
+	Serial.print(posReturnValueLeft);
+	Serial.print("\n\r");
+	return;
+}

@@ -19,18 +19,23 @@ Wait about a ONE minute and if successfully the Dynamixal should start to move w
 
 #include <Dynamixel_Serial.h>       // Library needed to control Dynamixal servo
 
-#define SERVO_ID 0x02               // ID of which we will set Dynamixel too 
+#define SERVO_ID 0x01               // ID of which we will set Dynamixel too 
 #define SERVO_ControlPin 0x02       // Control pin of buffer chip, NOTE: this does not matter becasue we are not using a half to full contorl buffer.
 #define SERVO_SET_Baudrate 1000000  // Baud rate speed which the Dynamixel will be set too (1Mbps)
 #define LED13 0x0D                  // Pin of Visual indication for runing "heart beat" using onboard LED
-#define MotorPower 0x04
+#define Motor_Power 0x04
+#define ON HIGH
+#define OFF LOW
+
+
 
 
 void setup(){
  pinMode(LED13, OUTPUT);            // Pin setup for Visual indication of runing (heart beat) program using onboard LED
- pinMode(MotorPower, OUTPUT);
- digitalWrite(MotorPower, HIGH);
+ pinMode(Motor_Power, OUTPUT);
+ digitalWrite(Motor_Power, ON);
  digitalWrite(LED13, HIGH);
+
 
  delay(1000);                                           // Give time for Dynamixel to start on power-up
 
@@ -52,8 +57,8 @@ void setup(){
  
 
   Dynamixel.begin(SERVO_SET_Baudrate,SERVO_ControlPin);     // We now need to set Ardiuno to the new Baudrate speed 
-  Dynamixel.ledState(SERVO_ID, true);                         // Turn Dynamixel LED on
-  Dynamixel.endlessEnable(SERVO_ID, true);                   // Turn Wheel mode OFF, must be on if using wheel mode
+  Dynamixel.ledState(SERVO_ID, ON);                         // Turn Dynamixel LED on
+  Dynamixel.endlessEnable(SERVO_ID, ON);                   // Turn Wheel mode OFF, must be on if using wheel mode
   Dynamixel.torqueMax(SERVO_ID, 0x2FF);                     // Set Dynamixel to max torque limit
 }
 
@@ -61,20 +66,22 @@ void setup(){
 
 // Flash Dynamixel LED and move Dynamixel to check that all setting have been writen
 void loop(){
+ // digitalWrite(Motor_Power, ON);
   digitalWrite(LED13, HIGH);                  // Turn Arduino onboard LED on
-  Dynamixel.ledState(SERVO_ID, true);           // Turn Dynamixel LED on
-  Dynamixel.turn(SERVO_ID,LEFT,0x3FF);              // Comman for Wheel mode, Move left at max speed  
+  Dynamixel.ledState(SERVO_ID, ON);           // Turn Dynamixel LED on
+  Dynamixel.turn(SERVO_ID,LEFT,0x200);              // Comman for Wheel mode, Move left at max speed  
   //Dynamixel.moveSpeed(SERVO_ID,0x001,0x100);   // Comman for servo mode, Move servo to angle 1(0.088 degree) at speed 100
   delay(4000);
   
+  
+  //digitalWrite(Motor_Power, OFF);
   digitalWrite(LED13, LOW);                  // Turn Arduino onboard LED off
-  Dynamixel.ledState(SERVO_ID, false);         //Turn Dynamixel LED off
-  Dynamixel.turn(SERVO_ID,RIGHT,0x3FF);          // Comman for Wheel mode, Move right at max speed 
- // Dynamixel.moveSpeed(SERVO_ID,0x0FF,0x3FF);  // Comman for servo mode, Move servo to max angle at max speed (angle
+  Dynamixel.ledState(SERVO_ID, OFF);         //Turn Dynamixel LED off
+  Dynamixel.turn(SERVO_ID,RIGHT,0x200);          // Comman for Wheel mode, Move right at max speed 
+//  Dynamixel.moveSpeed(SERVO_ID,0x3FF,0x100);  // Comman for servo mode, Move servo to max angle at max speed (angle
   delay(4000);
   
 }
-
 
 
 

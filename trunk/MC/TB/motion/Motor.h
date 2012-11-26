@@ -35,6 +35,7 @@ public:
 	void setVelocity(u_short velocityRight, u_short velocityLeft, Direction directionRight = Forwards, Direction direchtionLeft = Forwards);
 	void driveVeloctiy();
 	void readPosition();
+	void setID(int newMotorID);
 private:
 	DynamixelClass control;
 	u_char motorIdLeft;

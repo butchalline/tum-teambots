@@ -620,6 +620,18 @@ int DynamixelClass::readPosition(unsigned char ID)
 		
 	Checksum = ~(ID + AX_POS_LENGTH  + AX_READ_DATA + AX_PRESENT_POSITION_L + AX_PRESENT_POSITION_H);
     
+//	Serial.Print("Read Position-> Eingabe-Werte an den Motor: ");
+//    Serial.Print(AX_START);
+//    Serial.Print(AX_START);
+//    Serial.Print(ID);
+//    Serial.Print(AX_POS_LENGTH);
+//    Serial.Print(AX_READ_DATA);
+//    Serial.Print(AX_PRESENT_POSITION_L);
+//    Serial.Print(AX_PRESENT_POSITION_H);
+//    Serial.Print(Checksum);
+//    Serial.Print(" Ende der Eingabewerte.\n");
+
+
     digitalWrite(Direction_Pin,HIGH);
 	Serial1.flush();	
     Serial1.write(AX_START);
@@ -636,7 +648,7 @@ int DynamixelClass::readPosition(unsigned char ID)
 	Position_Long_Byte = 0;
 	Time_Counter = READ_TIME_OUT + millis(); 					// Setup time out error
 	
-    while(Serial1.available() < 5 ) {							// Wait for header data, ID Length and error data from Dynamixel									
+    while(Serial1.available() < 5 ) {							// Wait for header data, ID Length and error data from Dynamixel
 			if ( millis() >= Time_Counter) {
 				return(-254);									// time out error , exit with fauilt code
 			}
@@ -646,11 +658,15 @@ int DynamixelClass::readPosition(unsigned char ID)
 
 	}		
 		Incoming_Byte = Serial1.read();
+//		Serial.Print("Incoming Byte: ");
+//		Serial.Print(Incoming_Byte);
 		if (Incoming_Byte == 0xFF & Serial1.peek() == 0xFF){		// check that there are 2 "0xFF" header data
 			Serial1.read(); 										// clear 2nd 0xFF
 			ID_Read = Serial1.read();                    		// ID sent from Dynamixel
 			Length_Read = Serial1.read();						// Frame Length
 			if( (Error_Byte = Serial1.read()) != 0 ) {   		// See if error code was sent from Dynamixel	
+//				Serial.Print("\nError-Byte:");
+//				Serial.Print(Error_Byte);
 				return (Error_Byte*(-1));					
 				}
 				

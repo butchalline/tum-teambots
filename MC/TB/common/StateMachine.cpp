@@ -86,41 +86,12 @@ void StateMachine::postHandle() {
 
 
 void StateMachine::Call() {
-//	this->preHandle();
+	this->preHandle();
 	switch (currentState) {
 	case Idle:
 		delay(500);
 		Serial.print("Idle\n\r");
 		//requireState(DriveVelocity);
-		/*switch(asdfsadf) {
-		case 0:
-			motors.setVelocity(0,0x1C2, Motor::Forwards, Motor::Forwards);
-			++asdfsadf;
-			break;
-		case 1:
-			motors.setVelocity(0,0x1C2, Motor::Forwards, Motor::Backwards);
-			++asdfsadf;
-			break;
-		case 2:
-			motors.setVelocity(0x1C2,0, Motor::Forwards, Motor::Forwards);
-			++asdfsadf;
-			break;
-		case 3:
-			motors.setVelocity(0x1C2,0, Motor::Backwards, Motor::Forwards);
-			++asdfsadf;
-			break;
-		case 4:
-			motors.setVelocity(0x1C2,0x1C2, Motor::Forwards, Motor::Forwards);
-			++asdfsadf;
-			break;
-		case 5:
-			motors.setVelocity(0x1C2,0x1C2, Motor::Backwards, Motor::Backwards);
-			asdfsadf = 0;
-			break;
-		}*/
-
-		motors.readPosition();
-		motors.driveVeloctiy();
 		break;
 	case DrivePosition:
 		break;
@@ -153,7 +124,7 @@ void StateMachine::Call() {
 	case Error:
 		break;
 	}
-//	this->postHandle();
+	this->postHandle();
 }
 
 TBState StateMachine::requireState(TBState state) {

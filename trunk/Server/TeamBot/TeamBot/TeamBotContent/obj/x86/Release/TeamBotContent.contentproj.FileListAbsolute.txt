@@ -1,0 +1,1 @@
+C:\dev\TeamBots\Server\TeamBot\TeamBot\TeamBotContent\obj\x86\Release\ResolveAssemblyReference.cache

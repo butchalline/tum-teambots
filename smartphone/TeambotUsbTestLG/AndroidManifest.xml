@@ -7,14 +7,17 @@
         android:minSdkVersion="8"
         android:targetSdkVersion="15" />
 
+    <uses-permission android:name="android.permission.INTERNET" /> 
+    
     <application
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
+        
         <uses-library android:name="com.android.future.usb.accessory" />
 
         <activity
-            android:name=".UsbTestLG"
+            android:name="teambot.smartphone.usbTestLG.UsbTestLG"
             android:configChanges="orientation|keyboardHidden"
             android:label="@string/title_activity_usb_test_lg"
             android:screenOrientation="landscape" >

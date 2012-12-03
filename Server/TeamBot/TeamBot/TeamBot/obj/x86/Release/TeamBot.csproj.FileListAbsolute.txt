@@ -12,3 +12,4 @@ C:\dev\TeamBots\Server\TeamBot\TeamBot\TeamBot\obj\x86\Release\ResolveAssemblyRe
 C:\dev\TeamBots\Server\TeamBot\TeamBot\TeamBot\obj\x86\Release\Microsoft.Xna.Framework.RuntimeProfile.txt
 C:\dev\TeamBots\Server\TeamBot\TeamBot\TeamBot\obj\x86\Release\TeamBot.exe
 C:\dev\TeamBots\Server\TeamBot\TeamBot\TeamBot\obj\x86\Release\TeamBot.pdb
+C:\dev\TeamBots\Server\TeamBot\TeamBot\TeamBot\bin\x86\Release\TeamBot.exe.config

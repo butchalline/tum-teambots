@@ -1,0 +1,14 @@
+C:\dev\TeamBots\Server\TeamBot\TeamBot\TeamBot\bin\x86\Debug\TeamBot.exe
+C:\dev\TeamBots\Server\TeamBot\TeamBot\TeamBot\bin\x86\Debug\TeamBot.pdb
+C:\dev\TeamBots\Server\TeamBot\TeamBot\TeamBot\obj\x86\Debug\ResolveAssemblyReference.cache
+C:\dev\TeamBots\Server\TeamBot\TeamBot\TeamBot\obj\x86\Debug\Microsoft.Xna.Framework.RuntimeProfile.txt
+C:\dev\TeamBots\Server\TeamBot\TeamBot\TeamBot\obj\x86\Debug\TeamBot.exe
+C:\dev\TeamBots\Server\TeamBot\TeamBot\TeamBot\obj\x86\Debug\TeamBot.pdb
+C:\dev\TeamBots\Server\TeamBot\TeamBot\TeamBot\bin\x86\Debug\Ice.dll
+C:\dev\TeamBots\Server\TeamBot\TeamBot\TeamBot\bin\x86\Debug\Ice.pdb
+C:\dev\TeamBots\Server\TeamBot\TeamBot\TeamBot\bin\x86\Debug\Ice.xml
+C:\dev\TeamBots\Server\TeamBot\TeamBot\TeamBot\bin\x86\Debug\Content\TeamBot.xnb
+C:\dev\TeamBots\Server\TeamBot\TeamBot\TeamBot\bin\x86\Debug\Content\TeamBot.png
+C:\dev\TeamBots\Server\TeamBot\TeamBot\TeamBot\bin\x86\Debug\Content\BasicFont.xnb
+C:\dev\TeamBots\Server\TeamBot\TeamBot\TeamBot\bin\x86\Debug\Content\Wall.xnb
+C:\dev\TeamBots\Server\TeamBot\TeamBot\TeamBot\bin\x86\Debug\Content\effects.xnb

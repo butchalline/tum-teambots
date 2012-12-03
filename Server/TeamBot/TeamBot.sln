@@ -1,0 +1,24 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TeamBot", "TeamBot\TeamBot\TeamBot.csproj", "{FE91E53D-B078-463D-8A3D-CD04B43EE554}"
+EndProject
+Project("{96E2B04D-8817-42C6-938A-82C39BA4D311}") = "TeamBotContent", "TeamBot\TeamBotContent\TeamBotContent.contentproj", "{7FF5D64E-F378-442A-A177-79565DF01B7E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x86 = Debug|x86
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{FE91E53D-B078-463D-8A3D-CD04B43EE554}.Debug|x86.ActiveCfg = Debug|x86
+		{FE91E53D-B078-463D-8A3D-CD04B43EE554}.Debug|x86.Build.0 = Debug|x86
+		{FE91E53D-B078-463D-8A3D-CD04B43EE554}.Release|x86.ActiveCfg = Release|x86
+		{FE91E53D-B078-463D-8A3D-CD04B43EE554}.Release|x86.Build.0 = Release|x86
+		{7FF5D64E-F378-442A-A177-79565DF01B7E}.Debug|x86.ActiveCfg = Debug|x86
+		{7FF5D64E-F378-442A-A177-79565DF01B7E}.Release|x86.ActiveCfg = Release|x86
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

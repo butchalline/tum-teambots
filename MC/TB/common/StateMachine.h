@@ -43,7 +43,6 @@ private:
 
 private:
 	TBState currentState;
-	int asdfsadf;
 };
 
 extern StateMachine stateMachine; //Global StateMachine Object

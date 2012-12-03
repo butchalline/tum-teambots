@@ -28,7 +28,6 @@ TBFrame* receiveFrame;
 void StateMachine::Init() {
 	currentState = Idle;//PhoneDisconnected;
 	receiveFrame = new TBFrame();
-	asdfsadf = 0;
 }
 
 void StateMachine::handleVelocity() {

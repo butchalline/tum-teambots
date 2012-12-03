@@ -36,16 +36,21 @@
 #   endif
 #endif
 
-static const ::std::string __Communication__DataInterface__sendData_name = "sendData";
+static const ::std::string __Communication__DataInterface__sendByteData_name = "sendByteData";
 
-::Ice::Object* IceInternal::upCast(::Communication::Data* p) { return p; }
-::IceProxy::Ice::Object* IceInternal::upCast(::IceProxy::Communication::Data* p) { return p; }
+static const ::std::string __Communication__DataInterface__sendFloatData_name = "sendFloatData";
+
+::Ice::Object* IceInternal::upCast(::Communication::ByteData* p) { return p; }
+::IceProxy::Ice::Object* IceInternal::upCast(::IceProxy::Communication::ByteData* p) { return p; }
+
+::Ice::Object* IceInternal::upCast(::Communication::FloatData* p) { return p; }
+::IceProxy::Ice::Object* IceInternal::upCast(::IceProxy::Communication::FloatData* p) { return p; }
 
 ::Ice::Object* IceInternal::upCast(::Communication::DataInterface* p) { return p; }
 ::IceProxy::Ice::Object* IceInternal::upCast(::IceProxy::Communication::DataInterface* p) { return p; }
 
 void
-Communication::__read(::IceInternal::BasicStream* __is, ::Communication::DataPrx& v)
+Communication::__read(::IceInternal::BasicStream* __is, ::Communication::ByteDataPrx& v)
 {
     ::Ice::ObjectPrx proxy;
     __is->read(proxy);
@@ -55,7 +60,23 @@ Communication::__read(::IceInternal::BasicStream* __is, ::Communication::DataPrx
     }
     else
     {
-        v = new ::IceProxy::Communication::Data;
+        v = new ::IceProxy::Communication::ByteData;
+        v->__copyFrom(proxy);
+    }
+}
+
+void
+Communication::__read(::IceInternal::BasicStream* __is, ::Communication::FloatDataPrx& v)
+{
+    ::Ice::ObjectPrx proxy;
+    __is->read(proxy);
+    if(!proxy)
+    {
+        v = 0;
+    }
+    else
+    {
+        v = new ::IceProxy::Communication::FloatData;
         v->__copyFrom(proxy);
     }
 }
@@ -91,31 +112,55 @@ Communication::__read(::IceInternal::BasicStream* __is, ::Communication::DataTyp
 }
 
 const ::std::string&
-IceProxy::Communication::Data::ice_staticId()
+IceProxy::Communication::ByteData::ice_staticId()
 {
-    return ::Communication::Data::ice_staticId();
+    return ::Communication::ByteData::ice_staticId();
 }
 
 ::IceInternal::Handle< ::IceDelegateM::Ice::Object>
-IceProxy::Communication::Data::__createDelegateM()
+IceProxy::Communication::ByteData::__createDelegateM()
 {
-    return ::IceInternal::Handle< ::IceDelegateM::Ice::Object>(new ::IceDelegateM::Communication::Data);
+    return ::IceInternal::Handle< ::IceDelegateM::Ice::Object>(new ::IceDelegateM::Communication::ByteData);
 }
 
 ::IceInternal::Handle< ::IceDelegateD::Ice::Object>
-IceProxy::Communication::Data::__createDelegateD()
+IceProxy::Communication::ByteData::__createDelegateD()
 {
-    return ::IceInternal::Handle< ::IceDelegateD::Ice::Object>(new ::IceDelegateD::Communication::Data);
+    return ::IceInternal::Handle< ::IceDelegateD::Ice::Object>(new ::IceDelegateD::Communication::ByteData);
 }
 
 ::IceProxy::Ice::Object*
-IceProxy::Communication::Data::__newInstance() const
+IceProxy::Communication::ByteData::__newInstance() const
 {
-    return new Data;
+    return new ByteData;
+}
+
+const ::std::string&
+IceProxy::Communication::FloatData::ice_staticId()
+{
+    return ::Communication::FloatData::ice_staticId();
+}
+
+::IceInternal::Handle< ::IceDelegateM::Ice::Object>
+IceProxy::Communication::FloatData::__createDelegateM()
+{
+    return ::IceInternal::Handle< ::IceDelegateM::Ice::Object>(new ::IceDelegateM::Communication::FloatData);
+}
+
+::IceInternal::Handle< ::IceDelegateD::Ice::Object>
+IceProxy::Communication::FloatData::__createDelegateD()
+{
+    return ::IceInternal::Handle< ::IceDelegateD::Ice::Object>(new ::IceDelegateD::Communication::FloatData);
+}
+
+::IceProxy::Ice::Object*
+IceProxy::Communication::FloatData::__newInstance() const
+{
+    return new FloatData;
 }
 
 void
-IceProxy::Communication::DataInterface::sendData(const ::Communication::DataPtr& dataObject, const ::Ice::Context* __ctx)
+IceProxy::Communication::DataInterface::sendByteData(const ::Communication::ByteDataPtr& data, const ::Ice::Context* __ctx)
 {
     int __cnt = 0;
     while(true)
@@ -125,7 +170,7 @@ IceProxy::Communication::DataInterface::sendData(const ::Communication::DataPtr&
         {
             __delBase = __getDelegate(false);
             ::IceDelegate::Communication::DataInterface* __del = dynamic_cast< ::IceDelegate::Communication::DataInterface*>(__delBase.get());
-            __del->sendData(dataObject, __ctx);
+            __del->sendByteData(data, __ctx);
             return;
         }
         catch(const ::IceInternal::LocalExceptionWrapper& __ex)
@@ -140,14 +185,14 @@ IceProxy::Communication::DataInterface::sendData(const ::Communication::DataPtr&
 }
 
 ::Ice::AsyncResultPtr
-IceProxy::Communication::DataInterface::begin_sendData(const ::Communication::DataPtr& dataObject, const ::Ice::Context* __ctx, const ::IceInternal::CallbackBasePtr& __del, const ::Ice::LocalObjectPtr& __cookie)
+IceProxy::Communication::DataInterface::begin_sendByteData(const ::Communication::ByteDataPtr& data, const ::Ice::Context* __ctx, const ::IceInternal::CallbackBasePtr& __del, const ::Ice::LocalObjectPtr& __cookie)
 {
-    ::IceInternal::OutgoingAsyncPtr __result = new ::IceInternal::OutgoingAsync(this, __Communication__DataInterface__sendData_name, __del, __cookie);
+    ::IceInternal::OutgoingAsyncPtr __result = new ::IceInternal::OutgoingAsync(this, __Communication__DataInterface__sendByteData_name, __del, __cookie);
     try
     {
-        __result->__prepare(__Communication__DataInterface__sendData_name, ::Ice::Idempotent, __ctx);
+        __result->__prepare(__Communication__DataInterface__sendByteData_name, ::Ice::Idempotent, __ctx);
         ::IceInternal::BasicStream* __os = __result->__getOs();
-        __os->write(::Ice::ObjectPtr(::IceInternal::upCast(dataObject.get())));
+        __os->write(::Ice::ObjectPtr(::IceInternal::upCast(data.get())));
         __os->writePendingObjects();
         __os->endWriteEncaps();
         __result->__send(true);
@@ -160,9 +205,60 @@ IceProxy::Communication::DataInterface::begin_sendData(const ::Communication::Da
 }
 
 void
-IceProxy::Communication::DataInterface::end_sendData(const ::Ice::AsyncResultPtr& __result)
+IceProxy::Communication::DataInterface::end_sendByteData(const ::Ice::AsyncResultPtr& __result)
 {
-    __end(__result, __Communication__DataInterface__sendData_name);
+    __end(__result, __Communication__DataInterface__sendByteData_name);
+}
+
+void
+IceProxy::Communication::DataInterface::sendFloatData(const ::Communication::FloatDataPtr& data, const ::Ice::Context* __ctx)
+{
+    int __cnt = 0;
+    while(true)
+    {
+        ::IceInternal::Handle< ::IceDelegate::Ice::Object> __delBase;
+        try
+        {
+            __delBase = __getDelegate(false);
+            ::IceDelegate::Communication::DataInterface* __del = dynamic_cast< ::IceDelegate::Communication::DataInterface*>(__delBase.get());
+            __del->sendFloatData(data, __ctx);
+            return;
+        }
+        catch(const ::IceInternal::LocalExceptionWrapper& __ex)
+        {
+            __handleExceptionWrapperRelaxed(__delBase, __ex, true, __cnt);
+        }
+        catch(const ::Ice::LocalException& __ex)
+        {
+            __handleException(__delBase, __ex, true, __cnt);
+        }
+    }
+}
+
+::Ice::AsyncResultPtr
+IceProxy::Communication::DataInterface::begin_sendFloatData(const ::Communication::FloatDataPtr& data, const ::Ice::Context* __ctx, const ::IceInternal::CallbackBasePtr& __del, const ::Ice::LocalObjectPtr& __cookie)
+{
+    ::IceInternal::OutgoingAsyncPtr __result = new ::IceInternal::OutgoingAsync(this, __Communication__DataInterface__sendFloatData_name, __del, __cookie);
+    try
+    {
+        __result->__prepare(__Communication__DataInterface__sendFloatData_name, ::Ice::Idempotent, __ctx);
+        ::IceInternal::BasicStream* __os = __result->__getOs();
+        __os->write(::Ice::ObjectPtr(::IceInternal::upCast(data.get())));
+        __os->writePendingObjects();
+        __os->endWriteEncaps();
+        __result->__send(true);
+    }
+    catch(const ::Ice::LocalException& __ex)
+    {
+        __result->__exceptionAsync(__ex);
+    }
+    return __result;
+}
+
+void
+IceProxy::Communication::DataInterface::end_sendFloatData(const ::Ice::AsyncResultPtr& __result)
+{
+    __end(__result, __Communication__DataInterface__sendFloatData_name);
 }
 
 const ::std::string&
@@ -190,13 +286,13 @@ IceProxy::Communication::DataInterface::__newInstance() const
 }
 
 void
-IceDelegateM::Communication::DataInterface::sendData(const ::Communication::DataPtr& dataObject, const ::Ice::Context* __context)
+IceDelegateM::Communication::DataInterface::sendByteData(const ::Communication::ByteDataPtr& data, const ::Ice::Context* __context)
 {
-    ::IceInternal::Outgoing __og(__handler.get(), __Communication__DataInterface__sendData_name, ::Ice::Idempotent, __context);
+    ::IceInternal::Outgoing __og(__handler.get(), __Communication__DataInterface__sendByteData_name, ::Ice::Idempotent, __context);
     try
     {
         ::IceInternal::BasicStream* __os = __og.os();
-        __os->write(::Ice::ObjectPtr(::IceInternal::upCast(dataObject.get())));
+        __os->write(::Ice::ObjectPtr(::IceInternal::upCast(data.get())));
         __os->writePendingObjects();
     }
     catch(const ::Ice::LocalException& __ex)
@@ -230,15 +326,55 @@ IceDelegateM::Communication::DataInterface::sendData(const ::Communication::Data
 }
 
 void
-IceDelegateD::Communication::DataInterface::sendData(const ::Communication::DataPtr& dataObject, const ::Ice::Context* __context)
+IceDelegateM::Communication::DataInterface::sendFloatData(const ::Communication::FloatDataPtr& data, const ::Ice::Context* __context)
+{
+    ::IceInternal::Outgoing __og(__handler.get(), __Communication__DataInterface__sendFloatData_name, ::Ice::Idempotent, __context);
+    try
+    {
+        ::IceInternal::BasicStream* __os = __og.os();
+        __os->write(::Ice::ObjectPtr(::IceInternal::upCast(data.get())));
+        __os->writePendingObjects();
+    }
+    catch(const ::Ice::LocalException& __ex)
+    {
+        __og.abort(__ex);
+    }
+    bool __ok = __og.invoke();
+    if(!__og.is()->b.empty())
+    {
+        try
+        {
+            if(!__ok)
+            {
+                try
+                {
+                    __og.throwUserException();
+                }
+                catch(const ::Ice::UserException& __ex)
+                {
+                    ::Ice::UnknownUserException __uue(__FILE__, __LINE__, __ex.ice_name());
+                    throw __uue;
+                }
+            }
+            __og.is()->skipEmptyEncaps();
+        }
+        catch(const ::Ice::LocalException& __ex)
+        {
+            throw ::IceInternal::LocalExceptionWrapper(__ex, false);
+        }
+    }
+}
+
+void
+IceDelegateD::Communication::DataInterface::sendByteData(const ::Communication::ByteDataPtr& data, const ::Ice::Context* __context)
 {
     class _DirectI : public ::IceInternal::Direct
     {
     public:
 
-        _DirectI(const ::Communication::DataPtr& dataObject, const ::Ice::Current& __current) : 
+        _DirectI(const ::Communication::ByteDataPtr& data, const ::Ice::Current& __current) : 
             ::IceInternal::Direct(__current),
-            _m_dataObject(dataObject)
+            _m_data(data)
         {
         }
         
@@ -250,20 +386,20 @@ IceDelegateD::Communication::DataInterface::sendData(const ::Communication::Data
             {
                 throw ::Ice::OperationNotExistException(__FILE__, __LINE__, _current.id, _current.facet, _current.operation);
             }
-            servant->sendData(_m_dataObject, _current);
+            servant->sendByteData(_m_data, _current);
             return ::Ice::DispatchOK;
         }
         
     private:
         
-        const ::Communication::DataPtr& _m_dataObject;
+        const ::Communication::ByteDataPtr& _m_data;
     };
     
     ::Ice::Current __current;
-    __initCurrent(__current, __Communication__DataInterface__sendData_name, ::Ice::Idempotent, __context);
+    __initCurrent(__current, __Communication__DataInterface__sendByteData_name, ::Ice::Idempotent, __context);
     try
     {
-        _DirectI __direct(dataObject, __current);
+        _DirectI __direct(data, __current);
         try
         {
             __direct.servant()->__collocDispatch(__direct);
@@ -293,7 +429,71 @@ IceDelegateD::Communication::DataInterface::sendData(const ::Communication::Data
     }
 }
 
-Communication::Data::Data(::Communication::DataTypeIce __ice_type, ::Ice::Long __ice_timeStamp, const ::Communication::dataSequence& __ice_byteArrayData) :
+void
+IceDelegateD::Communication::DataInterface::sendFloatData(const ::Communication::FloatDataPtr& data, const ::Ice::Context* __context)
+{
+    class _DirectI : public ::IceInternal::Direct
+    {
+    public:
+
+        _DirectI(const ::Communication::FloatDataPtr& data, const ::Ice::Current& __current) : 
+            ::IceInternal::Direct(__current),
+            _m_data(data)
+        {
+        }
+        
+        virtual ::Ice::DispatchStatus
+        run(::Ice::Object* object)
+        {
+            ::Communication::DataInterface* servant = dynamic_cast< ::Communication::DataInterface*>(object);
+            if(!servant)
+            {
+                throw ::Ice::OperationNotExistException(__FILE__, __LINE__, _current.id, _current.facet, _current.operation);
+            }
+            servant->sendFloatData(_m_data, _current);
+            return ::Ice::DispatchOK;
+        }
+        
+    private:
+        
+        const ::Communication::FloatDataPtr& _m_data;
+    };
+    
+    ::Ice::Current __current;
+    __initCurrent(__current, __Communication__DataInterface__sendFloatData_name, ::Ice::Idempotent, __context);
+    try
+    {
+        _DirectI __direct(data, __current);
+        try
+        {
+            __direct.servant()->__collocDispatch(__direct);
+        }
+        catch(...)
+        {
+            __direct.destroy();
+            throw;
+        }
+        __direct.destroy();
+    }
+    catch(const ::Ice::SystemException&)
+    {
+        throw;
+    }
+    catch(const ::IceInternal::LocalExceptionWrapper&)
+    {
+        throw;
+    }
+    catch(const ::std::exception& __ex)
+    {
+        ::IceInternal::LocalExceptionWrapper::throwWrapper(__ex);
+    }
+    catch(...)
+    {
+        throw ::IceInternal::LocalExceptionWrapper(::Ice::UnknownException(__FILE__, __LINE__, "unknown c++ exception"), false);
+    }
+}
+
+Communication::ByteData::ByteData(::Communication::DataTypeIce __ice_type, ::Ice::Long __ice_timeStamp, const ::Communication::byteSequence& __ice_byteArrayData) :
     type(__ice_type),
     timeStamp(__ice_timeStamp),
     byteArrayData(__ice_byteArrayData)
@@ -301,44 +501,44 @@ Communication::Data::Data(::Communication::DataTypeIce __ice_type, ::Ice::Long _
 }
 
 ::Ice::ObjectPtr
-Communication::Data::ice_clone() const
+Communication::ByteData::ice_clone() const
 {
-    ::Communication::DataPtr __p = new ::Communication::Data(*this);
+    ::Communication::ByteDataPtr __p = new ::Communication::ByteData(*this);
     return __p;
 }
 
-static const ::std::string __Communication__Data_ids[2] =
+static const ::std::string __Communication__ByteData_ids[2] =
 {
-    "::Communication::Data",
+    "::Communication::ByteData",
     "::Ice::Object"
 };
 
 bool
-Communication::Data::ice_isA(const ::std::string& _s, const ::Ice::Current&) const
+Communication::ByteData::ice_isA(const ::std::string& _s, const ::Ice::Current&) const
 {
-    return ::std::binary_search(__Communication__Data_ids, __Communication__Data_ids + 2, _s);
+    return ::std::binary_search(__Communication__ByteData_ids, __Communication__ByteData_ids + 2, _s);
 }
 
 ::std::vector< ::std::string>
-Communication::Data::ice_ids(const ::Ice::Current&) const
+Communication::ByteData::ice_ids(const ::Ice::Current&) const
 {
-    return ::std::vector< ::std::string>(&__Communication__Data_ids[0], &__Communication__Data_ids[2]);
+    return ::std::vector< ::std::string>(&__Communication__ByteData_ids[0], &__Communication__ByteData_ids[2]);
 }
 
 const ::std::string&
-Communication::Data::ice_id(const ::Ice::Current&) const
+Communication::ByteData::ice_id(const ::Ice::Current&) const
 {
-    return __Communication__Data_ids[0];
+    return __Communication__ByteData_ids[0];
 }
 
 const ::std::string&
-Communication::Data::ice_staticId()
+Communication::ByteData::ice_staticId()
 {
-    return __Communication__Data_ids[0];
+    return __Communication__ByteData_ids[0];
 }
 
 void
-Communication::Data::__write(::IceInternal::BasicStream* __os) const
+Communication::ByteData::__write(::IceInternal::BasicStream* __os) const
 {
     __os->writeTypeId(ice_staticId());
     __os->startWriteSlice();
@@ -361,7 +561,7 @@ Communication::Data::__write(::IceInternal::BasicStream* __os) const
 }
 
 void
-Communication::Data::__read(::IceInternal::BasicStream* __is, bool __rid)
+Communication::ByteData::__read(::IceInternal::BasicStream* __is, bool __rid)
 {
     if(__rid)
     {
@@ -385,31 +585,31 @@ Communication::Data::__read(::IceInternal::BasicStream* __is, bool __rid)
 // COMPILERFIX: Stream API is not supported with VC++ 6
 #if !defined(_MSC_VER) || (_MSC_VER >= 1300)
 void
-Communication::Data::__write(const ::Ice::OutputStreamPtr&) const
+Communication::ByteData::__write(const ::Ice::OutputStreamPtr&) const
 {
     Ice::MarshalException ex(__FILE__, __LINE__);
-    ex.reason = "type Communication::Data was not generated with stream support";
+    ex.reason = "type Communication::ByteData was not generated with stream support";
     throw ex;
 }
 
 void
-Communication::Data::__read(const ::Ice::InputStreamPtr&, bool)
+Communication::ByteData::__read(const ::Ice::InputStreamPtr&, bool)
 {
     Ice::MarshalException ex(__FILE__, __LINE__);
-    ex.reason = "type Communication::Data was not generated with stream support";
+    ex.reason = "type Communication::ByteData was not generated with stream support";
     throw ex;
 }
 #endif
 
-class __F__Communication__Data : public ::Ice::ObjectFactory
+class __F__Communication__ByteData : public ::Ice::ObjectFactory
 {
 public:
 
     virtual ::Ice::ObjectPtr
     create(const ::std::string& type)
     {
-        assert(type == ::Communication::Data::ice_staticId());
-        return new ::Communication::Data;
+        assert(type == ::Communication::ByteData::ice_staticId());
+        return new ::Communication::ByteData;
     }
 
     virtual void
@@ -418,44 +618,208 @@ public:
     }
 };
 
-static ::Ice::ObjectFactoryPtr __F__Communication__Data_Ptr = new __F__Communication__Data;
+static ::Ice::ObjectFactoryPtr __F__Communication__ByteData_Ptr = new __F__Communication__ByteData;
 
 const ::Ice::ObjectFactoryPtr&
-Communication::Data::ice_factory()
+Communication::ByteData::ice_factory()
 {
-    return __F__Communication__Data_Ptr;
+    return __F__Communication__ByteData_Ptr;
 }
 
-class __F__Communication__Data__Init
+class __F__Communication__ByteData__Init
 {
 public:
 
-    __F__Communication__Data__Init()
+    __F__Communication__ByteData__Init()
     {
-        ::IceInternal::factoryTable->addObjectFactory(::Communication::Data::ice_staticId(), ::Communication::Data::ice_factory());
+        ::IceInternal::factoryTable->addObjectFactory(::Communication::ByteData::ice_staticId(), ::Communication::ByteData::ice_factory());
     }
 
-    ~__F__Communication__Data__Init()
+    ~__F__Communication__ByteData__Init()
     {
-        ::IceInternal::factoryTable->removeObjectFactory(::Communication::Data::ice_staticId());
+        ::IceInternal::factoryTable->removeObjectFactory(::Communication::ByteData::ice_staticId());
     }
 };
 
-static __F__Communication__Data__Init __F__Communication__Data__i;
+static __F__Communication__ByteData__Init __F__Communication__ByteData__i;
 
 #ifdef __APPLE__
-extern "C" { void __F__Communication__Data__initializer() {} }
+extern "C" { void __F__Communication__ByteData__initializer() {} }
 #endif
 
 void 
-Communication::__patch__DataPtr(void* __addr, ::Ice::ObjectPtr& v)
+Communication::__patch__ByteDataPtr(void* __addr, ::Ice::ObjectPtr& v)
 {
-    ::Communication::DataPtr* p = static_cast< ::Communication::DataPtr*>(__addr);
+    ::Communication::ByteDataPtr* p = static_cast< ::Communication::ByteDataPtr*>(__addr);
     assert(p);
-    *p = ::Communication::DataPtr::dynamicCast(v);
+    *p = ::Communication::ByteDataPtr::dynamicCast(v);
     if(v && !*p)
     {
-        IceInternal::Ex::throwUOE(::Communication::Data::ice_staticId(), v->ice_id());
+        IceInternal::Ex::throwUOE(::Communication::ByteData::ice_staticId(), v->ice_id());
+    }
+}
+
+Communication::FloatData::FloatData(::Communication::DataTypeIce __ice_type, ::Ice::Long __ice_timeStamp, const ::Communication::floatSequence& __ice_floatArrayData) :
+    type(__ice_type),
+    timeStamp(__ice_timeStamp),
+    floatArrayData(__ice_floatArrayData)
+{
+}
+
+::Ice::ObjectPtr
+Communication::FloatData::ice_clone() const
+{
+    ::Communication::FloatDataPtr __p = new ::Communication::FloatData(*this);
+    return __p;
+}
+
+static const ::std::string __Communication__FloatData_ids[2] =
+{
+    "::Communication::FloatData",
+    "::Ice::Object"
+};
+
+bool
+Communication::FloatData::ice_isA(const ::std::string& _s, const ::Ice::Current&) const
+{
+    return ::std::binary_search(__Communication__FloatData_ids, __Communication__FloatData_ids + 2, _s);
+}
+
+::std::vector< ::std::string>
+Communication::FloatData::ice_ids(const ::Ice::Current&) const
+{
+    return ::std::vector< ::std::string>(&__Communication__FloatData_ids[0], &__Communication__FloatData_ids[2]);
+}
+
+const ::std::string&
+Communication::FloatData::ice_id(const ::Ice::Current&) const
+{
+    return __Communication__FloatData_ids[0];
+}
+
+const ::std::string&
+Communication::FloatData::ice_staticId()
+{
+    return __Communication__FloatData_ids[0];
+}
+
+void
+Communication::FloatData::__write(::IceInternal::BasicStream* __os) const
+{
+    __os->writeTypeId(ice_staticId());
+    __os->startWriteSlice();
+    ::Communication::__write(__os, type);
+    __os->write(timeStamp);
+    if(floatArrayData.size() == 0)
+    {
+        __os->writeSize(0);
+    }
+    else
+    {
+        __os->write(&floatArrayData[0], &floatArrayData[0] + floatArrayData.size());
+    }
+    __os->endWriteSlice();
+#if defined(_MSC_VER) && (_MSC_VER < 1300) // VC++ 6 compiler bug
+    Object::__write(__os);
+#else
+    ::Ice::Object::__write(__os);
+#endif
+}
+
+void
+Communication::FloatData::__read(::IceInternal::BasicStream* __is, bool __rid)
+{
+    if(__rid)
+    {
+        ::std::string myId;
+        __is->readTypeId(myId);
+    }
+    __is->startReadSlice();
+    ::Communication::__read(__is, type);
+    __is->read(timeStamp);
+    __is->read(floatArrayData);
+    __is->endReadSlice();
+#if defined(_MSC_VER) && (_MSC_VER < 1300) // VC++ 6 compiler bug
+    Object::__read(__is, true);
+#else
+    ::Ice::Object::__read(__is, true);
+#endif
+}
+
+// COMPILERFIX: Stream API is not supported with VC++ 6
+#if !defined(_MSC_VER) || (_MSC_VER >= 1300)
+void
+Communication::FloatData::__write(const ::Ice::OutputStreamPtr&) const
+{
+    Ice::MarshalException ex(__FILE__, __LINE__);
+    ex.reason = "type Communication::FloatData was not generated with stream support";
+    throw ex;
+}
+
+void
+Communication::FloatData::__read(const ::Ice::InputStreamPtr&, bool)
+{
+    Ice::MarshalException ex(__FILE__, __LINE__);
+    ex.reason = "type Communication::FloatData was not generated with stream support";
+    throw ex;
+}
+#endif
+
+class __F__Communication__FloatData : public ::Ice::ObjectFactory
+{
+public:
+
+    virtual ::Ice::ObjectPtr
+    create(const ::std::string& type)
+    {
+        assert(type == ::Communication::FloatData::ice_staticId());
+        return new ::Communication::FloatData;
+    }
+
+    virtual void
+    destroy()
+    {
+    }
+};
+
+static ::Ice::ObjectFactoryPtr __F__Communication__FloatData_Ptr = new __F__Communication__FloatData;
+
+const ::Ice::ObjectFactoryPtr&
+Communication::FloatData::ice_factory()
+{
+    return __F__Communication__FloatData_Ptr;
+}
+
+class __F__Communication__FloatData__Init
+{
+public:
+
+    __F__Communication__FloatData__Init()
+    {
+        ::IceInternal::factoryTable->addObjectFactory(::Communication::FloatData::ice_staticId(), ::Communication::FloatData::ice_factory());
+    }
+
+    ~__F__Communication__FloatData__Init()
+    {
+        ::IceInternal::factoryTable->removeObjectFactory(::Communication::FloatData::ice_staticId());
+    }
+};
+
+static __F__Communication__FloatData__Init __F__Communication__FloatData__i;
+
+#ifdef __APPLE__
+extern "C" { void __F__Communication__FloatData__initializer() {} }
+#endif
+
+void 
+Communication::__patch__FloatDataPtr(void* __addr, ::Ice::ObjectPtr& v)
+{
+    ::Communication::FloatDataPtr* p = static_cast< ::Communication::FloatDataPtr*>(__addr);
+    assert(p);
+    *p = ::Communication::FloatDataPtr::dynamicCast(v);
+    if(v && !*p)
+    {
+        IceInternal::Ex::throwUOE(::Communication::FloatData::ice_staticId(), v->ice_id());
     }
 }
 
@@ -497,16 +861,30 @@ Communication::DataInterface::ice_staticId()
 }
 
 ::Ice::DispatchStatus
-Communication::DataInterface::___sendData(::IceInternal::Incoming& __inS, const ::Ice::Current& __current)
+Communication::DataInterface::___sendByteData(::IceInternal::Incoming& __inS, const ::Ice::Current& __current)
 {
     __checkMode(::Ice::Idempotent, __current.mode);
     ::IceInternal::BasicStream* __is = __inS.is();
     __is->startReadEncaps();
-    ::Communication::DataPtr dataObject;
-    __is->read(::Communication::__patch__DataPtr, &dataObject);
+    ::Communication::ByteDataPtr data;
+    __is->read(::Communication::__patch__ByteDataPtr, &data);
     __is->readPendingObjects();
     __is->endReadEncaps();
-    sendData(dataObject, __current);
+    sendByteData(data, __current);
+    return ::Ice::DispatchOK;
+}
+
+::Ice::DispatchStatus
+Communication::DataInterface::___sendFloatData(::IceInternal::Incoming& __inS, const ::Ice::Current& __current)
+{
+    __checkMode(::Ice::Idempotent, __current.mode);
+    ::IceInternal::BasicStream* __is = __inS.is();
+    __is->startReadEncaps();
+    ::Communication::FloatDataPtr data;
+    __is->read(::Communication::__patch__FloatDataPtr, &data);
+    __is->readPendingObjects();
+    __is->endReadEncaps();
+    sendFloatData(data, __current);
     return ::Ice::DispatchOK;
 }
 
@@ -516,13 +894,14 @@ static ::std::string __Communication__DataInterface_all[] =
     "ice_ids",
     "ice_isA",
     "ice_ping",
-    "sendData"
+    "sendByteData",
+    "sendFloatData"
 };
 
 ::Ice::DispatchStatus
 Communication::DataInterface::__dispatch(::IceInternal::Incoming& in, const ::Ice::Current& current)
 {
-    ::std::pair< ::std::string*, ::std::string*> r = ::std::equal_range(__Communication__DataInterface_all, __Communication__DataInterface_all + 5, current.operation);
+    ::std::pair< ::std::string*, ::std::string*> r = ::std::equal_range(__Communication__DataInterface_all, __Communication__DataInterface_all + 6, current.operation);
     if(r.first == r.second)
     {
         throw ::Ice::OperationNotExistException(__FILE__, __LINE__, current.id, current.facet, current.operation);
@@ -548,7 +927,11 @@ Communication::DataInterface::__dispatch(::IceInternal::Incoming& in, const ::Ic
         }
         case 4:
         {
-            return ___sendData(in, current);
+            return ___sendByteData(in, current);
+        }
+        case 5:
+        {
+            return ___sendFloatData(in, current);
         }
     }
 

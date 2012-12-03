@@ -55,7 +55,9 @@ namespace IceProxy
 namespace Communication
 {
 
-class Data;
+class ByteData;
+
+class FloatData;
 
 class DataInterface;
 
@@ -66,9 +68,13 @@ class DataInterface;
 namespace Communication
 {
 
-class Data;
-bool operator==(const Data&, const Data&);
-bool operator<(const Data&, const Data&);
+class ByteData;
+bool operator==(const ByteData&, const ByteData&);
+bool operator<(const ByteData&, const ByteData&);
+
+class FloatData;
+bool operator==(const FloatData&, const FloatData&);
+bool operator<(const FloatData&, const FloatData&);
 
 class DataInterface;
 bool operator==(const DataInterface&, const DataInterface&);
@@ -79,8 +85,11 @@ bool operator<(const DataInterface&, const DataInterface&);
 namespace IceInternal
 {
 
-::Ice::Object* upCast(::Communication::Data*);
-::IceProxy::Ice::Object* upCast(::IceProxy::Communication::Data*);
+::Ice::Object* upCast(::Communication::ByteData*);
+::IceProxy::Ice::Object* upCast(::IceProxy::Communication::ByteData*);
+
+::Ice::Object* upCast(::Communication::FloatData*);
+::IceProxy::Ice::Object* upCast(::IceProxy::Communication::FloatData*);
 
 ::Ice::Object* upCast(::Communication::DataInterface*);
 ::IceProxy::Ice::Object* upCast(::IceProxy::Communication::DataInterface*);
@@ -90,11 +99,17 @@ namespace IceInternal
 namespace Communication
 {
 
-typedef ::IceInternal::Handle< ::Communication::Data> DataPtr;
-typedef ::IceInternal::ProxyHandle< ::IceProxy::Communication::Data> DataPrx;
+typedef ::IceInternal::Handle< ::Communication::ByteData> ByteDataPtr;
+typedef ::IceInternal::ProxyHandle< ::IceProxy::Communication::ByteData> ByteDataPrx;
 
-void __read(::IceInternal::BasicStream*, DataPrx&);
-void __patch__DataPtr(void*, ::Ice::ObjectPtr&);
+void __read(::IceInternal::BasicStream*, ByteDataPrx&);
+void __patch__ByteDataPtr(void*, ::Ice::ObjectPtr&);
+
+typedef ::IceInternal::Handle< ::Communication::FloatData> FloatDataPtr;
+typedef ::IceInternal::ProxyHandle< ::IceProxy::Communication::FloatData> FloatDataPrx;
+
+void __read(::IceInternal::BasicStream*, FloatDataPrx&);
+void __patch__FloatDataPtr(void*, ::Ice::ObjectPtr&);
 
 typedef ::IceInternal::Handle< ::Communication::DataInterface> DataInterfacePtr;
 typedef ::IceInternal::ProxyHandle< ::IceProxy::Communication::DataInterface> DataInterfacePrx;
@@ -121,15 +136,20 @@ enum DataTypeIce
 void __write(::IceInternal::BasicStream*, DataTypeIce);
 void __read(::IceInternal::BasicStream*, DataTypeIce&);
 
-typedef ::std::vector< ::Ice::Byte> dataSequence;
+typedef ::std::vector< ::Ice::Byte> byteSequence;
+
+typedef ::std::vector< ::Ice::Float> floatSequence;
 
 }
 
 namespace Communication
 {
 
-class Callback_DataInterface_sendData_Base : virtual public ::IceInternal::CallbackBase { };
-typedef ::IceUtil::Handle< Callback_DataInterface_sendData_Base> Callback_DataInterface_sendDataPtr;
+class Callback_DataInterface_sendByteData_Base : virtual public ::IceInternal::CallbackBase { };
+typedef ::IceUtil::Handle< Callback_DataInterface_sendByteData_Base> Callback_DataInterface_sendByteDataPtr;
+
+class Callback_DataInterface_sendFloatData_Base : virtual public ::IceInternal::CallbackBase { };
+typedef ::IceUtil::Handle< Callback_DataInterface_sendFloatData_Base> Callback_DataInterface_sendFloatDataPtr;
 
 }
 
@@ -139,197 +159,400 @@ namespace IceProxy
 namespace Communication
 {
 
-class Data : virtual public ::IceProxy::Ice::Object
+class ByteData : virtual public ::IceProxy::Ice::Object
 {
 public:
     
-    ::IceInternal::ProxyHandle<Data> ice_context(const ::Ice::Context& __context) const
+    ::IceInternal::ProxyHandle<ByteData> ice_context(const ::Ice::Context& __context) const
     {
     #if defined(_MSC_VER) && (_MSC_VER < 1300) // VC++ 6 compiler bug
         typedef ::IceProxy::Ice::Object _Base;
-        return dynamic_cast<Data*>(_Base::ice_context(__context).get());
+        return dynamic_cast<ByteData*>(_Base::ice_context(__context).get());
     #else
-        return dynamic_cast<Data*>(::IceProxy::Ice::Object::ice_context(__context).get());
+        return dynamic_cast<ByteData*>(::IceProxy::Ice::Object::ice_context(__context).get());
     #endif
     }
     
-    ::IceInternal::ProxyHandle<Data> ice_adapterId(const std::string& __id) const
+    ::IceInternal::ProxyHandle<ByteData> ice_adapterId(const std::string& __id) const
     {
     #if defined(_MSC_VER) && (_MSC_VER < 1300) // VC++ 6 compiler bug
         typedef ::IceProxy::Ice::Object _Base;
-        return dynamic_cast<Data*>(_Base::ice_adapterId(__id).get());
+        return dynamic_cast<ByteData*>(_Base::ice_adapterId(__id).get());
     #else
-        return dynamic_cast<Data*>(::IceProxy::Ice::Object::ice_adapterId(__id).get());
+        return dynamic_cast<ByteData*>(::IceProxy::Ice::Object::ice_adapterId(__id).get());
     #endif
     }
     
-    ::IceInternal::ProxyHandle<Data> ice_endpoints(const ::Ice::EndpointSeq& __endpoints) const
+    ::IceInternal::ProxyHandle<ByteData> ice_endpoints(const ::Ice::EndpointSeq& __endpoints) const
     {
     #if defined(_MSC_VER) && (_MSC_VER < 1300) // VC++ 6 compiler bug
         typedef ::IceProxy::Ice::Object _Base;
-        return dynamic_cast<Data*>(_Base::ice_endpoints(__endpoints).get());
+        return dynamic_cast<ByteData*>(_Base::ice_endpoints(__endpoints).get());
     #else
-        return dynamic_cast<Data*>(::IceProxy::Ice::Object::ice_endpoints(__endpoints).get());
+        return dynamic_cast<ByteData*>(::IceProxy::Ice::Object::ice_endpoints(__endpoints).get());
     #endif
     }
     
-    ::IceInternal::ProxyHandle<Data> ice_locatorCacheTimeout(int __timeout) const
+    ::IceInternal::ProxyHandle<ByteData> ice_locatorCacheTimeout(int __timeout) const
     {
     #if defined(_MSC_VER) && (_MSC_VER < 1300) // VC++ 6 compiler bug
         typedef ::IceProxy::Ice::Object _Base;
-        return dynamic_cast<Data*>(_Base::ice_locatorCacheTimeout(__timeout).get());
+        return dynamic_cast<ByteData*>(_Base::ice_locatorCacheTimeout(__timeout).get());
     #else
-        return dynamic_cast<Data*>(::IceProxy::Ice::Object::ice_locatorCacheTimeout(__timeout).get());
+        return dynamic_cast<ByteData*>(::IceProxy::Ice::Object::ice_locatorCacheTimeout(__timeout).get());
     #endif
     }
     
-    ::IceInternal::ProxyHandle<Data> ice_connectionCached(bool __cached) const
+    ::IceInternal::ProxyHandle<ByteData> ice_connectionCached(bool __cached) const
     {
     #if defined(_MSC_VER) && (_MSC_VER < 1300) // VC++ 6 compiler bug
         typedef ::IceProxy::Ice::Object _Base;
-        return dynamic_cast<Data*>(_Base::ice_connectionCached(__cached).get());
+        return dynamic_cast<ByteData*>(_Base::ice_connectionCached(__cached).get());
     #else
-        return dynamic_cast<Data*>(::IceProxy::Ice::Object::ice_connectionCached(__cached).get());
+        return dynamic_cast<ByteData*>(::IceProxy::Ice::Object::ice_connectionCached(__cached).get());
     #endif
     }
     
-    ::IceInternal::ProxyHandle<Data> ice_endpointSelection(::Ice::EndpointSelectionType __est) const
+    ::IceInternal::ProxyHandle<ByteData> ice_endpointSelection(::Ice::EndpointSelectionType __est) const
     {
     #if defined(_MSC_VER) && (_MSC_VER < 1300) // VC++ 6 compiler bug
         typedef ::IceProxy::Ice::Object _Base;
-        return dynamic_cast<Data*>(_Base::ice_endpointSelection(__est).get());
+        return dynamic_cast<ByteData*>(_Base::ice_endpointSelection(__est).get());
     #else
-        return dynamic_cast<Data*>(::IceProxy::Ice::Object::ice_endpointSelection(__est).get());
+        return dynamic_cast<ByteData*>(::IceProxy::Ice::Object::ice_endpointSelection(__est).get());
     #endif
     }
     
-    ::IceInternal::ProxyHandle<Data> ice_secure(bool __secure) const
+    ::IceInternal::ProxyHandle<ByteData> ice_secure(bool __secure) const
     {
     #if defined(_MSC_VER) && (_MSC_VER < 1300) // VC++ 6 compiler bug
         typedef ::IceProxy::Ice::Object _Base;
-        return dynamic_cast<Data*>(_Base::ice_secure(__secure).get());
+        return dynamic_cast<ByteData*>(_Base::ice_secure(__secure).get());
     #else
-        return dynamic_cast<Data*>(::IceProxy::Ice::Object::ice_secure(__secure).get());
+        return dynamic_cast<ByteData*>(::IceProxy::Ice::Object::ice_secure(__secure).get());
     #endif
     }
     
-    ::IceInternal::ProxyHandle<Data> ice_preferSecure(bool __preferSecure) const
+    ::IceInternal::ProxyHandle<ByteData> ice_preferSecure(bool __preferSecure) const
     {
     #if defined(_MSC_VER) && (_MSC_VER < 1300) // VC++ 6 compiler bug
         typedef ::IceProxy::Ice::Object _Base;
-        return dynamic_cast<Data*>(_Base::ice_preferSecure(__preferSecure).get());
+        return dynamic_cast<ByteData*>(_Base::ice_preferSecure(__preferSecure).get());
     #else
-        return dynamic_cast<Data*>(::IceProxy::Ice::Object::ice_preferSecure(__preferSecure).get());
+        return dynamic_cast<ByteData*>(::IceProxy::Ice::Object::ice_preferSecure(__preferSecure).get());
     #endif
     }
     
-    ::IceInternal::ProxyHandle<Data> ice_router(const ::Ice::RouterPrx& __router) const
+    ::IceInternal::ProxyHandle<ByteData> ice_router(const ::Ice::RouterPrx& __router) const
     {
     #if defined(_MSC_VER) && (_MSC_VER < 1300) // VC++ 6 compiler bug
         typedef ::IceProxy::Ice::Object _Base;
-        return dynamic_cast<Data*>(_Base::ice_router(__router).get());
+        return dynamic_cast<ByteData*>(_Base::ice_router(__router).get());
     #else
-        return dynamic_cast<Data*>(::IceProxy::Ice::Object::ice_router(__router).get());
+        return dynamic_cast<ByteData*>(::IceProxy::Ice::Object::ice_router(__router).get());
     #endif
     }
     
-    ::IceInternal::ProxyHandle<Data> ice_locator(const ::Ice::LocatorPrx& __locator) const
+    ::IceInternal::ProxyHandle<ByteData> ice_locator(const ::Ice::LocatorPrx& __locator) const
     {
     #if defined(_MSC_VER) && (_MSC_VER < 1300) // VC++ 6 compiler bug
         typedef ::IceProxy::Ice::Object _Base;
-        return dynamic_cast<Data*>(_Base::ice_locator(__locator).get());
+        return dynamic_cast<ByteData*>(_Base::ice_locator(__locator).get());
     #else
-        return dynamic_cast<Data*>(::IceProxy::Ice::Object::ice_locator(__locator).get());
+        return dynamic_cast<ByteData*>(::IceProxy::Ice::Object::ice_locator(__locator).get());
     #endif
     }
     
-    ::IceInternal::ProxyHandle<Data> ice_collocationOptimized(bool __co) const
+    ::IceInternal::ProxyHandle<ByteData> ice_collocationOptimized(bool __co) const
     {
     #if defined(_MSC_VER) && (_MSC_VER < 1300) // VC++ 6 compiler bug
         typedef ::IceProxy::Ice::Object _Base;
-        return dynamic_cast<Data*>(_Base::ice_collocationOptimized(__co).get());
+        return dynamic_cast<ByteData*>(_Base::ice_collocationOptimized(__co).get());
     #else
-        return dynamic_cast<Data*>(::IceProxy::Ice::Object::ice_collocationOptimized(__co).get());
+        return dynamic_cast<ByteData*>(::IceProxy::Ice::Object::ice_collocationOptimized(__co).get());
     #endif
     }
     
-    ::IceInternal::ProxyHandle<Data> ice_twoway() const
+    ::IceInternal::ProxyHandle<ByteData> ice_twoway() const
     {
     #if defined(_MSC_VER) && (_MSC_VER < 1300) // VC++ 6 compiler bug
         typedef ::IceProxy::Ice::Object _Base;
-        return dynamic_cast<Data*>(_Base::ice_twoway().get());
+        return dynamic_cast<ByteData*>(_Base::ice_twoway().get());
     #else
-        return dynamic_cast<Data*>(::IceProxy::Ice::Object::ice_twoway().get());
+        return dynamic_cast<ByteData*>(::IceProxy::Ice::Object::ice_twoway().get());
     #endif
     }
     
-    ::IceInternal::ProxyHandle<Data> ice_oneway() const
+    ::IceInternal::ProxyHandle<ByteData> ice_oneway() const
     {
     #if defined(_MSC_VER) && (_MSC_VER < 1300) // VC++ 6 compiler bug
         typedef ::IceProxy::Ice::Object _Base;
-        return dynamic_cast<Data*>(_Base::ice_oneway().get());
+        return dynamic_cast<ByteData*>(_Base::ice_oneway().get());
     #else
-        return dynamic_cast<Data*>(::IceProxy::Ice::Object::ice_oneway().get());
+        return dynamic_cast<ByteData*>(::IceProxy::Ice::Object::ice_oneway().get());
     #endif
     }
     
-    ::IceInternal::ProxyHandle<Data> ice_batchOneway() const
+    ::IceInternal::ProxyHandle<ByteData> ice_batchOneway() const
     {
     #if defined(_MSC_VER) && (_MSC_VER < 1300) // VC++ 6 compiler bug
         typedef ::IceProxy::Ice::Object _Base;
-        return dynamic_cast<Data*>(_Base::ice_batchOneway().get());
+        return dynamic_cast<ByteData*>(_Base::ice_batchOneway().get());
     #else
-        return dynamic_cast<Data*>(::IceProxy::Ice::Object::ice_batchOneway().get());
+        return dynamic_cast<ByteData*>(::IceProxy::Ice::Object::ice_batchOneway().get());
     #endif
     }
     
-    ::IceInternal::ProxyHandle<Data> ice_datagram() const
+    ::IceInternal::ProxyHandle<ByteData> ice_datagram() const
     {
     #if defined(_MSC_VER) && (_MSC_VER < 1300) // VC++ 6 compiler bug
         typedef ::IceProxy::Ice::Object _Base;
-        return dynamic_cast<Data*>(_Base::ice_datagram().get());
+        return dynamic_cast<ByteData*>(_Base::ice_datagram().get());
     #else
-        return dynamic_cast<Data*>(::IceProxy::Ice::Object::ice_datagram().get());
+        return dynamic_cast<ByteData*>(::IceProxy::Ice::Object::ice_datagram().get());
     #endif
     }
     
-    ::IceInternal::ProxyHandle<Data> ice_batchDatagram() const
+    ::IceInternal::ProxyHandle<ByteData> ice_batchDatagram() const
     {
     #if defined(_MSC_VER) && (_MSC_VER < 1300) // VC++ 6 compiler bug
         typedef ::IceProxy::Ice::Object _Base;
-        return dynamic_cast<Data*>(_Base::ice_batchDatagram().get());
+        return dynamic_cast<ByteData*>(_Base::ice_batchDatagram().get());
     #else
-        return dynamic_cast<Data*>(::IceProxy::Ice::Object::ice_batchDatagram().get());
+        return dynamic_cast<ByteData*>(::IceProxy::Ice::Object::ice_batchDatagram().get());
     #endif
     }
     
-    ::IceInternal::ProxyHandle<Data> ice_compress(bool __compress) const
+    ::IceInternal::ProxyHandle<ByteData> ice_compress(bool __compress) const
     {
     #if defined(_MSC_VER) && (_MSC_VER < 1300) // VC++ 6 compiler bug
         typedef ::IceProxy::Ice::Object _Base;
-        return dynamic_cast<Data*>(_Base::ice_compress(__compress).get());
+        return dynamic_cast<ByteData*>(_Base::ice_compress(__compress).get());
     #else
-        return dynamic_cast<Data*>(::IceProxy::Ice::Object::ice_compress(__compress).get());
+        return dynamic_cast<ByteData*>(::IceProxy::Ice::Object::ice_compress(__compress).get());
     #endif
     }
     
-    ::IceInternal::ProxyHandle<Data> ice_timeout(int __timeout) const
+    ::IceInternal::ProxyHandle<ByteData> ice_timeout(int __timeout) const
     {
     #if defined(_MSC_VER) && (_MSC_VER < 1300) // VC++ 6 compiler bug
         typedef ::IceProxy::Ice::Object _Base;
-        return dynamic_cast<Data*>(_Base::ice_timeout(__timeout).get());
+        return dynamic_cast<ByteData*>(_Base::ice_timeout(__timeout).get());
     #else
-        return dynamic_cast<Data*>(::IceProxy::Ice::Object::ice_timeout(__timeout).get());
+        return dynamic_cast<ByteData*>(::IceProxy::Ice::Object::ice_timeout(__timeout).get());
     #endif
     }
     
-    ::IceInternal::ProxyHandle<Data> ice_connectionId(const std::string& __id) const
+    ::IceInternal::ProxyHandle<ByteData> ice_connectionId(const std::string& __id) const
     {
     #if defined(_MSC_VER) && (_MSC_VER < 1300) // VC++ 6 compiler bug
         typedef ::IceProxy::Ice::Object _Base;
-        return dynamic_cast<Data*>(_Base::ice_connectionId(__id).get());
+        return dynamic_cast<ByteData*>(_Base::ice_connectionId(__id).get());
     #else
-        return dynamic_cast<Data*>(::IceProxy::Ice::Object::ice_connectionId(__id).get());
+        return dynamic_cast<ByteData*>(::IceProxy::Ice::Object::ice_connectionId(__id).get());
+    #endif
+    }
+    
+    static const ::std::string& ice_staticId();
+
+private: 
+
+    virtual ::IceInternal::Handle< ::IceDelegateM::Ice::Object> __createDelegateM();
+    virtual ::IceInternal::Handle< ::IceDelegateD::Ice::Object> __createDelegateD();
+    virtual ::IceProxy::Ice::Object* __newInstance() const;
+};
+
+class FloatData : virtual public ::IceProxy::Ice::Object
+{
+public:
+    
+    ::IceInternal::ProxyHandle<FloatData> ice_context(const ::Ice::Context& __context) const
+    {
+    #if defined(_MSC_VER) && (_MSC_VER < 1300) // VC++ 6 compiler bug
+        typedef ::IceProxy::Ice::Object _Base;
+        return dynamic_cast<FloatData*>(_Base::ice_context(__context).get());
+    #else
+        return dynamic_cast<FloatData*>(::IceProxy::Ice::Object::ice_context(__context).get());
+    #endif
+    }
+    
+    ::IceInternal::ProxyHandle<FloatData> ice_adapterId(const std::string& __id) const
+    {
+    #if defined(_MSC_VER) && (_MSC_VER < 1300) // VC++ 6 compiler bug
+        typedef ::IceProxy::Ice::Object _Base;
+        return dynamic_cast<FloatData*>(_Base::ice_adapterId(__id).get());
+    #else
+        return dynamic_cast<FloatData*>(::IceProxy::Ice::Object::ice_adapterId(__id).get());
+    #endif
+    }
+    
+    ::IceInternal::ProxyHandle<FloatData> ice_endpoints(const ::Ice::EndpointSeq& __endpoints) const
+    {
+    #if defined(_MSC_VER) && (_MSC_VER < 1300) // VC++ 6 compiler bug
+        typedef ::IceProxy::Ice::Object _Base;
+        return dynamic_cast<FloatData*>(_Base::ice_endpoints(__endpoints).get());
+    #else
+        return dynamic_cast<FloatData*>(::IceProxy::Ice::Object::ice_endpoints(__endpoints).get());
+    #endif
+    }
+    
+    ::IceInternal::ProxyHandle<FloatData> ice_locatorCacheTimeout(int __timeout) const
+    {
+    #if defined(_MSC_VER) && (_MSC_VER < 1300) // VC++ 6 compiler bug
+        typedef ::IceProxy::Ice::Object _Base;
+        return dynamic_cast<FloatData*>(_Base::ice_locatorCacheTimeout(__timeout).get());
+    #else
+        return dynamic_cast<FloatData*>(::IceProxy::Ice::Object::ice_locatorCacheTimeout(__timeout).get());
+    #endif
+    }
+    
+    ::IceInternal::ProxyHandle<FloatData> ice_connectionCached(bool __cached) const
+    {
+    #if defined(_MSC_VER) && (_MSC_VER < 1300) // VC++ 6 compiler bug
+        typedef ::IceProxy::Ice::Object _Base;
+        return dynamic_cast<FloatData*>(_Base::ice_connectionCached(__cached).get());
+    #else
+        return dynamic_cast<FloatData*>(::IceProxy::Ice::Object::ice_connectionCached(__cached).get());
+    #endif
+    }
+    
+    ::IceInternal::ProxyHandle<FloatData> ice_endpointSelection(::Ice::EndpointSelectionType __est) const
+    {
+    #if defined(_MSC_VER) && (_MSC_VER < 1300) // VC++ 6 compiler bug
+        typedef ::IceProxy::Ice::Object _Base;
+        return dynamic_cast<FloatData*>(_Base::ice_endpointSelection(__est).get());
+    #else
+        return dynamic_cast<FloatData*>(::IceProxy::Ice::Object::ice_endpointSelection(__est).get());
+    #endif
+    }
+    
+    ::IceInternal::ProxyHandle<FloatData> ice_secure(bool __secure) const
+    {
+    #if defined(_MSC_VER) && (_MSC_VER < 1300) // VC++ 6 compiler bug
+        typedef ::IceProxy::Ice::Object _Base;
+        return dynamic_cast<FloatData*>(_Base::ice_secure(__secure).get());
+    #else
+        return dynamic_cast<FloatData*>(::IceProxy::Ice::Object::ice_secure(__secure).get());
+    #endif
+    }
+    
+    ::IceInternal::ProxyHandle<FloatData> ice_preferSecure(bool __preferSecure) const
+    {
+    #if defined(_MSC_VER) && (_MSC_VER < 1300) // VC++ 6 compiler bug
+        typedef ::IceProxy::Ice::Object _Base;
+        return dynamic_cast<FloatData*>(_Base::ice_preferSecure(__preferSecure).get());
+    #else
+        return dynamic_cast<FloatData*>(::IceProxy::Ice::Object::ice_preferSecure(__preferSecure).get());
+    #endif
+    }
+    
+    ::IceInternal::ProxyHandle<FloatData> ice_router(const ::Ice::RouterPrx& __router) const
+    {
+    #if defined(_MSC_VER) && (_MSC_VER < 1300) // VC++ 6 compiler bug
+        typedef ::IceProxy::Ice::Object _Base;
+        return dynamic_cast<FloatData*>(_Base::ice_router(__router).get());
+    #else
+        return dynamic_cast<FloatData*>(::IceProxy::Ice::Object::ice_router(__router).get());
+    #endif
+    }
+    
+    ::IceInternal::ProxyHandle<FloatData> ice_locator(const ::Ice::LocatorPrx& __locator) const
+    {
+    #if defined(_MSC_VER) && (_MSC_VER < 1300) // VC++ 6 compiler bug
+        typedef ::IceProxy::Ice::Object _Base;
+        return dynamic_cast<FloatData*>(_Base::ice_locator(__locator).get());
+    #else
+        return dynamic_cast<FloatData*>(::IceProxy::Ice::Object::ice_locator(__locator).get());
+    #endif
+    }
+    
+    ::IceInternal::ProxyHandle<FloatData> ice_collocationOptimized(bool __co) const
+    {
+    #if defined(_MSC_VER) && (_MSC_VER < 1300) // VC++ 6 compiler bug
+        typedef ::IceProxy::Ice::Object _Base;
+        return dynamic_cast<FloatData*>(_Base::ice_collocationOptimized(__co).get());
+    #else
+        return dynamic_cast<FloatData*>(::IceProxy::Ice::Object::ice_collocationOptimized(__co).get());
+    #endif
+    }
+    
+    ::IceInternal::ProxyHandle<FloatData> ice_twoway() const
+    {
+    #if defined(_MSC_VER) && (_MSC_VER < 1300) // VC++ 6 compiler bug
+        typedef ::IceProxy::Ice::Object _Base;
+        return dynamic_cast<FloatData*>(_Base::ice_twoway().get());
+    #else
+        return dynamic_cast<FloatData*>(::IceProxy::Ice::Object::ice_twoway().get());
+    #endif
+    }
+    
+    ::IceInternal::ProxyHandle<FloatData> ice_oneway() const
+    {
+    #if defined(_MSC_VER) && (_MSC_VER < 1300) // VC++ 6 compiler bug
+        typedef ::IceProxy::Ice::Object _Base;
+        return dynamic_cast<FloatData*>(_Base::ice_oneway().get());
+    #else
+        return dynamic_cast<FloatData*>(::IceProxy::Ice::Object::ice_oneway().get());
+    #endif
+    }
+    
+    ::IceInternal::ProxyHandle<FloatData> ice_batchOneway() const
+    {
+    #if defined(_MSC_VER) && (_MSC_VER < 1300) // VC++ 6 compiler bug
+        typedef ::IceProxy::Ice::Object _Base;
+        return dynamic_cast<FloatData*>(_Base::ice_batchOneway().get());
+    #else
+        return dynamic_cast<FloatData*>(::IceProxy::Ice::Object::ice_batchOneway().get());
+    #endif
+    }
+    
+    ::IceInternal::ProxyHandle<FloatData> ice_datagram() const
+    {
+    #if defined(_MSC_VER) && (_MSC_VER < 1300) // VC++ 6 compiler bug
+        typedef ::IceProxy::Ice::Object _Base;
+        return dynamic_cast<FloatData*>(_Base::ice_datagram().get());
+    #else
+        return dynamic_cast<FloatData*>(::IceProxy::Ice::Object::ice_datagram().get());
+    #endif
+    }
+    
+    ::IceInternal::ProxyHandle<FloatData> ice_batchDatagram() const
+    {
+    #if defined(_MSC_VER) && (_MSC_VER < 1300) // VC++ 6 compiler bug
+        typedef ::IceProxy::Ice::Object _Base;
+        return dynamic_cast<FloatData*>(_Base::ice_batchDatagram().get());
+    #else
+        return dynamic_cast<FloatData*>(::IceProxy::Ice::Object::ice_batchDatagram().get());
+    #endif
+    }
+    
+    ::IceInternal::ProxyHandle<FloatData> ice_compress(bool __compress) const
+    {
+    #if defined(_MSC_VER) && (_MSC_VER < 1300) // VC++ 6 compiler bug
+        typedef ::IceProxy::Ice::Object _Base;
+        return dynamic_cast<FloatData*>(_Base::ice_compress(__compress).get());
+    #else
+        return dynamic_cast<FloatData*>(::IceProxy::Ice::Object::ice_compress(__compress).get());
+    #endif
+    }
+    
+    ::IceInternal::ProxyHandle<FloatData> ice_timeout(int __timeout) const
+    {
+    #if defined(_MSC_VER) && (_MSC_VER < 1300) // VC++ 6 compiler bug
+        typedef ::IceProxy::Ice::Object _Base;
+        return dynamic_cast<FloatData*>(_Base::ice_timeout(__timeout).get());
+    #else
+        return dynamic_cast<FloatData*>(::IceProxy::Ice::Object::ice_timeout(__timeout).get());
+    #endif
+    }
+    
+    ::IceInternal::ProxyHandle<FloatData> ice_connectionId(const std::string& __id) const
+    {
+    #if defined(_MSC_VER) && (_MSC_VER < 1300) // VC++ 6 compiler bug
+        typedef ::IceProxy::Ice::Object _Base;
+        return dynamic_cast<FloatData*>(_Base::ice_connectionId(__id).get());
+    #else
+        return dynamic_cast<FloatData*>(::IceProxy::Ice::Object::ice_connectionId(__id).get());
     #endif
     }
     
@@ -346,51 +569,99 @@ class DataInterface : virtual public ::IceProxy::Ice::Object
 {
 public:
 
-    void sendData(const ::Communication::DataPtr& dataObject)
+    void sendByteData(const ::Communication::ByteDataPtr& data)
     {
-        sendData(dataObject, 0);
+        sendByteData(data, 0);
     }
-    void sendData(const ::Communication::DataPtr& dataObject, const ::Ice::Context& __ctx)
+    void sendByteData(const ::Communication::ByteDataPtr& data, const ::Ice::Context& __ctx)
     {
-        sendData(dataObject, &__ctx);
-    }
-
-    ::Ice::AsyncResultPtr begin_sendData(const ::Communication::DataPtr& dataObject)
-    {
-        return begin_sendData(dataObject, 0, ::IceInternal::__dummyCallback, 0);
+        sendByteData(data, &__ctx);
     }
 
-    ::Ice::AsyncResultPtr begin_sendData(const ::Communication::DataPtr& dataObject, const ::Ice::Context& __ctx)
+    ::Ice::AsyncResultPtr begin_sendByteData(const ::Communication::ByteDataPtr& data)
     {
-        return begin_sendData(dataObject, &__ctx, ::IceInternal::__dummyCallback, 0);
+        return begin_sendByteData(data, 0, ::IceInternal::__dummyCallback, 0);
     }
 
-    ::Ice::AsyncResultPtr begin_sendData(const ::Communication::DataPtr& dataObject, const ::Ice::CallbackPtr& __del, const ::Ice::LocalObjectPtr& __cookie = 0)
+    ::Ice::AsyncResultPtr begin_sendByteData(const ::Communication::ByteDataPtr& data, const ::Ice::Context& __ctx)
     {
-        return begin_sendData(dataObject, 0, __del, __cookie);
+        return begin_sendByteData(data, &__ctx, ::IceInternal::__dummyCallback, 0);
     }
 
-    ::Ice::AsyncResultPtr begin_sendData(const ::Communication::DataPtr& dataObject, const ::Ice::Context& __ctx, const ::Ice::CallbackPtr& __del, const ::Ice::LocalObjectPtr& __cookie = 0)
+    ::Ice::AsyncResultPtr begin_sendByteData(const ::Communication::ByteDataPtr& data, const ::Ice::CallbackPtr& __del, const ::Ice::LocalObjectPtr& __cookie = 0)
     {
-        return begin_sendData(dataObject, &__ctx, __del, __cookie);
+        return begin_sendByteData(data, 0, __del, __cookie);
     }
 
-    ::Ice::AsyncResultPtr begin_sendData(const ::Communication::DataPtr& dataObject, const ::Communication::Callback_DataInterface_sendDataPtr& __del, const ::Ice::LocalObjectPtr& __cookie = 0)
+    ::Ice::AsyncResultPtr begin_sendByteData(const ::Communication::ByteDataPtr& data, const ::Ice::Context& __ctx, const ::Ice::CallbackPtr& __del, const ::Ice::LocalObjectPtr& __cookie = 0)
     {
-        return begin_sendData(dataObject, 0, __del, __cookie);
+        return begin_sendByteData(data, &__ctx, __del, __cookie);
     }
 
-    ::Ice::AsyncResultPtr begin_sendData(const ::Communication::DataPtr& dataObject, const ::Ice::Context& __ctx, const ::Communication::Callback_DataInterface_sendDataPtr& __del, const ::Ice::LocalObjectPtr& __cookie = 0)
+    ::Ice::AsyncResultPtr begin_sendByteData(const ::Communication::ByteDataPtr& data, const ::Communication::Callback_DataInterface_sendByteDataPtr& __del, const ::Ice::LocalObjectPtr& __cookie = 0)
     {
-        return begin_sendData(dataObject, &__ctx, __del, __cookie);
+        return begin_sendByteData(data, 0, __del, __cookie);
     }
 
-    void end_sendData(const ::Ice::AsyncResultPtr&);
+    ::Ice::AsyncResultPtr begin_sendByteData(const ::Communication::ByteDataPtr& data, const ::Ice::Context& __ctx, const ::Communication::Callback_DataInterface_sendByteDataPtr& __del, const ::Ice::LocalObjectPtr& __cookie = 0)
+    {
+        return begin_sendByteData(data, &__ctx, __del, __cookie);
+    }
+
+    void end_sendByteData(const ::Ice::AsyncResultPtr&);
     
 private:
 
-    void sendData(const ::Communication::DataPtr&, const ::Ice::Context*);
-    ::Ice::AsyncResultPtr begin_sendData(const ::Communication::DataPtr&, const ::Ice::Context*, const ::IceInternal::CallbackBasePtr&, const ::Ice::LocalObjectPtr& __cookie = 0);
+    void sendByteData(const ::Communication::ByteDataPtr&, const ::Ice::Context*);
+    ::Ice::AsyncResultPtr begin_sendByteData(const ::Communication::ByteDataPtr&, const ::Ice::Context*, const ::IceInternal::CallbackBasePtr&, const ::Ice::LocalObjectPtr& __cookie = 0);
+    
+public:
+
+    void sendFloatData(const ::Communication::FloatDataPtr& data)
+    {
+        sendFloatData(data, 0);
+    }
+    void sendFloatData(const ::Communication::FloatDataPtr& data, const ::Ice::Context& __ctx)
+    {
+        sendFloatData(data, &__ctx);
+    }
+
+    ::Ice::AsyncResultPtr begin_sendFloatData(const ::Communication::FloatDataPtr& data)
+    {
+        return begin_sendFloatData(data, 0, ::IceInternal::__dummyCallback, 0);
+    }
+
+    ::Ice::AsyncResultPtr begin_sendFloatData(const ::Communication::FloatDataPtr& data, const ::Ice::Context& __ctx)
+    {
+        return begin_sendFloatData(data, &__ctx, ::IceInternal::__dummyCallback, 0);
+    }
+
+    ::Ice::AsyncResultPtr begin_sendFloatData(const ::Communication::FloatDataPtr& data, const ::Ice::CallbackPtr& __del, const ::Ice::LocalObjectPtr& __cookie = 0)
+    {
+        return begin_sendFloatData(data, 0, __del, __cookie);
+    }
+
+    ::Ice::AsyncResultPtr begin_sendFloatData(const ::Communication::FloatDataPtr& data, const ::Ice::Context& __ctx, const ::Ice::CallbackPtr& __del, const ::Ice::LocalObjectPtr& __cookie = 0)
+    {
+        return begin_sendFloatData(data, &__ctx, __del, __cookie);
+    }
+
+    ::Ice::AsyncResultPtr begin_sendFloatData(const ::Communication::FloatDataPtr& data, const ::Communication::Callback_DataInterface_sendFloatDataPtr& __del, const ::Ice::LocalObjectPtr& __cookie = 0)
+    {
+        return begin_sendFloatData(data, 0, __del, __cookie);
+    }
+
+    ::Ice::AsyncResultPtr begin_sendFloatData(const ::Communication::FloatDataPtr& data, const ::Ice::Context& __ctx, const ::Communication::Callback_DataInterface_sendFloatDataPtr& __del, const ::Ice::LocalObjectPtr& __cookie = 0)
+    {
+        return begin_sendFloatData(data, &__ctx, __del, __cookie);
+    }
+
+    void end_sendFloatData(const ::Ice::AsyncResultPtr&);
+    
+private:
+
+    void sendFloatData(const ::Communication::FloatDataPtr&, const ::Ice::Context*);
+    ::Ice::AsyncResultPtr begin_sendFloatData(const ::Communication::FloatDataPtr&, const ::Ice::Context*, const ::IceInternal::CallbackBasePtr&, const ::Ice::LocalObjectPtr& __cookie = 0);
     
 public:
     
@@ -603,7 +874,12 @@ namespace IceDelegate
 namespace Communication
 {
 
-class Data : virtual public ::IceDelegate::Ice::Object
+class ByteData : virtual public ::IceDelegate::Ice::Object
+{
+public:
+};
+
+class FloatData : virtual public ::IceDelegate::Ice::Object
 {
 public:
 };
@@ -612,7 +888,9 @@ class DataInterface : virtual public ::IceDelegate::Ice::Object
 {
 public:
 
-    virtual void sendData(const ::Communication::DataPtr&, const ::Ice::Context*) = 0;
+    virtual void sendByteData(const ::Communication::ByteDataPtr&, const ::Ice::Context*) = 0;
+
+    virtual void sendFloatData(const ::Communication::FloatDataPtr&, const ::Ice::Context*) = 0;
 };
 
 }
@@ -625,8 +903,14 @@ namespace IceDelegateM
 namespace Communication
 {
 
-class Data : virtual public ::IceDelegate::Communication::Data,
-             virtual public ::IceDelegateM::Ice::Object
+class ByteData : virtual public ::IceDelegate::Communication::ByteData,
+                 virtual public ::IceDelegateM::Ice::Object
+{
+public:
+};
+
+class FloatData : virtual public ::IceDelegate::Communication::FloatData,
+                  virtual public ::IceDelegateM::Ice::Object
 {
 public:
 };
@@ -636,7 +920,9 @@ class DataInterface : virtual public ::IceDelegate::Communication::DataInterface
 {
 public:
 
-    virtual void sendData(const ::Communication::DataPtr&, const ::Ice::Context*);
+    virtual void sendByteData(const ::Communication::ByteDataPtr&, const ::Ice::Context*);
+
+    virtual void sendFloatData(const ::Communication::FloatDataPtr&, const ::Ice::Context*);
 };
 
 }
@@ -649,8 +935,14 @@ namespace IceDelegateD
 namespace Communication
 {
 
-class Data : virtual public ::IceDelegate::Communication::Data,
-             virtual public ::IceDelegateD::Ice::Object
+class ByteData : virtual public ::IceDelegate::Communication::ByteData,
+                 virtual public ::IceDelegateD::Ice::Object
+{
+public:
+};
+
+class FloatData : virtual public ::IceDelegate::Communication::FloatData,
+                  virtual public ::IceDelegateD::Ice::Object
 {
 public:
 };
@@ -660,7 +952,9 @@ class DataInterface : virtual public ::IceDelegate::Communication::DataInterface
 {
 public:
 
-    virtual void sendData(const ::Communication::DataPtr&, const ::Ice::Context*);
+    virtual void sendByteData(const ::Communication::ByteDataPtr&, const ::Ice::Context*);
+
+    virtual void sendFloatData(const ::Communication::FloatDataPtr&, const ::Ice::Context*);
 };
 
 }
@@ -670,15 +964,15 @@ public:
 namespace Communication
 {
 
-class Data : virtual public ::Ice::Object
+class ByteData : virtual public ::Ice::Object
 {
 public:
 
-    typedef DataPrx ProxyType;
-    typedef DataPtr PointerType;
+    typedef ByteDataPrx ProxyType;
+    typedef ByteDataPtr PointerType;
     
-    Data() {}
-    Data(::Communication::DataTypeIce, ::Ice::Long, const ::Communication::dataSequence&);
+    ByteData() {}
+    ByteData(::Communication::DataTypeIce, ::Ice::Long, const ::Communication::byteSequence&);
     virtual ::Ice::ObjectPtr ice_clone() const;
 
     virtual bool ice_isA(const ::std::string&, const ::Ice::Current& = ::Ice::Current()) const;
@@ -699,9 +993,9 @@ public:
 
 protected:
 
-    virtual ~Data() {}
+    virtual ~ByteData() {}
 
-    friend class Data__staticInit;
+    friend class ByteData__staticInit;
 
 public:
 
@@ -709,24 +1003,74 @@ public:
 
     ::Ice::Long timeStamp;
 
-    ::Communication::dataSequence byteArrayData;
+    ::Communication::byteSequence byteArrayData;
 };
 
-class Data__staticInit
+class ByteData__staticInit
 {
 public:
 
-    ::Communication::Data _init;
+    ::Communication::ByteData _init;
 };
 
-static Data__staticInit _Data_init;
+static ByteData__staticInit _ByteData_init;
 
-inline bool operator==(const Data& l, const Data& r)
+inline bool operator==(const ByteData& l, const ByteData& r)
 {
     return static_cast<const ::Ice::Object&>(l) == static_cast<const ::Ice::Object&>(r);
 }
 
-inline bool operator<(const Data& l, const Data& r)
+inline bool operator<(const ByteData& l, const ByteData& r)
+{
+    return static_cast<const ::Ice::Object&>(l) < static_cast<const ::Ice::Object&>(r);
+}
+
+class FloatData : virtual public ::Ice::Object
+{
+public:
+
+    typedef FloatDataPrx ProxyType;
+    typedef FloatDataPtr PointerType;
+    
+    FloatData() {}
+    FloatData(::Communication::DataTypeIce, ::Ice::Long, const ::Communication::floatSequence&);
+    virtual ::Ice::ObjectPtr ice_clone() const;
+
+    virtual bool ice_isA(const ::std::string&, const ::Ice::Current& = ::Ice::Current()) const;
+    virtual ::std::vector< ::std::string> ice_ids(const ::Ice::Current& = ::Ice::Current()) const;
+    virtual const ::std::string& ice_id(const ::Ice::Current& = ::Ice::Current()) const;
+    static const ::std::string& ice_staticId();
+
+
+    virtual void __write(::IceInternal::BasicStream*) const;
+    virtual void __read(::IceInternal::BasicStream*, bool);
+// COMPILERFIX: Stream API is not supported with VC++ 6
+#if !defined(_MSC_VER) || (_MSC_VER >= 1300)
+    virtual void __write(const ::Ice::OutputStreamPtr&) const;
+    virtual void __read(const ::Ice::InputStreamPtr&, bool);
+#endif
+
+    static const ::Ice::ObjectFactoryPtr& ice_factory();
+
+protected:
+
+    virtual ~FloatData() {}
+
+public:
+
+    ::Communication::DataTypeIce type;
+
+    ::Ice::Long timeStamp;
+
+    ::Communication::floatSequence floatArrayData;
+};
+
+inline bool operator==(const FloatData& l, const FloatData& r)
+{
+    return static_cast<const ::Ice::Object&>(l) == static_cast<const ::Ice::Object&>(r);
+}
+
+inline bool operator<(const FloatData& l, const FloatData& r)
 {
     return static_cast<const ::Ice::Object&>(l) < static_cast<const ::Ice::Object&>(r);
 }
@@ -745,8 +1089,11 @@ public:
     virtual const ::std::string& ice_id(const ::Ice::Current& = ::Ice::Current()) const;
     static const ::std::string& ice_staticId();
 
-    virtual void sendData(const ::Communication::DataPtr&, const ::Ice::Current& = ::Ice::Current()) = 0;
-    ::Ice::DispatchStatus ___sendData(::IceInternal::Incoming&, const ::Ice::Current&);
+    virtual void sendByteData(const ::Communication::ByteDataPtr&, const ::Ice::Current& = ::Ice::Current()) = 0;
+    ::Ice::DispatchStatus ___sendByteData(::IceInternal::Incoming&, const ::Ice::Current&);
+
+    virtual void sendFloatData(const ::Communication::FloatDataPtr&, const ::Ice::Current& = ::Ice::Current()) = 0;
+    ::Ice::DispatchStatus ___sendFloatData(::IceInternal::Incoming&, const ::Ice::Current&);
 
     virtual ::Ice::DispatchStatus __dispatch(::IceInternal::Incoming&, const ::Ice::Current&);
 
@@ -775,7 +1122,7 @@ namespace Communication
 {
 
 template<class T>
-class CallbackNC_DataInterface_sendData : public Callback_DataInterface_sendData_Base, public ::IceInternal::OnewayCallbackNC<T>
+class CallbackNC_DataInterface_sendByteData : public Callback_DataInterface_sendByteData_Base, public ::IceInternal::OnewayCallbackNC<T>
 {
 public:
 
@@ -785,38 +1132,38 @@ public:
     typedef void (T::*Sent)(bool);
     typedef void (T::*Response)();
 
-    CallbackNC_DataInterface_sendData(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
+    CallbackNC_DataInterface_sendByteData(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::OnewayCallbackNC<T>(obj, cb, excb, sentcb)
     {
     }
 };
 
-template<class T> Callback_DataInterface_sendDataPtr
-newCallback_DataInterface_sendData(const IceUtil::Handle<T>& instance, void (T::*cb)(), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+template<class T> Callback_DataInterface_sendByteDataPtr
+newCallback_DataInterface_sendByteData(const IceUtil::Handle<T>& instance, void (T::*cb)(), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
-    return new CallbackNC_DataInterface_sendData<T>(instance, cb, excb, sentcb);
+    return new CallbackNC_DataInterface_sendByteData<T>(instance, cb, excb, sentcb);
 }
 
-template<class T> Callback_DataInterface_sendDataPtr
-newCallback_DataInterface_sendData(const IceUtil::Handle<T>& instance, void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+template<class T> Callback_DataInterface_sendByteDataPtr
+newCallback_DataInterface_sendByteData(const IceUtil::Handle<T>& instance, void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
-    return new CallbackNC_DataInterface_sendData<T>(instance, 0, excb, sentcb);
+    return new CallbackNC_DataInterface_sendByteData<T>(instance, 0, excb, sentcb);
 }
 
-template<class T> Callback_DataInterface_sendDataPtr
-newCallback_DataInterface_sendData(T* instance, void (T::*cb)(), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+template<class T> Callback_DataInterface_sendByteDataPtr
+newCallback_DataInterface_sendByteData(T* instance, void (T::*cb)(), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
-    return new CallbackNC_DataInterface_sendData<T>(instance, cb, excb, sentcb);
+    return new CallbackNC_DataInterface_sendByteData<T>(instance, cb, excb, sentcb);
 }
 
-template<class T> Callback_DataInterface_sendDataPtr
-newCallback_DataInterface_sendData(T* instance, void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+template<class T> Callback_DataInterface_sendByteDataPtr
+newCallback_DataInterface_sendByteData(T* instance, void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
-    return new CallbackNC_DataInterface_sendData<T>(instance, 0, excb, sentcb);
+    return new CallbackNC_DataInterface_sendByteData<T>(instance, 0, excb, sentcb);
 }
 
 template<class T, typename CT>
-class Callback_DataInterface_sendData : public Callback_DataInterface_sendData_Base, public ::IceInternal::OnewayCallback<T, CT>
+class Callback_DataInterface_sendByteData : public Callback_DataInterface_sendByteData_Base, public ::IceInternal::OnewayCallback<T, CT>
 {
 public:
 
@@ -826,34 +1173,116 @@ public:
     typedef void (T::*Sent)(bool , const CT&);
     typedef void (T::*Response)(const CT&);
 
-    Callback_DataInterface_sendData(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
+    Callback_DataInterface_sendByteData(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::OnewayCallback<T, CT>(obj, cb, excb, sentcb)
     {
     }
 };
 
-template<class T, typename CT> Callback_DataInterface_sendDataPtr
-newCallback_DataInterface_sendData(const IceUtil::Handle<T>& instance, void (T::*cb)(const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+template<class T, typename CT> Callback_DataInterface_sendByteDataPtr
+newCallback_DataInterface_sendByteData(const IceUtil::Handle<T>& instance, void (T::*cb)(const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
-    return new Callback_DataInterface_sendData<T, CT>(instance, cb, excb, sentcb);
+    return new Callback_DataInterface_sendByteData<T, CT>(instance, cb, excb, sentcb);
 }
 
-template<class T, typename CT> Callback_DataInterface_sendDataPtr
-newCallback_DataInterface_sendData(const IceUtil::Handle<T>& instance, void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+template<class T, typename CT> Callback_DataInterface_sendByteDataPtr
+newCallback_DataInterface_sendByteData(const IceUtil::Handle<T>& instance, void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
-    return new Callback_DataInterface_sendData<T, CT>(instance, 0, excb, sentcb);
+    return new Callback_DataInterface_sendByteData<T, CT>(instance, 0, excb, sentcb);
 }
 
-template<class T, typename CT> Callback_DataInterface_sendDataPtr
-newCallback_DataInterface_sendData(T* instance, void (T::*cb)(const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+template<class T, typename CT> Callback_DataInterface_sendByteDataPtr
+newCallback_DataInterface_sendByteData(T* instance, void (T::*cb)(const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
-    return new Callback_DataInterface_sendData<T, CT>(instance, cb, excb, sentcb);
+    return new Callback_DataInterface_sendByteData<T, CT>(instance, cb, excb, sentcb);
 }
 
-template<class T, typename CT> Callback_DataInterface_sendDataPtr
-newCallback_DataInterface_sendData(T* instance, void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+template<class T, typename CT> Callback_DataInterface_sendByteDataPtr
+newCallback_DataInterface_sendByteData(T* instance, void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
-    return new Callback_DataInterface_sendData<T, CT>(instance, 0, excb, sentcb);
+    return new Callback_DataInterface_sendByteData<T, CT>(instance, 0, excb, sentcb);
+}
+
+template<class T>
+class CallbackNC_DataInterface_sendFloatData : public Callback_DataInterface_sendFloatData_Base, public ::IceInternal::OnewayCallbackNC<T>
+{
+public:
+
+    typedef IceUtil::Handle<T> TPtr;
+
+    typedef void (T::*Exception)(const ::Ice::Exception&);
+    typedef void (T::*Sent)(bool);
+    typedef void (T::*Response)();
+
+    CallbackNC_DataInterface_sendFloatData(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
+        : ::IceInternal::OnewayCallbackNC<T>(obj, cb, excb, sentcb)
+    {
+    }
+};
+
+template<class T> Callback_DataInterface_sendFloatDataPtr
+newCallback_DataInterface_sendFloatData(const IceUtil::Handle<T>& instance, void (T::*cb)(), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+{
+    return new CallbackNC_DataInterface_sendFloatData<T>(instance, cb, excb, sentcb);
+}
+
+template<class T> Callback_DataInterface_sendFloatDataPtr
+newCallback_DataInterface_sendFloatData(const IceUtil::Handle<T>& instance, void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+{
+    return new CallbackNC_DataInterface_sendFloatData<T>(instance, 0, excb, sentcb);
+}
+
+template<class T> Callback_DataInterface_sendFloatDataPtr
+newCallback_DataInterface_sendFloatData(T* instance, void (T::*cb)(), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+{
+    return new CallbackNC_DataInterface_sendFloatData<T>(instance, cb, excb, sentcb);
+}
+
+template<class T> Callback_DataInterface_sendFloatDataPtr
+newCallback_DataInterface_sendFloatData(T* instance, void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+{
+    return new CallbackNC_DataInterface_sendFloatData<T>(instance, 0, excb, sentcb);
+}
+
+template<class T, typename CT>
+class Callback_DataInterface_sendFloatData : public Callback_DataInterface_sendFloatData_Base, public ::IceInternal::OnewayCallback<T, CT>
+{
+public:
+
+    typedef IceUtil::Handle<T> TPtr;
+
+    typedef void (T::*Exception)(const ::Ice::Exception& , const CT&);
+    typedef void (T::*Sent)(bool , const CT&);
+    typedef void (T::*Response)(const CT&);
+
+    Callback_DataInterface_sendFloatData(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
+        : ::IceInternal::OnewayCallback<T, CT>(obj, cb, excb, sentcb)
+    {
+    }
+};
+
+template<class T, typename CT> Callback_DataInterface_sendFloatDataPtr
+newCallback_DataInterface_sendFloatData(const IceUtil::Handle<T>& instance, void (T::*cb)(const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+{
+    return new Callback_DataInterface_sendFloatData<T, CT>(instance, cb, excb, sentcb);
+}
+
+template<class T, typename CT> Callback_DataInterface_sendFloatDataPtr
+newCallback_DataInterface_sendFloatData(const IceUtil::Handle<T>& instance, void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+{
+    return new Callback_DataInterface_sendFloatData<T, CT>(instance, 0, excb, sentcb);
+}
+
+template<class T, typename CT> Callback_DataInterface_sendFloatDataPtr
+newCallback_DataInterface_sendFloatData(T* instance, void (T::*cb)(const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+{
+    return new Callback_DataInterface_sendFloatData<T, CT>(instance, cb, excb, sentcb);
+}
+
+template<class T, typename CT> Callback_DataInterface_sendFloatDataPtr
+newCallback_DataInterface_sendFloatData(T* instance, void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+{
+    return new Callback_DataInterface_sendFloatData<T, CT>(instance, 0, excb, sentcb);
 }
 
 }

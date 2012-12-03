@@ -1,0 +1,118 @@
+DataLogger server ready.
+7.500000: App started
+7.504000: --------------------------------------
+7.522000: Sensor0 - MPL Gyroscope:
+7.544000: type: GYROSCOPE
+7.547000: min delay [microsecs]: 5000
+7.563000: power consumption [mA]: 5.5
+7.566000: resolution: 0.0010652636
+7.574000: max range: 34.90656
+7.586000: vendor: Invensense
+7.604000: version: 1
+7.615000: --------------------------------------
+7.625000: Sensor1 - MPL Accelerometer:
+7.640000: type: ACCELEROMETER
+7.645000: min delay [microsecs]: 5000
+7.663000: power consumption [mA]: 0.0
+7.671000: resolution: 0.039226603
+7.698000: max range: 19.6133
+7.705000: vendor: Invensense
+7.710000: version: 1
+7.720000: --------------------------------------
+7.735000: Sensor2 - MPL Magnetic Field:
+7.742000: type: MAGNETIC_FIELD
+7.746000: min delay [microsecs]: 10000
+7.762000: power consumption [mA]: 0.15
+7.772000: resolution: 0.9
+7.775000: max range: 5461.0
+7.782000: vendor: Invensense
+7.786000: version: 1
+7.795000: --------------------------------------
+7.811000: Sensor3 - MPL Orientation:
+7.820000: type: ORIENTATION
+7.826000: min delay [microsecs]: 5000
+7.837000: power consumption [mA]: 5.65
+7.844000: resolution: 1.0E-5
+7.856000: max range: 360.0
+7.864000: vendor: Invensense
+7.868000: version: 1
+7.877000: --------------------------------------
+7.900000: Sensor4 - MPL Rotation Vector:
+7.906000: type: ROTATION_VECTOR
+7.909000: min delay [microsecs]: 5000
+7.912000: power consumption [mA]: 5.65
+7.916000: resolution: 1.0E-5
+7.924000: max range: 1.0
+7.928000: vendor: Invensense
+7.938000: version: 1
+7.945000: --------------------------------------
+7.954000: Sensor5 - MPL Linear Acceleration:
+7.960000: type: LINEAR_ACCELERATION
+7.967000: min delay [microsecs]: 5000
+7.989000: power consumption [mA]: 5.65
+8.001000: resolution: 0.039226603
+8.006000: max range: 19.6133
+8.009000: vendor: Invensense
+8.011000: version: 1
+8.017000: --------------------------------------
+8.034000: Sensor6 - MPL Gravity:
+8.045000: type: GRAVITY
+8.054000: min delay [microsecs]: 5000
+8.063000: power consumption [mA]: 5.65
+8.075000: resolution: 1.0E-5
+8.099000: vendor: Invensense
+8.103000: version: 1
+8.108000: --------------------------------------
+8.120000: Sensor7 - Lite-On al3010 Ambient Light Se
+8.128000: type: LIGHT
+8.136000: min delay [microsecs]: 0
+8.144000: power consumption [mA]: 0.18
+8.154000: resolution: 1.0
+8.163000: max range: 72945.0
+8.172000: vendor: Lite-On
+8.180000: version: 1
+8.190000: --------------------------------------
+8.199000: Sensor8 - Rotation Vector Sensor:
+8.210000: type: ROTATION_VECTOR
+8.219000: min delay [microsecs]: 5000
+8.227000: power consumption [mA]: 5.65
+8.235000: resolution: 5.9604645E-8
+8.245000: max range: 1.0
+8.254000: vendor: Google Inc.
+8.263000: version: 3
+8.272000: --------------------------------------
+8.298000: Sensor9 - Gravity Sensor:
+8.301000: type: GRAVITY
+8.302000: min delay [microsecs]: 5000
+8.308000: power consumption [mA]: 5.65
+8.317000: resolution: 0.039226603
+8.336000: max range: 19.6133
+8.338000: vendor: Google Inc.
+8.344000: version: 3
+8.354000: --------------------------------------
+8.364000: Sensor10 - Linear Acceleration Sensor:
+8.372000: type: LINEAR_ACCELERATION
+8.380000: min delay [microsecs]: 5000
+8.390000: power consumption [mA]: 5.65
+8.398000: resolution: 0.039226603
+8.407000: max range: 19.6133
+8.416000: vendor: Google Inc.
+8.425000: version: 3
+8.434000: --------------------------------------
+8.444000: Sensor11 - Orientation Sensor:
+8.452000: type: ORIENTATION
+8.460000: min delay [microsecs]: 5000
+8.470000: power consumption [mA]: 5.65
+8.498000: resolution: 0.00390625
+8.502000: max range: 360.0
+8.505000: vendor: Google Inc.
+8.509000: version: 1
+8.516000: --------------------------------------
+8.524000: Sensor12 - Corrected Gyroscope Sensor:
+8.533000: type: GYROSCOPE
+8.541000: min delay [microsecs]: 5000
+8.552000: power consumption [mA]: 5.65
+8.561000: resolution: 0.0010652636
+8.570000: max range: 34.90656
+8.579000: vendor: Google Inc.
+8.587000: version: 1

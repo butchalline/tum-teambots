@@ -14,18 +14,28 @@ module Communication
 		UNSPECIFIED
 	};
 
-	sequence<byte> dataSequence;
-	class Data
+	sequence<byte> byteSequence;
+	class ByteData
 	{
 		DataTypeIce type;
 		long timeStamp;	
-		dataSequence byteArrayData;
+		byteSequence byteArrayData;
+			
+	};
+	
+	sequence<float> floatSequence;
+	class FloatData
+	{
+		DataTypeIce type;
+		long timeStamp;	
+		floatSequence floatArrayData;
 			
 	};
 
 	interface DataInterface
 	{
-	    idempotent void sendData(Data dataObject);
+	    idempotent void sendByteData(ByteData data);
+	    idempotent void sendFloatData(FloatData data);
 	};
 
 };

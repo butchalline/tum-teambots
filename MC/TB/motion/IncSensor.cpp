@@ -40,8 +40,6 @@ const u_char IncSensor::table[128] =  {0b01111111, 0b00111111, 0b00111110, 0b001
 IncSensor::IncSensor(){
 	inkrRoundsLeft = 0;
 	inkrRoundsRight = 0;
-	angleLeft = 0;
-	angleRight = 0;
 	lastPosLeft = 0;
 	lastPosRight = 0;
 	actPosRight = 0;

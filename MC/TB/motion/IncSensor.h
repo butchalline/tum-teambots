@@ -30,16 +30,14 @@ public:
 private:
 
 	static const u_char table[128];
-	int inkrRoundsLeft;	//number of rounds of the motors
-	int inkrRoundsRight;
+	short inkrRoundsLeft;	//number of rounds of the motors
+	short inkrRoundsRight;
 	char roundsLeft;
 	char roundsRight;
 	char lastPosRight;
 	char lastPosLeft;
 	char actPosRight;
 	char actPosLeft;
-	float angleLeft;	//current angle of the motor 0° --> 12 Uhr?
-	float angleRight;
 };
 
 extern IncSensor 	incSensor;

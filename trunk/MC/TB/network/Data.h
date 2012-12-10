@@ -33,7 +33,7 @@
 #define TB_COMMAND_RESET			  				0x04
 //======================================================
 
-
+//Send direction from SMartphone to MC
 #define TB_VELOCITY_ID				  				0x01
 //------------------------------------------------------
 #define TB_VELOCITY_FORWARD			  				0x00 //Target Velocity
@@ -53,7 +53,7 @@
 #define TB_POSITION_ID				  				0x04
 //------------------------------------------------------
 #define TB_GLOBAL_POSITION			  				0x00
-#define TB_LOCAL_POSITION			  				0x01
+#define TB_SEND_POSITION			  				0x01
 //======================================================
 
 
@@ -73,8 +73,16 @@ struct TBVelocity {
 	u_char speedRight;
 };
 
+struct TBPosition {
+	u_char posLeftMotor;
+	u_char posRightMotor;
+	short roundsLeft;
+	short roundsRight;
+};
+
 union TBData {
 	TBVelocity velocity;
+	TBPosition position;
 };
 
 struct TBHeader {

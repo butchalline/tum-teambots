@@ -12,3 +12,12 @@ C:\dev\TeamBots\Server\TeamBot\TeamBot\TeamBot\bin\x86\Debug\Content\TeamBot.png
 C:\dev\TeamBots\Server\TeamBot\TeamBot\TeamBot\bin\x86\Debug\Content\BasicFont.xnb
 C:\dev\TeamBots\Server\TeamBot\TeamBot\TeamBot\bin\x86\Debug\Content\Wall.xnb
 C:\dev\TeamBots\Server\TeamBot\TeamBot\TeamBot\bin\x86\Debug\Content\effects.xnb
+C:\dev\TeamBots\Server\TeamBot\TeamBot\TeamBot\bin\x86\Debug\TeamBot.exe.config
+C:\dev\TeamBots\Server\TeamBot\TeamBot\TeamBot\bin\x86\Debug\Content\GreenInfra.xnb
+C:\dev\TeamBots\Server\TeamBot\TeamBot\TeamBot\bin\x86\Debug\Content\RedInfra.xnb
+C:\dev\TeamBots\Server\TeamBot\TeamBot\TeamBot\bin\x86\Debug\Content\TeamBotLGRG.xnb
+C:\dev\TeamBots\Server\TeamBot\TeamBot\TeamBot\bin\x86\Debug\Content\TeamBotLGRR.xnb
+C:\dev\TeamBots\Server\TeamBot\TeamBot\TeamBot\bin\x86\Debug\Content\TeamBotLRRG.xnb
+C:\dev\TeamBots\Server\TeamBot\TeamBot\TeamBot\bin\x86\Debug\Content\TeamBotLRRR.xnb
+C:\dev\TeamBots\Server\TeamBot\TeamBot\TeamBot\bin\x86\Debug\Content\greenI.xnb
+C:\dev\TeamBots\Server\TeamBot\TeamBot\TeamBot\bin\x86\Debug\Content\redI.xnb

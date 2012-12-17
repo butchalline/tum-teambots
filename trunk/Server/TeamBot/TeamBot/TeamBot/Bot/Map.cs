@@ -116,6 +116,16 @@ namespace TeamBot.Bot
         }
 
 
+        public bool isWallAt(int xPixel, int yPixel)
+        {
+            int x = xPixel / 20;
+            int y = yPixel / 20;
+            Field field = (from f in _map where (f.x == x && f.y == y) select f).FirstOrDefault();
+            if (field != null)
+                return field.value == 1;
+            return false;
+        }
+
 
         internal void click(int p, int p_2)
         {

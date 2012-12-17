@@ -92,6 +92,8 @@ namespace TeamBot
             spriteBatch = new SpriteBatch(GraphicsDevice);
             // TODO: use this.Content to load your game content here
             bot.Texture = this.Content.Load<Texture2D>("TeamBot");
+            bot.GreenInfra = this.Content.Load<Texture2D>("greenI");
+            bot.RedInfra = this.Content.Load<Texture2D>("redI");
             DebugLayer.BasicFont = this.Content.Load<SpriteFont>("BasicFont");
             map.Wall = this.Content.Load<Texture2D>("Wall");
             map.effects = this.Content.Load<Effect>("effects");
@@ -118,6 +120,10 @@ namespace TeamBot
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
                 this.Exit();
 
+
+            //Sensor s = new Sensor();
+            //s.checkLeftSensor(ref map, Vector2.Zero,(float) Math.PI / 2.0f);
+            //this.Exit();
             previousKState = currentKState;
             currentKState = Keyboard.GetState();
             previousMState = currentMState;

@@ -26,9 +26,9 @@ namespace TeamBot
         MouseState previousMState = Mouse.GetState();
         int? _debugIndex = null;
 
-        Robot bot;
+        Robot _Bot;
         Map map;
-        Communication.DataHandler dataHandler;
+        Communication.DataHandler _DataHandler;
         Communication.KeyboardHandyDummy HandyDummy = new Communication.KeyboardHandyDummy();
 
 
@@ -70,14 +70,14 @@ namespace TeamBot
             graphics.PreferredBackBufferWidth = 800;
 
             Content.RootDirectory = "Content";
-            bot = new Robot();
-            dataHandler = new Communication.DataHandler(bot);
             if (!Map.DeserializeFromXML(out map, this.Content.RootDirectory))
             {
                 map = new Map();
                 map.initEmpty();
                 Map.SerializeToXML(ref map, this.Content.RootDirectory);
             }
+            _Bot = new Robot(map);
+            _DataHandler = new Communication.DataHandler(_Bot);
             graphics.ApplyChanges();
             base.Initialize();
         }
@@ -91,12 +91,9 @@ namespace TeamBot
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
             // TODO: use this.Content to load your game content here
-            bot.Texture = this.Content.Load<Texture2D>("TeamBot");
-            bot.GreenInfra = this.Content.Load<Texture2D>("greenI");
-            bot.RedInfra = this.Content.Load<Texture2D>("redI");
+            _Bot.LoadContent(this.Content);
+            map.LoadContent(this.Content);
             DebugLayer.BasicFont = this.Content.Load<SpriteFont>("BasicFont");
-            map.Wall = this.Content.Load<Texture2D>("Wall");
-            map.effects = this.Content.Load<Effect>("effects");
         }
 
         /// <summary>
@@ -163,8 +160,8 @@ namespace TeamBot
 
 
             // TODO: Add your update logic here
-            HandyDummy.update(dataHandler);
-            bot.update(gameTime);
+            HandyDummy.update(_DataHandler);
+            _Bot.update(gameTime);
 
             base.Update(gameTime);
         }
@@ -175,11 +172,10 @@ namespace TeamBot
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.White);
-            // TODO: Add your drawing code here
+            GraphicsDevice.Clear(Color.LightGray);
             spriteBatch.Begin();
-            map.draw(ref spriteBatch);
-            bot.draw(ref spriteBatch);
+            map.draw(ref spriteBatch); //Grid should not be drawn inside of SpriteBatch.begin
+            _Bot.draw(ref spriteBatch);
             DebugLayer.draw(ref spriteBatch);
             spriteBatch.End();
             base.Draw(gameTime);

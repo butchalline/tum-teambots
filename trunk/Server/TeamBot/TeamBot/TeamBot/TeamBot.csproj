@@ -112,7 +112,7 @@
     <Compile Include="Bot\DebugLayer.cs" />
     <Compile Include="Bot\Map.cs" />
     <Compile Include="Bot\Robot.cs" />
-    <Compile Include="Bot\Sensor.cs" />
+    <Compile Include="Bot\InfraredSensor.cs" />
     <Compile Include="Communication\DataHandler.cs" />
     <Compile Include="Communication\ILoggerData.cs" />
     <Compile Include="Communication\IData.cs" />

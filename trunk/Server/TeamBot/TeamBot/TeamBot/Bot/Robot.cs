@@ -17,11 +17,11 @@ namespace TeamBot.Bot
     class Robot
     {
 
-        public Robot()
+        public Robot(Map map)
         {
+            this._Map = map;
             Angle = 0;
-            _Sensor = new Sensor();
-            Position = new Vector2(500, 750); 
+            Position = new Vector2(500, 750);
         }
 
         private Vector2 _Position;
@@ -32,26 +32,23 @@ namespace TeamBot.Bot
             set { _Position = value; }
         }
 
-        public double Angle
+        public float Angle
         {
             get;
             set;
         }
 
-        public Texture2D Texture
-        {
-            get;
-            set;
-        }
-
-        public const double WheelDiameter = 17;
-        public const double WheelPerimeter = Math.PI * WheelDiameter;
-        public const double AxialDistance = 27.5;
+        public const float WheelDiameter = 17.0f / Map.PixelToCm;
+        public const float WheelPerimeter = ((float)Math.PI * WheelDiameter) / Map.PixelToCm;
+        public const float AxialDistance = 27.5f / Map.PixelToCm;
         public const int maxRPM = 114;
         public const int hexRPM = 1023;
         public const float scaleFactor = .23f;
         public const float SensorToHalfSizeRelation = 0.7f; //(Texture.Size / 2) * Position relative to middle...
 
+        /// <summary>
+        /// Debug Index for Debug Message Writer
+        /// </summary>
         private int? _DebugIndex = null;
 
         /// <summary>
@@ -63,14 +60,20 @@ namespace TeamBot.Bot
         /// Velocity of the left Wheel
         /// </summary>
         private int _vLeft;
-        private Sensor _Sensor;
-        
+
+        /// <summary>
+        /// Infrared Sensors of the Bot
+        /// </summary>
+        private InfraredSensor _InfraSensor;
+
+        private Texture2D _BotTexture;
+        private Map _Map;
 
         internal void draw(ref SpriteBatch spriteBatch)
         {
 
-            spriteBatch.Draw(Texture, Position, null, Color.White, (float) Angle, new Vector2(Texture.Width / 2, Texture.Height / 2), scaleFactor, SpriteEffects.None, 1);
-            _Sensor.Draw(ref spriteBatch);
+            spriteBatch.Draw(_BotTexture, Position, null, Color.White, (float)Angle, new Vector2(_BotTexture.Width / 2, _BotTexture.Height / 2), scaleFactor, SpriteEffects.None, 1);
+            _InfraSensor.Draw(ref spriteBatch);
         }
         internal void update(GameTime gameTime)
         {
@@ -90,16 +93,19 @@ namespace TeamBot.Bot
             double s = (dR + dL) / 2;
             double w = (dR - dL) / AxialDistance;
 
-            Angle -= w;
+            Angle -= (float)w;
             if (Angle < -Math.PI || Angle > Math.PI)
                 Angle *= -1;
-            _Position.X += (float) (s * Math.Sin(Angle));
-            _Position.Y -= (float) (s * Math.Cos(Angle));
+            _Position.X += (float)(s * Math.Sin(Angle));
+            _Position.Y -= (float)(s * Math.Cos(Angle));
 
-            
-            _Sensor.checkLeftSensor(Position, Angle);
 
-            _DebugIndex = DebugLayer.addString("VLeft: " + this._vLeft.ToString() + "\nVRight: " + this._vRight.ToString() + "\nAngle: " + (this.Angle * 180.0 / Math.PI).ToString() + "\nRobotPos X: " + this.Position.X.ToString() + " Y: " + this.Position.Y.ToString(), _DebugIndex);
+            float leftSensorLength = _InfraSensor.checkLeftSensor(Position, (float)Angle);
+            float rightSensorLength = _InfraSensor.checkRightSensor(Position, (float)Angle);
+            float middleSensorLength = _InfraSensor.checkMiddleSensor(Position, (float)Angle);
+
+            _DebugIndex = DebugLayer.addString("VLeft: " + this._vLeft.ToString() + "\nVRight: " + this._vRight.ToString() + "\nAngle: " + Math.Round(MathHelper.ToDegrees(this.Angle), 2).ToString() + "\nRobotPos: \nX: " + Math.Round(this.Position.X, 2).ToString() + " Y: " + Math.Round(this.Position.Y, 2).ToString()
+                + "\nSensoren L|M|R:\n| " + leftSensorLength.ToString() + " | " + middleSensorLength + " | " + rightSensorLength.ToString() + " | ", _DebugIndex);
         }
 
         internal void setVelocity(int velocityLeft, int veloctiyRight, WheelDirection wheelDirectionLeft, WheelDirection wheelDirectionRight)
@@ -108,8 +114,14 @@ namespace TeamBot.Bot
             _vRight = veloctiyRight * (wheelDirectionRight.Equals(WheelDirection.Forwards) ? 1 : -1);
         }
 
-        public Texture2D  GreenInfra { get { return _Sensor.GreenInfra; } set { _Sensor.GreenInfra= value; } }
-
-        public Texture2D RedInfra { get { return _Sensor.RedInfra; } set { _Sensor.RedInfra = value; } }
+        public void LoadContent(ContentManager manager)
+        {
+            this._BotTexture = manager.Load<Texture2D>("TeamBot");
+            this._InfraSensor = new InfraredSensor(_Map,
+                new Vector2(((_BotTexture.Width / 2) * SensorToHalfSizeRelation) * scaleFactor, ((_BotTexture.Height / 2) - 2) * scaleFactor),
+                new Vector2(-((_BotTexture.Width / 2) * SensorToHalfSizeRelation) * scaleFactor, ((_BotTexture.Height / 2) - 2) * scaleFactor),
+                new Vector2(0, ((_BotTexture.Height / 2) - 2) * scaleFactor));
+            this._InfraSensor.LoadContent(manager);
+        }
     }
 }

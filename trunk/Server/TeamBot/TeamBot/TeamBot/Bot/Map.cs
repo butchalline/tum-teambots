@@ -19,18 +19,10 @@ namespace TeamBot.Bot
     public class Map
     {
         [XmlIgnore]
-        public Texture2D Wall
-        {
-            get;
-            set;
-        }
+        private Texture2D _WallTexture;
 
         [XmlIgnore]
-        public Effect effects
-        {
-            get;
-            set;
-        }
+        private Effect _Effects;
 
         [XmlIgnore]
         public bool drawGrid
@@ -41,6 +33,9 @@ namespace TeamBot.Bot
 
         [XmlIgnore]
         public bool editMode { get; set; }
+
+        [XmlIgnore]
+        public const float PixelToCm = 1000 / 800;
 
         public class Field
         {
@@ -174,13 +169,13 @@ namespace TeamBot.Bot
             {
                 Field f = _map[i];
                 if(f.value != 0)
-                    spriteBatch.Draw(Wall, new Vector2(f.x * Wall.Width, f.y * Wall.Height), Color.RosyBrown);
+                    spriteBatch.Draw(_WallTexture, new Vector2(f.x * _WallTexture.Width, f.y * _WallTexture.Height), Color.RosyBrown);
             }
 
             if (drawGrid)
             {
-                effects.CurrentTechnique = effects.Techniques["Pretransformed"];
-                foreach (EffectPass pass in effects.CurrentTechnique.Passes)
+                _Effects.CurrentTechnique = _Effects.Techniques["Pretransformed"];
+                foreach (EffectPass pass in _Effects.CurrentTechnique.Passes)
                 {
                     pass.Apply();
                     spriteBatch.GraphicsDevice.DrawUserPrimitives<VertexPositionColor>(PrimitiveType.LineList, lineGrid, 0, 78);
@@ -190,6 +185,12 @@ namespace TeamBot.Bot
         }
 
 
+
+        internal void LoadContent(ContentManager contentManager)
+        {
+            _WallTexture = contentManager.Load<Texture2D>("Wall");
+            _Effects = contentManager.Load<Effect>("effects");
+        }
     }
 
 }

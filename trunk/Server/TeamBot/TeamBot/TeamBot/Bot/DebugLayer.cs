@@ -63,7 +63,7 @@ namespace TeamBot.Bot
                     float currentY = 0;
                     foreach (String s in _MessageList)
                     {
-                        spriteBatch.DrawString(BasicFont, s, new Vector2(leftOffset, currentY), Color.GreenYellow);
+                        spriteBatch.DrawString(BasicFont, s, new Vector2(leftOffset, currentY), Color.OrangeRed);
                         currentY += spacing + BasicFont.MeasureString(s).Y;
                     }
                 }

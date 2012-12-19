@@ -36,8 +36,13 @@ namespace TeamBot.Communication
 
         public const int TB_POSITION_ID				  		    =	0x04;
         //------------------------------------------------------
-        public const int TB_GLOBAL_POSITION			  		    =	0x00;
-        public const int TB_LOCAL_POSITION			  			=	0x01;
+        public const int TB_POSITION_GLOBAL                     =   0x00;
+        public const int TB_POSITION_LOCAL  			  	    =	0x01;
+        //======================================================
+
+        public const int TB_DATA_ID								=	0x05;
+        //------------------------------------------------------
+        public const int TB_DATA_INFRARED                       =   0x01;  //char distance left | char distance middle | char distance right
         //======================================================
 
 
@@ -64,8 +69,16 @@ namespace TeamBot.Communication
         public byte speedRight;
     };
 
+    class TBInfraredData : TBFrame
+    {
+        public byte leftSpeed;
+        public byte middletSpeed;
+        public byte rightSpeed;
+    }
+
     interface IData
     {
         void receive(TBFrame vel);
+        void sendData(TBFrame data);
     }
 }

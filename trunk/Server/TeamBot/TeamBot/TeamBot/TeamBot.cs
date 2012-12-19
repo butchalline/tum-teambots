@@ -162,6 +162,7 @@ namespace TeamBot
             // TODO: Add your update logic here
             HandyDummy.update(_DataHandler);
             _Bot.update(gameTime);
+            _DataHandler.update(gameTime);
 
             base.Update(gameTime);
         }

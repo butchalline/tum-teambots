@@ -22,8 +22,6 @@
 
 #include "Config.h"
 
-//Send direction from MC to SP
-
 #define TB_COMMAND_ID			  	  				0x00
 //------------------------------------------------------
 #define TB_COMMAND_REQUESTSTATE_VELOCITYDRIVE	  	0x00
@@ -33,7 +31,6 @@
 #define TB_COMMAND_RESET			  				0x04
 //======================================================
 
-//Send direction from SMartphone to MC
 #define TB_VELOCITY_ID				  				0x01
 //------------------------------------------------------
 #define TB_VELOCITY_FORWARD			  				0x00 //Target Velocity
@@ -52,10 +49,14 @@
 
 #define TB_POSITION_ID				  				0x04
 //------------------------------------------------------
-#define TB_GLOBAL_POSITION			  				0x00
-#define TB_SEND_POSITION			  				0x01
+#define TB_POSITION_GLOBAL			  				0x00
+#define TB_POSITION_LOCAL			  				0x01
 //======================================================
 
+#define TB_DATA_ID									0x05
+//------------------------------------------------------
+#define TB_DATA_INFRARED							0x01  //char distance left | char distance middle | char distance right
+//======================================================
 
 #define TB_ERROR_ID					  				0x42
 //------------------------------------------------------

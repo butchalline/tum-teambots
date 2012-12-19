@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-
+using Microsoft.Xna.Framework;
 using TeamBot.Bot;
 
 
@@ -19,11 +19,12 @@ namespace TeamBot.Communication
 
     class DataHandler : IData
     {
-        private Robot bot;
+        private Robot _Bot;
+        private int _Time;
 
         public DataHandler(Robot robot)
         {
-            bot = robot;
+            _Bot = robot;
         }
 
         public void receive(TBFrame frame)
@@ -39,19 +40,19 @@ namespace TeamBot.Communication
                     
                     if (data.SubId == Constants.TB_VELOCITY_FORWARD)
                     {
-                        bot.setVelocity(data.speedLeft * 4, data.speedRight * 4, WheelDirection.Forwards, WheelDirection.Forwards);
+                        _Bot.setVelocity(data.speedLeft * 4, data.speedRight * 4, WheelDirection.Forwards, WheelDirection.Forwards);
                     }
                     else if (data.SubId == Constants.TB_VELOCITY_BACKWARD)
                     {
-                        bot.setVelocity(data.speedLeft * 4, data.speedRight * 4, WheelDirection.Backwards, WheelDirection.Backwards);
+                        _Bot.setVelocity(data.speedLeft * 4, data.speedRight * 4, WheelDirection.Backwards, WheelDirection.Backwards);
                     }
                     else if (data.SubId == Constants.TB_VELOCITY_TURN_LEFT)
                     {
-                        bot.setVelocity(data.speedLeft * 4, data.speedRight * 4, WheelDirection.Backwards, WheelDirection.Forwards);
+                        _Bot.setVelocity(data.speedLeft * 4, data.speedRight * 4, WheelDirection.Backwards, WheelDirection.Forwards);
                     }
                     else if (data.SubId == Constants.TB_VELOCITY_TURN_RIGHT)
                     {
-                        bot.setVelocity(data.speedLeft * 4, data.speedRight * 4, WheelDirection.Forwards, WheelDirection.Backwards);
+                        _Bot.setVelocity(data.speedLeft * 4, data.speedRight * 4, WheelDirection.Forwards, WheelDirection.Backwards);
                     }
                     
                     break;
@@ -59,6 +60,38 @@ namespace TeamBot.Communication
                     break;
                 case Constants.TB_ERROR_ID:
                     break;                
+            }
+        }
+
+
+        
+
+        public void sendInfraredFrame(byte left, byte middle, byte right)
+        {
+            TBInfraredData infraredData = new TBInfraredData();
+            infraredData.Id = Constants.TB_DATA_ID;
+            infraredData.SubId = Constants.TB_DATA_INFRARED;
+            infraredData.TimeStamp = 0;
+            infraredData.leftSpeed = left;
+            infraredData.middletSpeed = middle;
+            infraredData.rightSpeed = right;
+            Console.WriteLine("InfraredData : " + infraredData.leftSpeed.ToString() + " | " + infraredData.middletSpeed + " | " + infraredData.rightSpeed.ToString());
+            sendData(infraredData);
+        }
+
+        public void sendData(TBFrame data)
+        {
+            //TODO Implement send data via ice
+        }
+
+        internal void update(GameTime gameTime)
+        {
+            _Time += gameTime.ElapsedGameTime.Milliseconds;
+
+            if (_Time > 100)
+            {
+                _Time = 0;
+                sendInfraredFrame(_Bot.getLeftSensorDistance(), _Bot.getMiddleSensorDistance(), _Bot.getRightSensorDistance());
             }
         }
     }

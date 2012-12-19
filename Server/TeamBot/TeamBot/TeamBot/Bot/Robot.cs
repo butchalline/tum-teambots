@@ -68,6 +68,9 @@ namespace TeamBot.Bot
 
         private Texture2D _BotTexture;
         private Map _Map;
+        private float _CurrentRightSensorDistance;
+        private float _CurrentMiddleSensorDistance;
+        private float _CurrentLeftSensorDistance;
 
         internal void draw(ref SpriteBatch spriteBatch)
         {
@@ -94,18 +97,18 @@ namespace TeamBot.Bot
             double w = (dR - dL) / AxialDistance;
 
             Angle -= (float)w;
-            if (Angle < -Math.PI || Angle > Math.PI)
+            if (Angle <= -Math.PI || Angle > Math.PI)
                 Angle *= -1;
             _Position.X += (float)(s * Math.Sin(Angle));
             _Position.Y -= (float)(s * Math.Cos(Angle));
 
 
-            float leftSensorLength = _InfraSensor.checkLeftSensor(Position, (float)Angle);
-            float rightSensorLength = _InfraSensor.checkRightSensor(Position, (float)Angle);
-            float middleSensorLength = _InfraSensor.checkMiddleSensor(Position, (float)Angle);
-
+            _CurrentLeftSensorDistance = _InfraSensor.checkLeftSensor(Position, (float)Angle);
+            _CurrentMiddleSensorDistance = _InfraSensor.checkMiddleSensor(Position, (float)Angle);
+            _CurrentRightSensorDistance = _InfraSensor.checkRightSensor(Position, (float)Angle);
+            
             _DebugIndex = DebugLayer.addString("VLeft: " + this._vLeft.ToString() + "\nVRight: " + this._vRight.ToString() + "\nAngle: " + Math.Round(MathHelper.ToDegrees(this.Angle), 2).ToString() + "\nRobotPos: \nX: " + Math.Round(this.Position.X, 2).ToString() + " Y: " + Math.Round(this.Position.Y, 2).ToString()
-                + "\nSensoren L|M|R:\n| " + leftSensorLength.ToString() + " | " + middleSensorLength + " | " + rightSensorLength.ToString() + " | ", _DebugIndex);
+                + "\nSensoren L|M|R:\n| " + _CurrentLeftSensorDistance.ToString() + " | " + _CurrentMiddleSensorDistance + " | " + _CurrentRightSensorDistance.ToString() + " | ", _DebugIndex);
         }
 
         internal void setVelocity(int velocityLeft, int veloctiyRight, WheelDirection wheelDirectionLeft, WheelDirection wheelDirectionRight)
@@ -122,6 +125,21 @@ namespace TeamBot.Bot
                 new Vector2(-((_BotTexture.Width / 2) * SensorToHalfSizeRelation) * scaleFactor, ((_BotTexture.Height / 2) - 2) * scaleFactor),
                 new Vector2(0, ((_BotTexture.Height / 2) - 2) * scaleFactor));
             this._InfraSensor.LoadContent(manager);
+        }
+
+        internal byte getLeftSensorDistance()
+        {
+            return (byte)_CurrentLeftSensorDistance;                
+        }
+
+        internal byte getMiddleSensorDistance()
+        {
+            return (byte)_CurrentMiddleSensorDistance;
+        }
+
+        internal byte getRightSensorDistance()
+        {
+            return (byte)_CurrentRightSensorDistance;
         }
     }
 }

@@ -10,7 +10,7 @@ namespace TeamBot
         /// </summary>
         static void Main(string[] args)
         {
-            using (TeamBot game = new TeamBot())
+            using (Simulator game = new Simulator())
             {
                 game.Run();
             }

@@ -16,7 +16,7 @@ namespace TeamBot
     /// <summary>
     /// This is the main type for your game
     /// </summary>
-    public class TeamBot : Microsoft.Xna.Framework.Game
+    public class Simulator : Microsoft.Xna.Framework.Game
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
@@ -32,7 +32,7 @@ namespace TeamBot
         Communication.KeyboardHandyDummy HandyDummy = new Communication.KeyboardHandyDummy();
 
 
-        public TeamBot()
+        public Simulator()
         {
             graphics = new GraphicsDeviceManager(this);
         }
@@ -48,8 +48,8 @@ namespace TeamBot
 
 
 
-        private static TeamBot _Reference;
-        public static TeamBot getReference()
+        private static Simulator _Reference;
+        public static Simulator getReference()
         {
             return _Reference;
         }

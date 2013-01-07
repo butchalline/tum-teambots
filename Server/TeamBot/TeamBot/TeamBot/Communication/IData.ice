@@ -16,16 +16,21 @@
 			byte speedRight;
 		};
 
+		class TBPosition extends TBFrame
+		{
+			float distance; //in millimeter or in angle
+		};
+
 		class TBInfraredData extends TBFrame
 		{
-			byte leftSpeed;
-			byte middletSpeed;
-			byte rightSpeed;
+			byte leftDistance;
+			byte middleDistance;
+			byte rightDistance;
 		};
 
 		interface IData
 		{
-			void receive(TBFrame vel);
+			void receive(TBFrame data);
 		};
 	};
  };

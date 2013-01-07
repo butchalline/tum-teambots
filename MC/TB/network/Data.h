@@ -40,20 +40,15 @@
 //======================================================
 
 
-#define TB_TURN_ID					  				0x03
+#define TB_POSITION_ID					      		0x02
 //------------------------------------------------------
-#define TB_TURN_RIGHT				  				0x00
-#define TB_TURN_LEFT				  				0x01
+#define TB_POSITION_FORWARD							0x00 //in millimeters
+#define TB_POSITION_BACKWARD						0x01 //in millimeters
+#define TB_POSITION_TURN_RIGHT		  				0x02
+#define TB_POSITION_TURN_LEFT		  				0x03
 //======================================================
 
-
-#define TB_POSITION_ID				  				0x04
-//------------------------------------------------------
-#define TB_POSITION_GLOBAL			  				0x00
-#define TB_POSITION_LOCAL			  				0x01
-//======================================================
-
-#define TB_DATA_ID									0x05
+#define TB_DATA_ID									0x03
 //------------------------------------------------------
 #define TB_DATA_INFRARED							0x01  //char distance left | char distance middle | char distance right
 //======================================================

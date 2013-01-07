@@ -330,18 +330,155 @@ namespace TeamBot
         [_System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1720")]
         [_System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1722")]
         [_System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1724")]
+        public partial class TBPosition : TeamBot.Communication.TBFrame
+        {
+            #region Slice data members
+
+            [_System.CodeDom.Compiler.GeneratedCodeAttribute("slice2cs", "3.4.2")]
+            public float distance;
+
+            #endregion
+
+            #region Constructors
+
+            [_System.CodeDom.Compiler.GeneratedCodeAttribute("slice2cs", "3.4.2")]
+            public TBPosition() : base()
+            {
+            }
+
+            [_System.CodeDom.Compiler.GeneratedCodeAttribute("slice2cs", "3.4.2")]
+            public TBPosition(byte Id, byte SubId, short TimeStamp, float distance) : base(Id, SubId, TimeStamp)
+            {
+                this.distance = distance;
+            }
+
+            #endregion
+
+            #region Slice type-related members
+
+            [_System.CodeDom.Compiler.GeneratedCodeAttribute("slice2cs", "3.4.2")]
+            public static new readonly string[] ids__ = 
+            {
+                "::Ice::Object",
+                "::TeamBot::Communication::TBFrame",
+                "::TeamBot::Communication::TBPosition"
+            };
+
+            [_System.CodeDom.Compiler.GeneratedCodeAttribute("slice2cs", "3.4.2")]
+            public override bool ice_isA(string s)
+            {
+                return _System.Array.BinarySearch(ids__, s, IceUtilInternal.StringUtil.OrdinalStringComparer) >= 0;
+            }
+
+            [_System.CodeDom.Compiler.GeneratedCodeAttribute("slice2cs", "3.4.2")]
+            public override bool ice_isA(string s, Ice.Current current__)
+            {
+                return _System.Array.BinarySearch(ids__, s, IceUtilInternal.StringUtil.OrdinalStringComparer) >= 0;
+            }
+
+            [_System.CodeDom.Compiler.GeneratedCodeAttribute("slice2cs", "3.4.2")]
+            public override string[] ice_ids()
+            {
+                return ids__;
+            }
+
+            [_System.CodeDom.Compiler.GeneratedCodeAttribute("slice2cs", "3.4.2")]
+            public override string[] ice_ids(Ice.Current current__)
+            {
+                return ids__;
+            }
+
+            [_System.CodeDom.Compiler.GeneratedCodeAttribute("slice2cs", "3.4.2")]
+            public override string ice_id()
+            {
+                return ids__[2];
+            }
+
+            [_System.CodeDom.Compiler.GeneratedCodeAttribute("slice2cs", "3.4.2")]
+            public override string ice_id(Ice.Current current__)
+            {
+                return ids__[2];
+            }
+
+            [_System.CodeDom.Compiler.GeneratedCodeAttribute("slice2cs", "3.4.2")]
+            public static new string ice_staticId()
+            {
+                return ids__[2];
+            }
+
+            #endregion
+
+            #region Operation dispatch
+
+            #endregion
+
+            #region Marshaling support
+
+            [_System.CodeDom.Compiler.GeneratedCodeAttribute("slice2cs", "3.4.2")]
+            public override void write__(IceInternal.BasicStream os__)
+            {
+                os__.writeTypeId(ice_staticId());
+                os__.startWriteSlice();
+                os__.writeFloat(distance);
+                os__.endWriteSlice();
+                base.write__(os__);
+            }
+
+            [_System.CodeDom.Compiler.GeneratedCodeAttribute("slice2cs", "3.4.2")]
+            public override void read__(IceInternal.BasicStream is__, bool rid__)
+            {
+                if(rid__)
+                {
+                    /* string myId = */ is__.readTypeId();
+                }
+                is__.startReadSlice();
+                distance = is__.readFloat();
+                is__.endReadSlice();
+                base.read__(is__, true);
+            }
+
+            [_System.CodeDom.Compiler.GeneratedCodeAttribute("slice2cs", "3.4.2")]
+            public override void write__(Ice.OutputStream outS__)
+            {
+                Ice.MarshalException ex = new Ice.MarshalException();
+                ex.reason = "type TeamBot::Communication::TBPosition was not generated with stream support";
+                throw ex;
+            }
+
+            [_System.CodeDom.Compiler.GeneratedCodeAttribute("slice2cs", "3.4.2")]
+            public override void read__(Ice.InputStream inS__, bool rid__)
+            {
+                Ice.MarshalException ex = new Ice.MarshalException();
+                ex.reason = "type TeamBot::Communication::TBPosition was not generated with stream support";
+                throw ex;
+            }
+
+            #endregion
+        }
+
+        [_System.Runtime.InteropServices.ComVisible(false)]
+        [_System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1704")]
+        [_System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707")]
+        [_System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1709")]
+        [_System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1710")]
+        [_System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1711")]
+        [_System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1715")]
+        [_System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1716")]
+        [_System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1720")]
+        [_System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1722")]
+        [_System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1724")]
         public partial class TBInfraredData : TeamBot.Communication.TBFrame
         {
             #region Slice data members
 
             [_System.CodeDom.Compiler.GeneratedCodeAttribute("slice2cs", "3.4.2")]
-            public byte leftSpeed;
+            public byte leftDistance;
 
             [_System.CodeDom.Compiler.GeneratedCodeAttribute("slice2cs", "3.4.2")]
-            public byte middletSpeed;
+            public byte middleDistance;
 
             [_System.CodeDom.Compiler.GeneratedCodeAttribute("slice2cs", "3.4.2")]
-            public byte rightSpeed;
+            public byte rightDistance;
 
             #endregion
 
@@ -353,11 +490,11 @@ namespace TeamBot
             }
 
             [_System.CodeDom.Compiler.GeneratedCodeAttribute("slice2cs", "3.4.2")]
-            public TBInfraredData(byte Id, byte SubId, short TimeStamp, byte leftSpeed, byte middletSpeed, byte rightSpeed) : base(Id, SubId, TimeStamp)
+            public TBInfraredData(byte Id, byte SubId, short TimeStamp, byte leftDistance, byte middleDistance, byte rightDistance) : base(Id, SubId, TimeStamp)
             {
-                this.leftSpeed = leftSpeed;
-                this.middletSpeed = middletSpeed;
-                this.rightSpeed = rightSpeed;
+                this.leftDistance = leftDistance;
+                this.middleDistance = middleDistance;
+                this.rightDistance = rightDistance;
             }
 
             #endregion
@@ -427,9 +564,9 @@ namespace TeamBot
             {
                 os__.writeTypeId(ice_staticId());
                 os__.startWriteSlice();
-                os__.writeByte(leftSpeed);
-                os__.writeByte(middletSpeed);
-                os__.writeByte(rightSpeed);
+                os__.writeByte(leftDistance);
+                os__.writeByte(middleDistance);
+                os__.writeByte(rightDistance);
                 os__.endWriteSlice();
                 base.write__(os__);
             }
@@ -442,9 +579,9 @@ namespace TeamBot
                     /* string myId = */ is__.readTypeId();
                 }
                 is__.startReadSlice();
-                leftSpeed = is__.readByte();
-                middletSpeed = is__.readByte();
-                rightSpeed = is__.readByte();
+                leftDistance = is__.readByte();
+                middleDistance = is__.readByte();
+                rightDistance = is__.readByte();
                 is__.endReadSlice();
                 base.read__(is__, true);
             }
@@ -509,6 +646,11 @@ namespace TeamBot
         }
 
         [_System.CodeDom.Compiler.GeneratedCodeAttribute("slice2cs", "3.4.2")]
+        public interface TBPositionPrx : TeamBot.Communication.TBFramePrx
+        {
+        }
+
+        [_System.CodeDom.Compiler.GeneratedCodeAttribute("slice2cs", "3.4.2")]
         public interface TBInfraredDataPrx : TeamBot.Communication.TBFramePrx
         {
         }
@@ -516,14 +658,14 @@ namespace TeamBot
         [_System.CodeDom.Compiler.GeneratedCodeAttribute("slice2cs", "3.4.2")]
         public interface IDataPrx : Ice.ObjectPrx
         {
-            void receive(TeamBot.Communication.TBFrame vel);
-            void receive(TeamBot.Communication.TBFrame vel, _System.Collections.Generic.Dictionary<string, string> context__);
+            void receive(TeamBot.Communication.TBFrame data);
+            void receive(TeamBot.Communication.TBFrame data, _System.Collections.Generic.Dictionary<string, string> context__);
 
-            Ice.AsyncResult<TeamBot.Communication.Callback_IData_receive> begin_receive(TeamBot.Communication.TBFrame vel);
-            Ice.AsyncResult<TeamBot.Communication.Callback_IData_receive> begin_receive(TeamBot.Communication.TBFrame vel, _System.Collections.Generic.Dictionary<string, string> ctx__);
+            Ice.AsyncResult<TeamBot.Communication.Callback_IData_receive> begin_receive(TeamBot.Communication.TBFrame data);
+            Ice.AsyncResult<TeamBot.Communication.Callback_IData_receive> begin_receive(TeamBot.Communication.TBFrame data, _System.Collections.Generic.Dictionary<string, string> ctx__);
 
-            Ice.AsyncResult begin_receive(TeamBot.Communication.TBFrame vel, Ice.AsyncCallback cb__, object cookie__);
-            Ice.AsyncResult begin_receive(TeamBot.Communication.TBFrame vel, _System.Collections.Generic.Dictionary<string, string> ctx__, Ice.AsyncCallback cb__, object cookie__);
+            Ice.AsyncResult begin_receive(TeamBot.Communication.TBFrame data, Ice.AsyncCallback cb__, object cookie__);
+            Ice.AsyncResult begin_receive(TeamBot.Communication.TBFrame data, _System.Collections.Generic.Dictionary<string, string> ctx__, Ice.AsyncCallback cb__, object cookie__);
 
             void end_receive(Ice.AsyncResult r__);
         }
@@ -537,13 +679,13 @@ namespace TeamBot
         [_System.CodeDom.Compiler.GeneratedCodeAttribute("slice2cs", "3.4.2")]
         public interface IDataOperations_
         {
-            void receive(TeamBot.Communication.TBFrame vel, Ice.Current current__);
+            void receive(TeamBot.Communication.TBFrame data, Ice.Current current__);
         }
 
         [_System.CodeDom.Compiler.GeneratedCodeAttribute("slice2cs", "3.4.2")]
         public interface IDataOperationsNC_
         {
-            void receive(TeamBot.Communication.TBFrame vel);
+            void receive(TeamBot.Communication.TBFrame data);
         }
     }
 }
@@ -873,6 +1015,166 @@ namespace TeamBot
 
         [_System.Runtime.InteropServices.ComVisible(false)]
         [_System.CodeDom.Compiler.GeneratedCodeAttribute("slice2cs", "3.4.2")]
+        public sealed class TBPositionPrxHelper : Ice.ObjectPrxHelperBase, TBPositionPrx
+        {
+            #region Asynchronous operations
+
+            #endregion
+
+            #region Checked and unchecked cast operations
+
+            public static TBPositionPrx checkedCast(Ice.ObjectPrx b)
+            {
+                if(b == null)
+                {
+                    return null;
+                }
+                TBPositionPrx r = b as TBPositionPrx;
+                if((r == null) && b.ice_isA(ice_staticId()))
+                {
+                    TBPositionPrxHelper h = new TBPositionPrxHelper();
+                    h.copyFrom__(b);
+                    r = h;
+                }
+                return r;
+            }
+
+            public static TBPositionPrx checkedCast(Ice.ObjectPrx b, _System.Collections.Generic.Dictionary<string, string> ctx)
+            {
+                if(b == null)
+                {
+                    return null;
+                }
+                TBPositionPrx r = b as TBPositionPrx;
+                if((r == null) && b.ice_isA(ice_staticId(), ctx))
+                {
+                    TBPositionPrxHelper h = new TBPositionPrxHelper();
+                    h.copyFrom__(b);
+                    r = h;
+                }
+                return r;
+            }
+
+            public static TBPositionPrx checkedCast(Ice.ObjectPrx b, string f)
+            {
+                if(b == null)
+                {
+                    return null;
+                }
+                Ice.ObjectPrx bb = b.ice_facet(f);
+                try
+                {
+                    if(bb.ice_isA(ice_staticId()))
+                    {
+                        TBPositionPrxHelper h = new TBPositionPrxHelper();
+                        h.copyFrom__(bb);
+                        return h;
+                    }
+                }
+                catch(Ice.FacetNotExistException)
+                {
+                }
+                return null;
+            }
+
+            public static TBPositionPrx checkedCast(Ice.ObjectPrx b, string f, _System.Collections.Generic.Dictionary<string, string> ctx)
+            {
+                if(b == null)
+                {
+                    return null;
+                }
+                Ice.ObjectPrx bb = b.ice_facet(f);
+                try
+                {
+                    if(bb.ice_isA(ice_staticId(), ctx))
+                    {
+                        TBPositionPrxHelper h = new TBPositionPrxHelper();
+                        h.copyFrom__(bb);
+                        return h;
+                    }
+                }
+                catch(Ice.FacetNotExistException)
+                {
+                }
+                return null;
+            }
+
+            public static TBPositionPrx uncheckedCast(Ice.ObjectPrx b)
+            {
+                if(b == null)
+                {
+                    return null;
+                }
+                TBPositionPrx r = b as TBPositionPrx;
+                if(r == null)
+                {
+                    TBPositionPrxHelper h = new TBPositionPrxHelper();
+                    h.copyFrom__(b);
+                    r = h;
+                }
+                return r;
+            }
+
+            public static TBPositionPrx uncheckedCast(Ice.ObjectPrx b, string f)
+            {
+                if(b == null)
+                {
+                    return null;
+                }
+                Ice.ObjectPrx bb = b.ice_facet(f);
+                TBPositionPrxHelper h = new TBPositionPrxHelper();
+                h.copyFrom__(bb);
+                return h;
+            }
+
+            public static readonly string[] ids__ =
+            {
+                "::Ice::Object",
+                "::TeamBot::Communication::TBFrame",
+                "::TeamBot::Communication::TBPosition"
+            };
+
+            public static string ice_staticId()
+            {
+                return ids__[2];
+            }
+
+            #endregion
+
+            #region Marshaling support
+
+            protected override Ice.ObjectDelM_ createDelegateM__()
+            {
+                return new TBPositionDelM_();
+            }
+
+            protected override Ice.ObjectDelD_ createDelegateD__()
+            {
+                return new TBPositionDelD_();
+            }
+
+            public static void write__(IceInternal.BasicStream os__, TBPositionPrx v__)
+            {
+                os__.writeProxy(v__);
+            }
+
+            public static TBPositionPrx read__(IceInternal.BasicStream is__)
+            {
+                Ice.ObjectPrx proxy = is__.readProxy();
+                if(proxy != null)
+                {
+                    TBPositionPrxHelper result = new TBPositionPrxHelper();
+                    result.copyFrom__(proxy);
+                    return result;
+                }
+                return null;
+            }
+
+            #endregion
+        }
+
+        [_System.Runtime.InteropServices.ComVisible(false)]
+        [_System.CodeDom.Compiler.GeneratedCodeAttribute("slice2cs", "3.4.2")]
         public sealed class TBInfraredDataPrxHelper : Ice.ObjectPrxHelperBase, TBInfraredDataPrx
         {
             #region Asynchronous operations
@@ -1037,17 +1339,17 @@ namespace TeamBot
         {
             #region Synchronous operations
 
-            public void receive(TeamBot.Communication.TBFrame vel)
+            public void receive(TeamBot.Communication.TBFrame data)
             {
-                receive(vel, null, false);
+                receive(data, null, false);
             }
 
-            public void receive(TeamBot.Communication.TBFrame vel, _System.Collections.Generic.Dictionary<string, string> context__)
+            public void receive(TeamBot.Communication.TBFrame data, _System.Collections.Generic.Dictionary<string, string> context__)
             {
-                receive(vel, context__, true);
+                receive(data, context__, true);
             }
 
-            private void receive(TeamBot.Communication.TBFrame vel, _System.Collections.Generic.Dictionary<string, string> context__, bool explicitContext__)
+            private void receive(TeamBot.Communication.TBFrame data, _System.Collections.Generic.Dictionary<string, string> context__, bool explicitContext__)
             {
                 if(explicitContext__ && context__ == null)
                 {
@@ -1061,7 +1363,7 @@ namespace TeamBot
                     {
                         delBase__ = getDelegate__(false);
                         IDataDel_ del__ = (IDataDel_)delBase__;
-                        del__.receive(vel, context__);
+                        del__.receive(data, context__);
                         return;
                     }
                     catch(IceInternal.LocalExceptionWrapper ex__)
@@ -1079,24 +1381,24 @@ namespace TeamBot
 
             #region Asynchronous operations
 
-            public Ice.AsyncResult<TeamBot.Communication.Callback_IData_receive> begin_receive(TeamBot.Communication.TBFrame vel)
+            public Ice.AsyncResult<TeamBot.Communication.Callback_IData_receive> begin_receive(TeamBot.Communication.TBFrame data)
             {
-                return begin_receive(vel, null, false, null, null);
+                return begin_receive(data, null, false, null, null);
             }
 
-            public Ice.AsyncResult<TeamBot.Communication.Callback_IData_receive> begin_receive(TeamBot.Communication.TBFrame vel, _System.Collections.Generic.Dictionary<string, string> ctx__)
+            public Ice.AsyncResult<TeamBot.Communication.Callback_IData_receive> begin_receive(TeamBot.Communication.TBFrame data, _System.Collections.Generic.Dictionary<string, string> ctx__)
             {
-                return begin_receive(vel, ctx__, true, null, null);
+                return begin_receive(data, ctx__, true, null, null);
             }
 
-            public Ice.AsyncResult begin_receive(TeamBot.Communication.TBFrame vel, Ice.AsyncCallback cb__, object cookie__)
+            public Ice.AsyncResult begin_receive(TeamBot.Communication.TBFrame data, Ice.AsyncCallback cb__, object cookie__)
             {
-                return begin_receive(vel, null, false, cb__, cookie__);
+                return begin_receive(data, null, false, cb__, cookie__);
             }
 
-            public Ice.AsyncResult begin_receive(TeamBot.Communication.TBFrame vel, _System.Collections.Generic.Dictionary<string, string> ctx__, Ice.AsyncCallback cb__, object cookie__)
+            public Ice.AsyncResult begin_receive(TeamBot.Communication.TBFrame data, _System.Collections.Generic.Dictionary<string, string> ctx__, Ice.AsyncCallback cb__, object cookie__)
             {
-                return begin_receive(vel, ctx__, true, cb__, cookie__);
+                return begin_receive(data, ctx__, true, cb__, cookie__);
             }
 
             private const string __receive_name = "receive";
@@ -1106,7 +1408,7 @@ namespace TeamBot
                 end__(r__, __receive_name);
             }
 
-            private Ice.AsyncResult<TeamBot.Communication.Callback_IData_receive> begin_receive(TeamBot.Communication.TBFrame vel, _System.Collections.Generic.Dictionary<string, string> ctx__, bool explicitContext__, Ice.AsyncCallback cb__, object cookie__)
+            private Ice.AsyncResult<TeamBot.Communication.Callback_IData_receive> begin_receive(TeamBot.Communication.TBFrame data, _System.Collections.Generic.Dictionary<string, string> ctx__, bool explicitContext__, Ice.AsyncCallback cb__, object cookie__)
             {
                 IceInternal.OnewayOutgoingAsync<TeamBot.Communication.Callback_IData_receive> result__ = new IceInternal.OnewayOutgoingAsync<TeamBot.Communication.Callback_IData_receive>(this, __receive_name, receive_completed__, cookie__);
                 if(cb__ != null)
@@ -1117,7 +1419,7 @@ namespace TeamBot
                 {
                     result__.prepare__(__receive_name, Ice.OperationMode.Normal, ctx__, explicitContext__);
                     IceInternal.BasicStream os__ = result__.ostr__;
-                    os__.writeObject(vel);
+                    os__.writeObject(data);
                     os__.writePendingObjects();
                     os__.endWriteEncaps();
                     result__.send__(true);
@@ -1307,6 +1609,11 @@ namespace TeamBot
         }
 
         [_System.CodeDom.Compiler.GeneratedCodeAttribute("slice2cs", "3.4.2")]
+        public interface TBPositionDel_ : TeamBot.Communication.TBFrameDel_
+        {
+        }
+
+        [_System.CodeDom.Compiler.GeneratedCodeAttribute("slice2cs", "3.4.2")]
         public interface TBInfraredDataDel_ : TeamBot.Communication.TBFrameDel_
         {
         }
@@ -1314,7 +1621,7 @@ namespace TeamBot
         [_System.CodeDom.Compiler.GeneratedCodeAttribute("slice2cs", "3.4.2")]
         public interface IDataDel_ : Ice.ObjectDel_
         {
-            void receive(TeamBot.Communication.TBFrame vel, _System.Collections.Generic.Dictionary<string, string> context__);
+            void receive(TeamBot.Communication.TBFrame data, _System.Collections.Generic.Dictionary<string, string> context__);
         }
     }
 }
@@ -1337,6 +1644,12 @@ namespace TeamBot
 
         [_System.Runtime.InteropServices.ComVisible(false)]
         [_System.CodeDom.Compiler.GeneratedCodeAttribute("slice2cs", "3.4.2")]
+        public sealed class TBPositionDelM_ : Ice.ObjectDelM_, TBPositionDel_
+        {
+        }
+
+        [_System.Runtime.InteropServices.ComVisible(false)]
+        [_System.CodeDom.Compiler.GeneratedCodeAttribute("slice2cs", "3.4.2")]
         public sealed class TBInfraredDataDelM_ : Ice.ObjectDelM_, TBInfraredDataDel_
         {
         }
@@ -1345,7 +1658,7 @@ namespace TeamBot
         [_System.CodeDom.Compiler.GeneratedCodeAttribute("slice2cs", "3.4.2")]
         public sealed class IDataDelM_ : Ice.ObjectDelM_, IDataDel_
         {
-            public void receive(TeamBot.Communication.TBFrame vel, _System.Collections.Generic.Dictionary<string, string> context__)
+            public void receive(TeamBot.Communication.TBFrame data, _System.Collections.Generic.Dictionary<string, string> context__)
             {
                 IceInternal.Outgoing og__ = handler__.getOutgoing("receive", Ice.OperationMode.Normal, context__);
                 try
@@ -1353,7 +1666,7 @@ namespace TeamBot
                     try
                     {
                         IceInternal.BasicStream os__ = og__.ostr();
-                        os__.writeObject(vel);
+                        os__.writeObject(data);
                         os__.writePendingObjects();
                     }
                     catch(Ice.LocalException ex__)
@@ -1411,6 +1724,12 @@ namespace TeamBot
 
         [_System.Runtime.InteropServices.ComVisible(false)]
         [_System.CodeDom.Compiler.GeneratedCodeAttribute("slice2cs", "3.4.2")]
+        public sealed class TBPositionDelD_ : Ice.ObjectDelD_, TBPositionDel_
+        {
+        }
+
+        [_System.Runtime.InteropServices.ComVisible(false)]
+        [_System.CodeDom.Compiler.GeneratedCodeAttribute("slice2cs", "3.4.2")]
         public sealed class TBInfraredDataDelD_ : Ice.ObjectDelD_, TBInfraredDataDel_
         {
         }
@@ -1420,7 +1739,7 @@ namespace TeamBot
         public sealed class IDataDelD_ : Ice.ObjectDelD_, IDataDel_
         {
             [_System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031")]
-            public void receive(TeamBot.Communication.TBFrame vel, _System.Collections.Generic.Dictionary<string, string> context__)
+            public void receive(TeamBot.Communication.TBFrame data, _System.Collections.Generic.Dictionary<string, string> context__)
             {
                 Ice.Current current__ = new Ice.Current();
                 initCurrent__(ref current__, "receive", Ice.OperationMode.Normal, context__);
@@ -1435,7 +1754,7 @@ namespace TeamBot
                     {
                         throw new Ice.OperationNotExistException(current__.id, current__.facet, current__.operation);
                     }
-                    servant__.receive(vel, current__);
+                    servant__.receive(data, current__);
                     return Ice.DispatchStatus.DispatchOK;
                 };
                 IceInternal.Direct direct__ = null;
@@ -1475,12 +1794,12 @@ namespace TeamBot
         {
             #region Slice operations
 
-            public void receive(TeamBot.Communication.TBFrame vel)
+            public void receive(TeamBot.Communication.TBFrame data)
             {
-                receive(vel, Ice.ObjectImpl.defaultCurrent);
+                receive(data, Ice.ObjectImpl.defaultCurrent);
             }
 
-            public abstract void receive(TeamBot.Communication.TBFrame vel, Ice.Current current__);
+            public abstract void receive(TeamBot.Communication.TBFrame data, Ice.Current current__);
 
             #endregion
 
@@ -1537,11 +1856,11 @@ namespace TeamBot
                 checkMode__(Ice.OperationMode.Normal, current__.mode);
                 IceInternal.BasicStream is__ = inS__.istr();
                 is__.startReadEncaps();
-                IceInternal.ParamPatcher<TeamBot.Communication.TBFrame>vel_PP = new IceInternal.ParamPatcher<TeamBot.Communication.TBFrame>("::TeamBot::Communication::TBFrame");
-                is__.readObject(vel_PP);
+                IceInternal.ParamPatcher<TeamBot.Communication.TBFrame>data_PP = new IceInternal.ParamPatcher<TeamBot.Communication.TBFrame>("::TeamBot::Communication::TBFrame");
+                is__.readObject(data_PP);
                 is__.readPendingObjects();
                 is__.endReadEncaps();
-                obj__.receive((TeamBot.Communication.TBFrame)vel_PP.value, current__);
+                obj__.receive((TeamBot.Communication.TBFrame)data_PP.value, current__);
                 return Ice.DispatchStatus.DispatchOK;
             }
 

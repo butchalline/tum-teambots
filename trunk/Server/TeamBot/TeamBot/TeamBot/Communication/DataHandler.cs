@@ -41,9 +41,9 @@ namespace TeamBot.Communication
             infraredData.Id = Constants.TB_DATA_ID;
             infraredData.SubId = Constants.TB_DATA_INFRARED;
             infraredData.TimeStamp = 0;
-            infraredData.leftSpeed = left;
-            infraredData.middletSpeed = middle;
-            infraredData.rightSpeed = right;
+            infraredData.leftDistance = left;
+            infraredData.middleDistance = middle;
+            infraredData.rightDistance = right;
             sendData(infraredData);
         }
 
@@ -111,7 +111,7 @@ namespace TeamBot.Communication
             }
             try
             {
-                _Proxy.receive(data);
+            //    _Proxy.receive(data);
             }
             catch(Exception e)
             {

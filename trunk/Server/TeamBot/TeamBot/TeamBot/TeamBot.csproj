@@ -113,9 +113,11 @@
     <Compile Include="Bot\Map.cs" />
     <Compile Include="Bot\Robot.cs" />
     <Compile Include="Bot\InfraredSensor.cs" />
+    <Compile Include="Communication\Constants.cs" />
     <Compile Include="Communication\DataHandler.cs" />
-    <Compile Include="Communication\ILoggerData.cs" />
     <Compile Include="Communication\IData.cs" />
+    <Compile Include="Communication\ILoggerData.cs" />
+    <None Include="Communication\IData.ice" />
     <Compile Include="Communication\KeyboardHandyDummy.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />

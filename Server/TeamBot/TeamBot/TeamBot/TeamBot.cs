@@ -9,9 +9,9 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 
-using TeamBot.Bot;
+using teambot.Bot;
 
-namespace TeamBot
+namespace teambot
 {
     /// <summary>
     /// This is the main type for your game
@@ -28,8 +28,8 @@ namespace TeamBot
 
         Robot _Bot;
         Map map;
-        Communication.DataHandler _DataHandler;
-        Communication.KeyboardHandyDummy HandyDummy = new Communication.KeyboardHandyDummy();
+        communication.DataHandler _DataHandler;
+        communication.KeyboardHandyDummy HandyDummy = new communication.KeyboardHandyDummy();
 
 
         public Simulator()
@@ -77,7 +77,7 @@ namespace TeamBot
                 Map.SerializeToXML(ref map, this.Content.RootDirectory);
             }
             _Bot = new Robot(map);
-            _DataHandler = new Communication.DataHandler(_Bot);
+            _DataHandler = new communication.DataHandler(_Bot);
             graphics.ApplyChanges();
             base.Initialize();
         }

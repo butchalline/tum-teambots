@@ -1,6 +1,6 @@
 using System;
 
-namespace TeamBot
+namespace teambot
 {
 #if WINDOWS || XBOX
     static class Program

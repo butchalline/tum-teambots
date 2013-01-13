@@ -11,10 +11,10 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 using System.Xml.Serialization;
 
-using TeamBot.Communication;
+using teambot.communication;
 using System.IO;
 
-namespace TeamBot.Bot
+namespace teambot.Bot
 {
     public class Map
     {

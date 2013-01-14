@@ -32,6 +32,7 @@ namespace teambot.Bot
         public const int hexRPM = 1023;
         public const float scaleFactor = .23f;
         public const float SensorToHalfSizeRelation = 0.7f; //(Texture.Size / 2) * Position relative to middle...
+        private const float _Threshold = 0.1f;
 
         private RobotStates _RobotState = RobotStates.Idle;
 
@@ -178,14 +179,17 @@ namespace teambot.Bot
 
         internal bool targetPositionReached()
         {
-            if (_TargetPosition.Length() <= _Position.Length() + 0.1f && _TargetPosition.Length() >= _Position.Length() - 0.1f)
+            Vector2 distance = Vector2.Subtract(_TargetPosition, _Position);
+            if (distance.Length() <= _Threshold)
                 return true;
             return false;
         }
 
         internal bool targetAngleReached()
         {
-          //  if(_TargetAngle <= _
+            float distance = _TargetAngle - Angle;
+            if (distance <= _Threshold && distance >= -_Threshold)
+                return true;
             return false;
         }
 

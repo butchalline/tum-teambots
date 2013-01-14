@@ -35,5 +35,7 @@ public:
 
 };
 
+extern DataHandler dataHandler;
+
 
 #endif /* DATAHANDLER_H_ */

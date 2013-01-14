@@ -31,10 +31,12 @@ namespace teambot
         communication.DataHandler _DataHandler;
         communication.KeyboardHandyDummy HandyDummy = new communication.KeyboardHandyDummy();
 
-
+                bool a, b, c, d, e, f, g, h;
+            
         public Simulator()
         {
             graphics = new GraphicsDeviceManager(this);
+            a = b = c = d = e = f = g = h = false;
         }
 
         private object locker = new Object();
@@ -77,7 +79,7 @@ namespace teambot
                 Map.SerializeToXML(ref map, this.Content.RootDirectory);
             }
             _Bot = new Robot(map);
-            _Bot.changeState(Robot.RobotStates.VelocityMode);
+            _Bot.changeState(Robot.RobotStates.PositionMode);
             _DataHandler = new communication.DataHandler(_Bot);
             graphics.ApplyChanges();
             base.Initialize();
@@ -112,6 +114,9 @@ namespace teambot
         /// checking for collisions, gathering input, and playing audio.
         /// </summary>
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
+        
+        
+            
         protected override void Update(GameTime gameTime)
         {
             // Allows the game to exit
@@ -158,6 +163,48 @@ namespace teambot
                     map.click(currentMState.X, currentMState.Y);
                 }
             }
+
+
+            if (gameTime.TotalGameTime.Seconds > 5 && !a)
+            {
+                _Bot.setPosition(20);
+                a = true;
+            }
+            if (gameTime.TotalGameTime.Seconds > 10 && !b)
+            {
+                _Bot.setPosition(-10);
+                b = true;
+            }
+            if (gameTime.TotalGameTime.Seconds > 15 && !c)
+            {
+                _Bot.setAngle(-9000);
+                c = true;
+            }
+            if (gameTime.TotalGameTime.Seconds > 25 && !d)
+            {
+                _Bot.setPosition(100);
+                d = true;
+            }
+            if (gameTime.TotalGameTime.Seconds > 35 && !e)
+            {
+                _Bot.setAngle(12000);
+                e = true;
+            }
+            if (gameTime.TotalGameTime.Seconds > 45 && !f)
+            {
+                _Bot.setPosition(-150);
+                f = true;
+            }
+            if (gameTime.TotalGameTime.Seconds > 55 && !g)
+            {
+                _Bot.setAngle(9000);
+                g = true;
+            }
+            if (gameTime.TotalGameTime.Seconds > 65 && !h)
+            {
+                _Bot.setAngle(-9000);
+                h = true;
+            } 
 
 
             // TODO: Add your update logic here

@@ -18,7 +18,7 @@
 
 		class TBPosition extends TBFrame
 		{
-			float distance; //in millimeter or in angle
+			short distance; //in millimeter or in angle	in 360.xx * 100
 		};
 
 		class TBInfraredData extends TBFrame

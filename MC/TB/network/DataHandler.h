@@ -17,28 +17,23 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef __ODOMETRY_H__
-#define __ODOMETRY_H__
+#ifndef __DATAHANDLER_H__
+#define __DATAHANDLER_H__
 
-#include <Dynamixel_Serial.h>
-#include "Config.h"
+#include "network/Usb.h"
+#include "network/Data.h"
 
-class Odometry {
+class DataHandler {
+
 public:
+	void sendPosition(short x, short y, short angle);
 
 
 
 
-private:
-	short currX;
-	short currY;
-	short prevX;
-	short prevY;
-	short currAngle;
-	short prevAngle;
+
 
 };
 
-extern Odometry odometry;
 
-#endif
+#endif /* DATAHANDLER_H_ */

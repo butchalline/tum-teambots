@@ -16,28 +16,15 @@ namespace teambot.Bot
 {
     class Robot
     {
-
-        public Robot(Map map)
+        public enum RobotStates
         {
-            this._Map = map;
-            Angle = 0;
-            Position = new Vector2(500, 750);
+            Idle,
+            VelocityMode,
+            PositionMode
         }
 
-        private Vector2 _Position;
 
-        public Vector2 Position
-        {
-            get { return _Position; }
-            set { _Position = value; }
-        }
-
-        public float Angle
-        {
-            get;
-            set;
-        }
-
+        #region Properties
         public const float WheelDiameter = 17.0f / Map.PixelToCm;
         public const float WheelPerimeter = ((float)Math.PI * WheelDiameter) / Map.PixelToCm;
         public const float AxialDistance = 27.5f / Map.PixelToCm;
@@ -45,6 +32,8 @@ namespace teambot.Bot
         public const int hexRPM = 1023;
         public const float scaleFactor = .23f;
         public const float SensorToHalfSizeRelation = 0.7f; //(Texture.Size / 2) * Position relative to middle...
+
+        private RobotStates _RobotState = RobotStates.Idle;
 
         /// <summary>
         /// Debug Index for Debug Message Writer
@@ -62,19 +51,56 @@ namespace teambot.Bot
         private int _vLeft;
 
         /// <summary>
+        /// The current Position
+        /// </summary>
+        private Vector2 _Position;
+
+        /// <summary>
+        /// The target Position of the Robot in Position Mode
+        /// </summary>
+        private Vector2 _TargetPosition;
+
+        /// <summary>
+        /// The target Angle of the Robot in Position Mode
+        /// </summary>
+        private float _TargetAngle;
+
+
+        /// <summary>
         /// Infrared Sensors of the Bot
         /// </summary>
         private InfraredSensor _InfraSensor;
+
 
         private Texture2D _BotTexture;
         private Map _Map;
         private float _CurrentRightSensorDistance;
         private float _CurrentMiddleSensorDistance;
         private float _CurrentLeftSensorDistance;
+        #endregion
+
+        public Robot(Map map)
+        {
+            this._Map = map;
+            Angle = 0;
+            Position = new Vector2(500, 750);
+        }
+
+        public Vector2 Position
+        {
+            get { return _Position; }
+            set { _Position = value; }
+        }
+
+        public float Angle
+        {
+            get;
+            set;
+        }
+
 
         internal void draw(ref SpriteBatch spriteBatch)
         {
-
             spriteBatch.Draw(_BotTexture, Position, null, Color.White, (float)Angle, new Vector2(_BotTexture.Width / 2, _BotTexture.Height / 2), scaleFactor, SpriteEffects.None, 1);
             _InfraSensor.Draw(ref spriteBatch);
         }
@@ -106,13 +132,15 @@ namespace teambot.Bot
             _CurrentLeftSensorDistance = _InfraSensor.checkLeftSensor(Position, (float)Angle);
             _CurrentMiddleSensorDistance = _InfraSensor.checkMiddleSensor(Position, (float)Angle);
             _CurrentRightSensorDistance = _InfraSensor.checkRightSensor(Position, (float)Angle);
-            
+
             _DebugIndex = DebugLayer.addString("VLeft: " + this._vLeft.ToString() + "\nVRight: " + this._vRight.ToString() + "\nAngle: " + Math.Round(MathHelper.ToDegrees(this.Angle), 2).ToString() + "\nRobotPos: \nX: " + Math.Round(this.Position.X, 2).ToString() + " Y: " + Math.Round(this.Position.Y, 2).ToString()
                 + "\nSensoren L|M|R:\n| " + _CurrentLeftSensorDistance.ToString() + " | " + _CurrentMiddleSensorDistance + " | " + _CurrentRightSensorDistance.ToString() + " | ", _DebugIndex);
         }
 
         internal void setVelocity(int velocityLeft, int veloctiyRight, WheelDirection wheelDirectionLeft, WheelDirection wheelDirectionRight)
         {
+            if (this._RobotState != RobotStates.VelocityMode)
+                return;
             _vLeft = velocityLeft * (wheelDirectionLeft.Equals(WheelDirection.Forwards) ? 1 : -1);
             _vRight = veloctiyRight * (wheelDirectionRight.Equals(WheelDirection.Forwards) ? 1 : -1);
         }
@@ -129,7 +157,7 @@ namespace teambot.Bot
 
         internal byte getLeftSensorDistance()
         {
-            return (byte)_CurrentLeftSensorDistance;                
+            return (byte)_CurrentLeftSensorDistance;
         }
 
         internal byte getMiddleSensorDistance()
@@ -140,6 +168,41 @@ namespace teambot.Bot
         internal byte getRightSensorDistance()
         {
             return (byte)_CurrentRightSensorDistance;
+        }
+
+
+        internal void changeState(RobotStates targetState)
+        {
+            this._RobotState = targetState;
+        }
+
+        internal bool targetPositionReached()
+        {
+            if (_TargetPosition.Length() <= _Position.Length() + 0.1f && _TargetPosition.Length() >= _Position.Length() - 0.1f)
+                return true;
+            return false;
+        }
+
+        internal bool targetAngleReached()
+        {
+          //  if(_TargetAngle <= _
+            return false;
+        }
+
+        internal void setPosition(int p)
+        {
+            if (this._RobotState != RobotStates.PositionMode)
+                return;
+             double cAngle = Angle + Math.PI;
+             _TargetPosition.X = (float)(_Position.X * Math.Cos(cAngle) - _Position.Y * Math.Sin(cAngle));
+             _TargetPosition.Y = (float)(_Position.X * Math.Sin(cAngle) + _Position.Y * Math.Cos(cAngle));
+        }
+
+        internal void setAngle(int p)
+        {
+            if (this._RobotState != RobotStates.VelocityMode)
+                return;
+            _TargetAngle += (p / 100f);
         }
     }
 }

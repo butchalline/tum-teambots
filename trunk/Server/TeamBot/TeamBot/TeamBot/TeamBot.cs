@@ -77,6 +77,7 @@ namespace teambot
                 Map.SerializeToXML(ref map, this.Content.RootDirectory);
             }
             _Bot = new Robot(map);
+            _Bot.changeState(Robot.RobotStates.VelocityMode);
             _DataHandler = new communication.DataHandler(_Bot);
             graphics.ApplyChanges();
             base.Initialize();

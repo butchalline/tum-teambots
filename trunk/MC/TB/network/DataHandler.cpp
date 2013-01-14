@@ -17,28 +17,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef __ODOMETRY_H__
-#define __ODOMETRY_H__
+#include "network/DataHandler.h"
 
-#include <Dynamixel_Serial.h>
-#include "Config.h"
+DataHandler handler;
 
-class Odometry {
-public:
+void DataHandler::sendPosition(short x, short y, short angle)
+{
+	TBFrame frame;
+	frame.head.Id = TB_DATA_ID;
+	frame.head.SubId = TB_DATA_POSITION;
+	frame.head.TimeStamp = 0; //TODO
+	frame.data.positionData.x = x;
+	frame.data.positionData.y = y;
+	frame.data.positionData.angle = angle;
 
-
-
-
-private:
-	short currX;
-	short currY;
-	short prevX;
-	short prevY;
-	short currAngle;
-	short prevAngle;
-
-};
-
-extern Odometry odometry;
-
-#endif
+	usb.putData((unsigned char*)&frame, sizeof(TBHeader) + sizeof(TBPosition));
+}

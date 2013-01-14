@@ -67,26 +67,45 @@ namespace teambot.communication
                 case Constants.TB_VELOCITY_ID:
                     if (!(frame is TBVelocity))
                         throw new Exception("Frame is not a Velocity Frame");
-                    TBVelocity data = (TBVelocity)frame;
+                    TBVelocity velocityData = (TBVelocity)frame;
 
-                    if (data.SubId == Constants.TB_VELOCITY_FORWARD)
+                    if (velocityData.SubId == Constants.TB_VELOCITY_FORWARD)
                     {
-                        _Bot.setVelocity(data.speedLeft * 4, data.speedRight * 4, WheelDirection.Forwards, WheelDirection.Forwards);
+                        _Bot.setVelocity(velocityData.speedLeft * 4, velocityData.speedRight * 4, WheelDirection.Forwards, WheelDirection.Forwards);
                     }
-                    else if (data.SubId == Constants.TB_VELOCITY_BACKWARD)
+                    else if (velocityData.SubId == Constants.TB_VELOCITY_BACKWARD)
                     {
-                        _Bot.setVelocity(data.speedLeft * 4, data.speedRight * 4, WheelDirection.Backwards, WheelDirection.Backwards);
+                        _Bot.setVelocity(velocityData.speedLeft * 4, velocityData.speedRight * 4, WheelDirection.Backwards, WheelDirection.Backwards);
                     }
-                    else if (data.SubId == Constants.TB_VELOCITY_TURN_LEFT)
+                    else if (velocityData.SubId == Constants.TB_VELOCITY_TURN_LEFT)
                     {
-                        _Bot.setVelocity(data.speedLeft * 4, data.speedRight * 4, WheelDirection.Backwards, WheelDirection.Forwards);
+                        _Bot.setVelocity(velocityData.speedLeft * 4, velocityData.speedRight * 4, WheelDirection.Backwards, WheelDirection.Forwards);
                     }
-                    else if (data.SubId == Constants.TB_VELOCITY_TURN_RIGHT)
+                    else if (velocityData.SubId == Constants.TB_VELOCITY_TURN_RIGHT)
                     {
-                        _Bot.setVelocity(data.speedLeft * 4, data.speedRight * 4, WheelDirection.Forwards, WheelDirection.Backwards);
+                        _Bot.setVelocity(velocityData.speedLeft * 4, velocityData.speedRight * 4, WheelDirection.Forwards, WheelDirection.Backwards);
                     }
                     break;
                 case Constants.TB_POSITION_ID:
+                    if (!(frame is TBPosition))
+                        throw new Exception("Frame is not a Position Frame");
+                    TBPosition positionData = (TBPosition)frame;
+                    if (positionData.SubId == Constants.TB_POSITION_FORWARD)
+                    {
+                        _Bot.setPosition(positionData.distance);
+                    }
+                    else if (positionData.SubId == Constants.TB_POSITION_BACKWARD)
+                    {
+                        _Bot.setPosition(-positionData.distance);
+                    }
+                    else if (positionData.SubId == Constants.TB_POSITION_TURN_LEFT)
+                    {
+                        _Bot.setAngle(-positionData.distance);
+                    }
+                    else if (positionData.SubId == Constants.TB_POSITION_TURN_RIGHT)
+                    {
+                        _Bot.setAngle(positionData.distance);
+                    }
                     break;
                 case Constants.TB_ERROR_ID:
                     break;

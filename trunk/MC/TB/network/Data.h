@@ -50,8 +50,19 @@
 
 #define TB_DATA_ID									0x03
 //------------------------------------------------------
-#define TB_DATA_INFRARED							0x01  //char distance left | char distance middle | char distance right
+#define TB_DATA_INFRARED							0x00  //char distance left | char distance middle | char distance right
+#define TB_DATA_POSITION							0x01  //short X | short Y | short Angle * 100
 //======================================================
+
+#define TB_STATUS_ID								0x04
+//------------------------------------------------------
+#define TB_STATUS_IDLE_MODE							0x00
+#define TB_STATUS_VELOCITY_MODE						0x01
+#define TB_STATUS_POSITION_MODE						0x02
+#define TB_STATUS_POSITION_REACHED					0x03
+#define TB_STATUS_ANGLE_REACHED						0x04
+//======================================================
+
 
 #define TB_ERROR_ID					  				0x42
 //------------------------------------------------------
@@ -60,6 +71,7 @@
 #define TB_ERROR_LOG								0x02
 #define TB_ERROR_INFO								0x03
 #define TB_ERROR_ERROR								0x04
+#define TB_ERROR_NOT_ALLOWED						0x05
 //======================================================
 
 
@@ -69,16 +81,22 @@ struct TBVelocity {
 	u_char speedRight;
 };
 
+struct TBInfrared {
+	u_char distance_left; //distance in cm
+	u_char distance_middle;
+	u_char distance_right;
+};
+
 struct TBPosition {
-	u_char posLeftMotor;
-	u_char posRightMotor;
-	short roundsLeft;
-	short roundsRight;
+	short x;
+	short y;
+	short angle;
 };
 
 union TBData {
 	TBVelocity velocity;
-	TBPosition position;
+	TBInfrared infraredData;
+	TBPosition positionData;
 };
 
 struct TBHeader {

@@ -335,7 +335,7 @@ namespace teambot
             #region Slice data members
 
             [_System.CodeDom.Compiler.GeneratedCodeAttribute("slice2cs", "3.4.2")]
-            public float distance;
+            public short distance;
 
             #endregion
 
@@ -347,7 +347,7 @@ namespace teambot
             }
 
             [_System.CodeDom.Compiler.GeneratedCodeAttribute("slice2cs", "3.4.2")]
-            public TBPosition(byte Id, byte SubId, short TimeStamp, float distance) : base(Id, SubId, TimeStamp)
+            public TBPosition(byte Id, byte SubId, short TimeStamp, short distance) : base(Id, SubId, TimeStamp)
             {
                 this.distance = distance;
             }
@@ -419,7 +419,7 @@ namespace teambot
             {
                 os__.writeTypeId(ice_staticId());
                 os__.startWriteSlice();
-                os__.writeFloat(distance);
+                os__.writeShort(distance);
                 os__.endWriteSlice();
                 base.write__(os__);
             }
@@ -432,7 +432,7 @@ namespace teambot
                     /* string myId = */ is__.readTypeId();
                 }
                 is__.startReadSlice();
-                distance = is__.readFloat();
+                distance = is__.readShort();
                 is__.endReadSlice();
                 base.read__(is__, true);
             }

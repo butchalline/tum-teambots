@@ -35,7 +35,7 @@ namespace teambot.Bot
         public bool editMode { get; set; }
 
         [XmlIgnore]
-        public const float PixelToCm = 1000 / 800;
+        public const float PixelToCm = 800f / 1000f;
 
         public class Field
         {

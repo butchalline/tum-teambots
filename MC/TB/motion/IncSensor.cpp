@@ -38,14 +38,14 @@ const u_char IncSensor::table[128] =  {0b01111111, 0b00111111, 0b00111110, 0b001
 		0b00010000, 0b10010000, 0b10010010, 0b10011010, 0b10011110, 0b00011110, 0b01011110, 0b01011111};
 
 IncSensor::IncSensor(){
-	inkrRoundsLeft = 0;
-	inkrRoundsRight = 0;
-	lastPosLeft = 0;
-	lastPosRight = 0;
-	actPosRight = 0;
-	actPosLeft = 0;
-	roundsLeft = 0;
-	roundsRight = 0;
+//	inkrRoundsLeft = 0;
+//	inkrRoundsRight = 0;
+//	lastPosLeft = 0;
+//	lastPosRight = 0;
+//	actPosRight = 0;
+//	actPosLeft = 0;
+//	roundsLeft = 0;
+//	roundsRight = 0;
 
 }
 
@@ -72,129 +72,83 @@ void IncSensor::Init(){
 u_char IncSensor::getPositionLeft(){
 	u_char posLeft = 0b0;
 
-if(INKR_SENSOR_LEFT_1 == HIGH){
-	posLeft = posLeft +0b1;
-}
-if (INKR_SENSOR_LEFT_2 == HIGH){
-	posLeft = posLeft +0b10;
-}
-if(INKR_SENSOR_LEFT_3 == HIGH){
-	posLeft = posLeft +0b100;
-}
-if(INKR_SENSOR_LEFT_4 == HIGH){
-	posLeft = posLeft +0b1000;
-}
-if(INKR_SENSOR_LEFT_5 == HIGH){
-	posLeft = posLeft +0b1000;
-}
-if(INKR_SENSOR_LEFT_6 == HIGH){
-	posLeft = posLeft +0b10000;
-}
-if(INKR_SENSOR_LEFT_7 == HIGH){
-	posLeft = posLeft +0b100000;
-}
-if(INKR_SENSOR_LEFT_8 == HIGH){
-	posLeft = posLeft +0b1000000;
+posLeft	= digitalRead(INKR_SENSOR_LEFT_8)<<7 | digitalRead(INKR_SENSOR_LEFT_7)<<6 | digitalRead(INKR_SENSOR_LEFT_6)<<5 |
+		digitalRead(INKR_SENSOR_LEFT_5)<<4 | digitalRead(INKR_SENSOR_LEFT_4)<<3 | digitalRead(INKR_SENSOR_LEFT_3)<<2 |
+		digitalRead(INKR_SENSOR_LEFT_2)<<1  | digitalRead(INKR_SENSOR_LEFT_1);
 
 	for(u_char i = 0; i<128; i++){
 		if (table[i] == posLeft){
-			lastPosLeft = actPosLeft;
-			actPosLeft = i;
-			calcRoundLeft();
-			return i;
 			return i;
 		}
 	}
-}
+
 return 200;		//return false, value 200
 }
 
 u_char IncSensor::getPositionRight(){
 	u_char posRight = 0b0;
-	if(INKR_SENSOR_RIGHT_1 == HIGH){
-		posRight = posRight +0b1;
-	}
-	if (INKR_SENSOR_RIGHT_2 == HIGH){
-		posRight = posRight +0b10;
-	}
-	if(INKR_SENSOR_RIGHT_3 == HIGH){
-		posRight = posRight +0b100;
-	}
-	if(INKR_SENSOR_RIGHT_4 == HIGH){
-		posRight = posRight +0b1000;
-	}
-	if(INKR_SENSOR_RIGHT_5 == HIGH){
-		posRight = posRight +0b1000;
-	}
-	if(INKR_SENSOR_RIGHT_6 == HIGH){
-		posRight = posRight +0b10000;
-	}
-	if(INKR_SENSOR_RIGHT_7 == HIGH){
-		posRight = posRight +0b100000;
-	}
-	if(INKR_SENSOR_RIGHT_8 == HIGH){
-		posRight = posRight +0b1000000;
+
+posRight	= digitalRead(INKR_SENSOR_RIGHT_8)<<7 | digitalRead(INKR_SENSOR_RIGHT_7)<<6 | digitalRead(INKR_SENSOR_RIGHT_6)<<5 |
+		digitalRead(INKR_SENSOR_RIGHT_5)<<4 | digitalRead(INKR_SENSOR_RIGHT_4)<<3 | digitalRead(INKR_SENSOR_RIGHT_3)<<2 |
+		digitalRead(INKR_SENSOR_RIGHT_2)<<1  | digitalRead(INKR_SENSOR_RIGHT_1);
 
 		for(u_char i = 0; i<128; i++){
 			if (table[i] == posRight){
-				lastPosRight = actPosRight;
-				actPosRight = i;
-				calcRoundRight();
 				return i;
 			}
 		}
-	}
+
 	return 200;		//return false, value 200
 }
 
-void IncSensor::calcRoundLeft(){
-	char posTmp = 0;
-	posTmp = lastPosLeft - actPosLeft;
-
-	if (posTmp<-64){
-		posTmp = posTmp+128;
-		posTmp = -posTmp;
-	}
-	if  (posTmp>64){
-		posTmp = posTmp-128;
-		posTmp = -posTmp;
-	}
-	if (lastPosLeft<actPosLeft){
-		posTmp= -posTmp;
-	}
-	inkrRoundsLeft = inkrRoundsLeft +static_cast<int>(posTmp);
-	roundsLeft = inkrRoundsLeft/128;
-	return;
-}
-
-void IncSensor::calcRoundRight(){
-	char posTmp = 0;
-	posTmp = lastPosRight - actPosRight;
-
-	if (posTmp<-64){
-		posTmp = posTmp+128;
-		posTmp = -posTmp;
-	}
-	if  (posTmp>64){
-		posTmp = posTmp-128;
-		posTmp = -posTmp;
-	}
-	if (lastPosRight<actPosRight){
-		posTmp= -posTmp;
-	}
-	inkrRoundsRight = inkrRoundsRight +static_cast<int>(posTmp);
-	roundsRight = inkrRoundsRight/128;
-	return;
-}
-
-char IncSensor::getRoundsLeft(){
-	getPositionLeft();
-	return roundsLeft;
-}
-char IncSensor::getRoundsRight(){
-	getPositionRight();
-	return roundsRight;
-}
+//void IncSensor::calcRoundLeft(){
+//	char posTmp = 0;
+//	posTmp = lastPosLeft - actPosLeft;
+//
+//	if (posTmp<-64){
+//		posTmp = posTmp+128;
+//		posTmp = -posTmp;
+//	}
+//	if  (posTmp>64){
+//		posTmp = posTmp-128;
+//		posTmp = -posTmp;
+//	}
+//	if (lastPosLeft<actPosLeft){
+//		posTmp= -posTmp;
+//	}
+//	inkrRoundsLeft = inkrRoundsLeft +static_cast<int>(posTmp);
+//	roundsLeft = inkrRoundsLeft/128;
+//	return;
+//}
+//
+//void IncSensor::calcRoundRight(){
+//	char posTmp = 0;
+//	posTmp = lastPosRight - actPosRight;
+//
+//	if (posTmp<-64){
+//		posTmp = posTmp+128;
+//		posTmp = -posTmp;
+//	}
+//	if  (posTmp>64){
+//		posTmp = posTmp-128;
+//		posTmp = -posTmp;
+//	}
+//	if (lastPosRight<actPosRight){
+//		posTmp= -posTmp;
+//	}
+//	inkrRoundsRight = inkrRoundsRight +static_cast<int>(posTmp);
+//	roundsRight = inkrRoundsRight/128;
+//	return;
+//}
+//
+//char IncSensor::getRoundsLeft(){
+//	getPositionLeft();
+//	return roundsLeft;
+//}
+//char IncSensor::getRoundsRight(){
+//	getPositionRight();
+//	return roundsRight;
+//}
 
 
 

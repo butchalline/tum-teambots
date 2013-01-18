@@ -21,10 +21,11 @@
 
 //The setup function is called once at startup of the sketch
 void setup() {
+	timerInit();
 	stateMachine.Init();
 	Serial.begin(9600);
 	Serial.print("Hello World!");
-	pinMode(LED13, OUTPUT); // Pin setup for Visual indication of runing (heart beat) program using onboard LED
+	pinMode(LED13, OUTPUT); // Pin setup for Visual indication of running (heart beat) program using onboard LED
 	digitalWrite(LED13, HIGH);
 	motors.Init(); // Init Motors
 }
@@ -32,4 +33,22 @@ void setup() {
 // The loop function is called in an endless loop
 void loop() {
 	stateMachine.Call();
+}
+
+//Timer interrupt für Zeit Messung
+
+
+void timerInit()
+{
+	// Todo synchronisiere mit Android
+	//_______________________________________________________________________
+	TCCR1B |= (0<<CS12) | (0<<CS11) | (1<<CS10);		//setze Prescaler auf 1 (16 Mhz)
+	TCCR1B &= !(1<<CS12) & !(1<<CS11) & !(0<<CS10);		//(0 0 1)
+
+	TIMSK1 |= 1<<ICIE1;					//enable Interrupt für Timer1
+	sei();								//global interrupt enable
+}
+ISR(TIMER1_OVF_vect)
+{
+//compare interrupt auf 16000(für eine millisekunde)
 }

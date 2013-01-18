@@ -20,24 +20,24 @@ public:
 
 	u_char getPositionLeft();
 	u_char getPositionRight();
-	void calcRoundLeft();
-	void calcRoundRight();
-	char getRoundsLeft();
-	char getRoundsRight();
+//	void calcRoundLeft();
+//	void calcRoundRight();
+//	char getRoundsLeft();
+//	char getRoundsRight();
 
 
 
 private:
 
 	static const u_char table[128];
-	short inkrRoundsLeft;	//number of rounds of the motors
-	short inkrRoundsRight;
-	char roundsLeft;
-	char roundsRight;
-	char lastPosRight;
-	char lastPosLeft;
-	char actPosRight;
-	char actPosLeft;
+//	short inkrRoundsLeft;	//number of rounds of the motors
+//	short inkrRoundsRight;
+//	char roundsLeft;
+//	char roundsRight;
+//	char lastPosRight;
+//	char lastPosLeft;
+//	char actPosRight;
+//	char actPosLeft;
 };
 
 extern IncSensor 	incSensor;

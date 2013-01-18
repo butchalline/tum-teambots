@@ -26,17 +26,28 @@
 class Odometry {
 public:
 
-
+void Init();
+void getInkr();
+void calcPosition();
 
 
 private:
+	u_char inkrRight;
+	u_char inkrLeft;
+	u_char prevInkrRight;
+	u_char prevInkrLeft;
+	char deltaInkrLeft;		//Deltastrecke in inkrementen
+	char deltaInkrRight;
 	short currX;
 	short currY;
 	short prevX;
 	short prevY;
-	short currAngle;
-	short prevAngle;
-
+	float currAngle;
+	float prevAngle;
+	short roundsLeft;
+	short roundsRight;
+	short distLeft;		//delta Strecke in mm
+	short distRight;
 };
 
 extern Odometry odometry;

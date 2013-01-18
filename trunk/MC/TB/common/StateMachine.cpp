@@ -67,8 +67,8 @@ void StateMachine::preHandle() {
 			}
 			handleVelocity();
 			break;
-		case TB_TURN_ID:
-			break;
+//		case TB_TURN_ID:
+//			break;
 		case TB_POSITION_ID:
 			break;
 		case TB_ERROR_ID:

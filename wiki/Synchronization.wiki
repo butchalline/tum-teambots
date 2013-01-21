@@ -4,11 +4,11 @@
 
 The Timer synchronization between the SmartPhone and the ArduinoMC is handled as followed:
 
-# The first message received by the MC is the Set of the SmartPhone Timer unit. e.g. The first Massage has a TimeStamp of 100ms
-# It is assumed that both Timers run in the same speed and correct. Our first message includes the delay from MC to SmartPhone. All further messages are compared to the SmartPhone Value. If the Value is smaller then the SmartPhone time we have a decrease of our transfer delay. If it is bigger, we have an increase.
+ # The first message received by the MC is the Set of the SmartPhone Timer unit. e.g. The first Massage has a TimeStamp of 100ms
+ # It is assumed that both Timers run in the same speed and correct. Our first message includes the delay from MC to SmartPhone. All further messages are compared to the SmartPhone Value. If the Value is smaller then the SmartPhone time we have a decrease of our transfer delay. If it is bigger, we have an increase.
 
 Example
-# First Message TimeStamp: 100 ms = SP_TimerStart (+ Unknown Delay X)
-# Second Message TimeStamp: 150 ms; SP_Timer = 145ms : The Unknown Delay has a Delta of -5ms
+ # First Message TimeStamp: 100 ms = SP_TimerStart (+ Unknown Delay X)
+ # Second Message TimeStamp: 150 ms; SP_Timer = 145ms : The Unknown Delay has a Delta of -5ms
 
 The Delay delta is updated every Message

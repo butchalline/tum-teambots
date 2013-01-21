@@ -19,11 +19,12 @@
 
 #include "Motor.h"
 
+
 Motor motors;
 
 Motor::Motor(u_char idMotor1, u_char idMotor2) :
 		motorIdLeft(idMotor1), motorIdRight(idMotor2), targetVelocityLeft(0), currentVelocityLeft(-1), targetDirectionLeft(Forwards), currentDirectionLeft(Forwards),
-		targetVelocityRight(0), currentVelocityRight(-1), targetDirectionRight(Forwards), currentDirectionRight(Forwards) {
+		targetVelocityRight(0), currentVelocityRight(-1), targetDirectionRight(Forwards), currentDirectionRight(Forwards), velocityControlerLeft(Left), velocityControlerRight(Right) {
 
 }
 
@@ -48,11 +49,13 @@ void Motor::Init() {
 		control.endlessEnable(motorIdRight, HIGH); // Turn Wheel mode OFF, must be on if using wheel mode
 		control.torqueMax(motorIdRight, 0x2FF); // Set Dynamixel to max torque limit
 	}
-
-
 }
 
 void Motor::setVelocity(u_short velocityLeft,  u_short velocityRight, Direction directionLeft, Direction directionRight) {
+	if(velocityLeft > MAX_USER_VELOCITY)
+		velocityLeft = MAX_USER_VELOCITY;
+	if(velocityRight > MAX_USER_VELOCITY)
+		velocityRight = MAX_USER_VELOCITY;
 	targetVelocityLeft = velocityLeft;
 	targetDirectionLeft = directionLeft;
 	targetVelocityRight = velocityRight;
@@ -61,31 +64,31 @@ void Motor::setVelocity(u_short velocityLeft,  u_short velocityRight, Direction 
 
 
 void Motor::driveVeloctiy() {
-	if(!(currentVelocityLeft != targetVelocityLeft || currentDirectionLeft != targetDirectionLeft || currentVelocityRight != targetVelocityRight || currentDirectionRight != targetDirectionRight))
-		return;
+//	if(!(currentVelocityLeft != targetVelocityLeft || currentDirectionLeft != targetDirectionLeft || currentVelocityRight != targetVelocityRight || currentDirectionRight != targetDirectionRight))
+//		return;
 	currentVelocityLeft = targetVelocityLeft;
 	currentDirectionLeft = targetDirectionLeft;
 	currentVelocityRight = targetVelocityRight;
 	currentDirectionRight = targetDirectionRight;
 	if (targetDirectionLeft == Forwards) {
-		control.turn(motorIdLeft, LEFT, currentVelocityLeft);
+		control.turn(motorIdLeft, LEFT, velocityControlerLeft.controlVel(currentVelocityLeft));
 		Serial.print("MotorLeft Forwards ");
 		Serial.print(currentVelocityLeft);
 		Serial.print("\n\r");
 	} else {
-		control.turn(motorIdLeft, RIGHT, currentVelocityLeft);
+		control.turn(motorIdLeft, RIGHT, velocityControlerLeft.controlVel(currentVelocityLeft));
 		Serial.print("MotorLeft Backwards ");
 		Serial.print(currentVelocityLeft);
 		Serial.print("\n\r");
 	}
 
 	if (targetDirectionRight == Forwards) {
-		control.turn(motorIdRight, RIGHT, currentVelocityRight);
+		control.turn(motorIdRight, RIGHT, velocityControlerRight.controlVel(currentVelocityRight));
 		Serial.print("MotorRight Forwards ");
 		Serial.print(currentVelocityRight);
 		Serial.print("\n\r");
 	} else {
-		control.turn(motorIdRight, LEFT, currentVelocityRight);
+		control.turn(motorIdRight, LEFT, velocityControlerRight.controlVel(currentVelocityRight));
 		Serial.print("MotorRight Backwards ");
 		Serial.print(currentVelocityRight);
 		Serial.print("\n\r");

@@ -22,6 +22,7 @@
 
 #include <Dynamixel_Serial.h>
 #include "Config.h"
+#include "Control.h"
 
 class Motor {
 public:
@@ -50,6 +51,12 @@ private:
 	u_short currentVelocityRight;
 	Direction targetDirectionRight;
 	Direction currentDirectionRight;
+
+	//-----------------------------------
+	//Regelung:
+	Control velocityControlerLeft;
+	Control velocityControlerRight;
+	//----------------------------------
 };
 
 extern Motor motors;

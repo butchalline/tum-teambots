@@ -19,9 +19,10 @@
 
 #include "TB.h"
 
+
+
 //The setup function is called once at startup of the sketch
 void setup() {
-	timerInit();
 	stateMachine.Init();
 	Serial.begin(9600);
 	Serial.print("Hello World!");
@@ -38,6 +39,8 @@ void loop() {
 //Timer interrupt für Zeit Messung
 
 
+
+/* wird nicht als Timer benötigt, da Arduino schon timerfunktion bereitstellt
 void timerInit()
 {
 	// Todo synchronisiere mit Android
@@ -48,7 +51,9 @@ void timerInit()
 	TIMSK1 |= 1<<ICIE1;					//enable Interrupt für Timer1
 	sei();								//global interrupt enable
 }
+
 ISR(TIMER1_OVF_vect)
 {
 //compare interrupt auf 16000(für eine millisekunde)
 }
+*/

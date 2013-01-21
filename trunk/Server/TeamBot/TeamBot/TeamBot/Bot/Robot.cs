@@ -165,6 +165,7 @@ namespace teambot.Bot
              * winkel = winkel + winkel
              */
 
+            //Page 18 dynamixel documentation... 0x3ff speed = 114 RPM ( devided by 60 = rounds per second)
             double dR = 0.5f * gameTime.ElapsedGameTime.TotalSeconds * WheelPerimeter * ((_vRight * (114f / 1023f)) / 60f);
             double dL = 0.5f * gameTime.ElapsedGameTime.TotalSeconds * WheelPerimeter * ((_vLeft * (114f / 1023f)) / 60f);
             double s = (dR + dL) / 2;

@@ -29,6 +29,8 @@
 #define LED13 0x0D                  // Pin of Visual indication for runing "heart beat" using onboard LED
 #define MOTOR_POWER 0x06
 
+#define MAX_USER_VELOCITY 800 //can't be more then 1023 (0x3ff)
+
 #define MOTOR_ID_1 1  //right
 #define MOTOR_ID_2 2 //0 = deactivated
 

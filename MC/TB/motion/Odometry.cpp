@@ -44,8 +44,9 @@ void Odometry::Init()
 	deltaInkrRight = 0;
 	roundsLeft = 0;
 	roundsRight = 0;
-
-
+	timeStep = 0;
+	actVelocityLeft = 0;
+	actVelocityRight = 0;
 }
 
 void Odometry::getInkr()
@@ -61,29 +62,29 @@ void Odometry::getInkr()
 	deltaInkrLeft = inkrLeft - prevInkrLeft;
 	deltaInkrRight = inkrRight - prevInkrRight;
 
-	//BDeingung: die Umdrehung darf nicht größer als die halbe Umdrehung eines Inkrementumlaufs sein.
+	//Bedingung: die Umdrehung darf nicht größer als die halbe Umdrehung eines Inkrementumlaufs sein.
 
 	//Linkes Rad***********************************************
 	if(deltaInkrLeft > 64)				//Überlauf nach hinten
 	{
 		deltaInkrLeft -= 128;
-		roundsLeft --;
+		--roundsLeft;
 	}
 	if(deltaInkrLeft < -64)				//Überlauf nach vorne
 	{
 		deltaInkrLeft += 128;
-		roundsLeft ++;
+		++roundsLeft;
 	}
 	//Rechtes Rad**********************************************
 	if(deltaInkrRight > 64)				//Überlauf nach hinten
 	{
 		deltaInkrRight -= 128;
-		roundsRight ++;
+		++roundsRight;
 	}
 	if(deltaInkrRight < -64)			//Überlauf nach vorne
 	{
 		deltaInkrRight += 128;
-		roundsRight --;
+		--roundsRight;
 	}
 
 	deltaInkrRight ^= 0b1<<8 ; //toggle Vorzeichen //da die Richtung der Motoren umgedreht ist
@@ -124,4 +125,18 @@ void Odometry::calcPosition()
     currX = prevX + (s * sin(currAngle));						//  Math.Sin(Angle));
     currY = prevY + (s * cos(currAngle)); 						//Math.Cos(Angle));
 
+}
+
+
+void Odometry::update(unsigned long deltaTime){
+	this->timeStep = deltaTime;
+	this->getInkr();
+	this->calcPosition();
+
+	//calc delta v für linkes und rechtes Rad
+	//Zeit in Millisekunden
+	//Strecke in mm
+
+	actVelocityLeft = (distLeft)/(1000*timeStep);
+	actVelocityRight = (distRight)/(1000*timeStep);
 }

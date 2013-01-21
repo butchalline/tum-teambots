@@ -29,7 +29,10 @@ public:
 void Init();
 void getInkr();
 void calcPosition();
+void update(unsigned long deltaTime);
 
+unsigned short actVelocityRight;	//Geschwindigkeit in mm/sec
+unsigned short actVelocityLeft;		//Geschwindigkeit in mm/sec
 
 private:
 	u_char inkrRight;
@@ -48,6 +51,8 @@ private:
 	short roundsRight;
 	short distLeft;		//delta Strecke in mm
 	short distRight;
+	unsigned long timeStep;
+
 };
 
 extern Odometry odometry;

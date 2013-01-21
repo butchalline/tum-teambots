@@ -21,6 +21,8 @@
 #include "network/Usb.h"
 #include "network/Data.h"
 #include "motion/Motor.h"
+#include "motion/Timer.h"
+#include "motion/Odometry.h"
 
 StateMachine stateMachine; //Global StateMachine Object
 TBFrame* receiveFrame;
@@ -75,6 +77,9 @@ void StateMachine::preHandle() {
 			break;
 		}
 	}
+
+	odometry.update(timer.stop()); //Schleife für den Durchlauf eines Mess-Schrittes
+	timer.start();
 }
 
 void StateMachine::postHandle() {

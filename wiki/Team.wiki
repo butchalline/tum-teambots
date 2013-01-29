@@ -3,28 +3,28 @@
 = Team =
 The team consists of six members, all studying master degrees at the TU Munic.
 
-*Aaron Frueh* 
+*Aaron Frueh*. 
 study:
 function:
-interests:     
+interests:        
 
 
-*Alexander Reimann* 
-study:
-function:
-interests: 
-
-*Artur Lohrer* 
+*Alexander Reimann*. 
 study:
 function:
 interests: 
 
-*Niklas Boehme* 
+*Artur Lohrer*. 
 study:
 function:
 interests: 
 
-*Viktor Bogischef*
+*Niklas Boehme*. 
+study:
+function:
+interests: 
+
+*Viktor Bogischef*.
 study:
 function:
 interests:
@@ -33,5 +33,3 @@ interests:
 study:
 function: Mechanical design, MC Programming
 interests:
-
-

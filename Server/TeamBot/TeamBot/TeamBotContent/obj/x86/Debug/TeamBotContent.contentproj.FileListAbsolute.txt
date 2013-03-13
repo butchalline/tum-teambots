@@ -1,1 +1,2 @@
 C:\dev\TeamBots\Server\TeamBot\TeamBot\TeamBotContent\obj\x86\Debug\ResolveAssemblyReference.cache
+D:\NVPACK\tum-teambots\Server\TeamBot\TeamBot\TeamBotContent\obj\x86\Debug\ResolveAssemblyReference.cache

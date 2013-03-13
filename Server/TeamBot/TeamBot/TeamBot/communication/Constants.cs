@@ -37,6 +37,7 @@ namespace teambot.communication
         public const int TB_DATA_ID = 0x03;
         //------------------------------------------------------
         public const int TB_DATA_INFRARED = 0x00;  //char distance left | char distance middle | char distance right
+        public const int TB_DATA_POSITION = 0x01;  //char x in millimeters | char y in millimeters | angle in 360.xx * 100
         //======================================================
 
         #region TB_ERROR

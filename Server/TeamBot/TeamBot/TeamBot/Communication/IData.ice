@@ -5,7 +5,7 @@
 
 		class TBFrame
 		{
-			byte Id; //defined above
+			byte Id;
 			byte SubId;
 			short TimeStamp; //in 10ms
 		};
@@ -26,6 +26,20 @@
 			byte leftDistance;
 			byte middleDistance;
 			byte rightDistance;
+		};
+
+		class TBPositionData extends TBFrame
+		{
+			short x; //in millimeter
+			short y; //in millimeter
+			short angle; //in angle	in 360.xx * 100
+		};
+
+		class TBPositionReached extends TBFrame
+		{
+			short x; //in millimeter
+			short y; //in millimeter
+			short angle; //in angle	in 360.xx * 100
 		};
 
 		interface IData

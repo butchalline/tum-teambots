@@ -34,7 +34,7 @@ namespace teambot.communication
             frame.speedLeft = (byte) Math.Abs(velocityLeft);
             frame.speedRight = (byte) Math.Abs(velocityRight);
 
-            toUpdate.receive(frame);
+            //toUpdate.receive(frame);
         }
 
 

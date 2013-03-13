@@ -7,8 +7,8 @@
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
       <Options>None</Options>
-      <Output>C:\dev\TeamBots\Server\TeamBot\TeamBot\TeamBot\bin\x86\Release\Content\TeamBot.xnb</Output>
-      <Time>2012-11-30T12:46:47.2685497+01:00</Time>
+      <Output>D:\NVPACK\tum-teambots\Server\TeamBot\TeamBot\TeamBot\bin\x86\Release\Content\TeamBot.xnb</Output>
+      <Time>2012-12-03T18:32:42.8388993+01:00</Time>
     </Item>
     <Item>
       <Source>Wall.png</Source>
@@ -16,8 +16,80 @@
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
       <Options>None</Options>
-      <Output>C:\dev\TeamBots\Server\TeamBot\TeamBot\TeamBot\bin\x86\Release\Content\Wall.xnb</Output>
-      <Time>2012-12-03T18:08:51.6614115+01:00</Time>
+      <Output>D:\NVPACK\tum-teambots\Server\TeamBot\TeamBot\TeamBot\bin\x86\Release\Content\Wall.xnb</Output>
+      <Time>2012-12-03T18:32:42.7388991+01:00</Time>
+    </Item>
+    <Item>
+      <Source>GreenInfra.png</Source>
+      <Name>GreenInfra</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Options>None</Options>
+      <Output>D:\NVPACK\tum-teambots\Server\TeamBot\TeamBot\TeamBot\bin\x86\Release\Content\GreenInfra.xnb</Output>
+      <Time>2013-01-07T12:00:24.4279746+01:00</Time>
+    </Item>
+    <Item>
+      <Source>RedInfra.png</Source>
+      <Name>RedInfra</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Options>None</Options>
+      <Output>D:\NVPACK\tum-teambots\Server\TeamBot\TeamBot\TeamBot\bin\x86\Release\Content\RedInfra.xnb</Output>
+      <Time>2013-01-07T12:00:24.4591746+01:00</Time>
+    </Item>
+    <Item>
+      <Source>TeamBotLGRG.png</Source>
+      <Name>TeamBotLGRG</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Options>None</Options>
+      <Output>D:\NVPACK\tum-teambots\Server\TeamBot\TeamBot\TeamBot\bin\x86\Release\Content\TeamBotLGRG.xnb</Output>
+      <Time>2013-01-07T12:00:24.3967745+01:00</Time>
+    </Item>
+    <Item>
+      <Source>TeamBotLGRR.png</Source>
+      <Name>TeamBotLGRR</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Options>None</Options>
+      <Output>D:\NVPACK\tum-teambots\Server\TeamBot\TeamBot\TeamBot\bin\x86\Release\Content\TeamBotLGRR.xnb</Output>
+      <Time>2013-01-07T12:00:24.4279746+01:00</Time>
+    </Item>
+    <Item>
+      <Source>TeamBotLRRG.png</Source>
+      <Name>TeamBotLRRG</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Options>None</Options>
+      <Output>D:\NVPACK\tum-teambots\Server\TeamBot\TeamBot\TeamBot\bin\x86\Release\Content\TeamBotLRRG.xnb</Output>
+      <Time>2013-01-07T12:00:24.4279746+01:00</Time>
+    </Item>
+    <Item>
+      <Source>TeamBotLRRR.png</Source>
+      <Name>TeamBotLRRR</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Options>None</Options>
+      <Output>D:\NVPACK\tum-teambots\Server\TeamBot\TeamBot\TeamBot\bin\x86\Release\Content\TeamBotLRRR.xnb</Output>
+      <Time>2013-01-07T12:00:24.3811745+01:00</Time>
+    </Item>
+    <Item>
+      <Source>greenI.png</Source>
+      <Name>greenI</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Options>None</Options>
+      <Output>D:\NVPACK\tum-teambots\Server\TeamBot\TeamBot\TeamBot\bin\x86\Release\Content\greenI.xnb</Output>
+      <Time>2013-01-07T12:00:24.4123746+01:00</Time>
+    </Item>
+    <Item>
+      <Source>redI.png</Source>
+      <Name>redI</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Options>None</Options>
+      <Output>D:\NVPACK\tum-teambots\Server\TeamBot\TeamBot\TeamBot\bin\x86\Release\Content\redI.xnb</Output>
+      <Time>2013-01-07T12:00:24.4279746+01:00</Time>
     </Item>
     <Item>
       <Source>BasicFont.spritefont</Source>
@@ -25,8 +97,8 @@
       <Importer>FontDescriptionImporter</Importer>
       <Processor>FontDescriptionProcessor</Processor>
       <Options>None</Options>
-      <Output>C:\dev\TeamBots\Server\TeamBot\TeamBot\TeamBot\bin\x86\Release\Content\BasicFont.xnb</Output>
-      <Time>2012-12-03T18:10:32.777195+01:00</Time>
+      <Output>D:\NVPACK\tum-teambots\Server\TeamBot\TeamBot\TeamBot\bin\x86\Release\Content\BasicFont.xnb</Output>
+      <Time>2013-01-07T12:00:24.4279746+01:00</Time>
     </Item>
     <Item>
       <Source>effects.fx</Source>
@@ -34,8 +106,8 @@
       <Importer>EffectImporter</Importer>
       <Processor>EffectProcessor</Processor>
       <Options>None</Options>
-      <Output>C:\dev\TeamBots\Server\TeamBot\TeamBot\TeamBot\bin\x86\Release\Content\effects.xnb</Output>
-      <Time>2012-12-03T14:45:21.793047+01:00</Time>
+      <Output>D:\NVPACK\tum-teambots\Server\TeamBot\TeamBot\TeamBot\bin\x86\Release\Content\effects.xnb</Output>
+      <Time>2012-12-03T18:32:42.8388993+01:00</Time>
     </Item>
     <BuildSuccessful>true</BuildSuccessful>
     <Settings>
@@ -43,10 +115,10 @@
       <TargetProfile>HiDef</TargetProfile>
       <BuildConfiguration>Release</BuildConfiguration>
       <CompressContent>true</CompressContent>
-      <RootDirectory>C:\dev\TeamBots\Server\TeamBot\TeamBot\TeamBotContent\</RootDirectory>
-      <LoggerRootDirectory>C:\dev\TeamBots\Server\TeamBot\TeamBot\TeamBot\</LoggerRootDirectory>
-      <IntermediateDirectory>C:\dev\TeamBots\Server\TeamBot\TeamBot\TeamBotContent\obj\x86\Release\</IntermediateDirectory>
-      <OutputDirectory>C:\dev\TeamBots\Server\TeamBot\TeamBot\TeamBot\bin\x86\Release\Content\</OutputDirectory>
+      <RootDirectory>D:\NVPACK\tum-teambots\Server\TeamBot\TeamBot\TeamBotContent\</RootDirectory>
+      <LoggerRootDirectory>D:\NVPACK\tum-teambots\Server\TeamBot\TeamBot\TeamBot\</LoggerRootDirectory>
+      <IntermediateDirectory>D:\NVPACK\tum-teambots\Server\TeamBot\TeamBot\TeamBotContent\obj\x86\Release\</IntermediateDirectory>
+      <OutputDirectory>D:\NVPACK\tum-teambots\Server\TeamBot\TeamBot\TeamBot\bin\x86\Release\Content\</OutputDirectory>
     </Settings>
     <Assemblies>
       <Assembly>
@@ -75,7 +147,7 @@
       </Assembly>
       <Assembly>
         <Key>C:\Windows\Microsoft.Net\assembly\GAC_32\Microsoft.Xna.Framework.Content.Pipeline\v4.0_4.0.0.0__842cf8be1de50553\Microsoft.Xna.Framework.Content.Pipeline.dll</Key>
-        <Value>2012-11-26T14:49:39.2749111+01:00</Value>
+        <Value>2012-12-07T11:00:25.9973729+01:00</Value>
       </Assembly>
     </Assemblies>
   </Asset>

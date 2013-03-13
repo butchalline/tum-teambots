@@ -1,7 +1,5 @@
 Content\TeamBot.xnb
-Content\BasicFont.xnb
 Content\Wall.xnb
-Content\effects.xnb
 Content\GreenInfra.xnb
 Content\RedInfra.xnb
 Content\TeamBotLGRG.xnb
@@ -10,4 +8,6 @@ Content\TeamBotLRRG.xnb
 Content\TeamBotLRRR.xnb
 Content\greenI.xnb
 Content\redI.xnb
+Content\BasicFont.xnb
+Content\effects.xnb
 Content\TeamBot.png

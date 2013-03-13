@@ -165,48 +165,6 @@ namespace teambot
             }
 
 
-            if (gameTime.TotalGameTime.Seconds > 5 && !a)
-            {
-                _Bot.setPosition(20);
-                a = true;
-            }
-            if (gameTime.TotalGameTime.Seconds > 10 && !b)
-            {
-                _Bot.setPosition(-10);
-                b = true;
-            }
-            if (gameTime.TotalGameTime.Seconds > 15 && !c)
-            {
-                _Bot.setAngle(-9000);
-                c = true;
-            }
-            if (gameTime.TotalGameTime.Seconds > 25 && !d)
-            {
-                _Bot.setPosition(100);
-                d = true;
-            }
-            if (gameTime.TotalGameTime.Seconds > 35 && !e)
-            {
-                _Bot.setAngle(12000);
-                e = true;
-            }
-            if (gameTime.TotalGameTime.Seconds > 45 && !f)
-            {
-                _Bot.setPosition(-150);
-                f = true;
-            }
-            if (gameTime.TotalGameTime.Seconds > 55 && !g)
-            {
-                _Bot.setAngle(9000);
-                g = true;
-            }
-            if (gameTime.TotalGameTime.Seconds > 65 && !h)
-            {
-                _Bot.setAngle(-9000);
-                h = true;
-            } 
-
-
             // TODO: Add your update logic here
             HandyDummy.update(_DataHandler);
             _Bot.update(gameTime);

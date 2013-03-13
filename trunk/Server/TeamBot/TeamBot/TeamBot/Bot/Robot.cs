@@ -66,7 +66,6 @@ namespace teambot.Bot
         /// </summary>
         private float _TargetAngle;
 
-
         /// <summary>
         /// Infrared Sensors of the Bot
         /// </summary>
@@ -74,7 +73,6 @@ namespace teambot.Bot
 
         private bool _PositionForward = true;
         private bool _AngleClockwise = true;
-
 
         private Texture2D _BotTexture;
         private Map _Map;
@@ -89,6 +87,8 @@ namespace teambot.Bot
             Angle = 0;
             Position = new Vector2(400, 450);
             _TargetPosition = new Vector2(400, 450);
+            PositionReached = false;
+            PositionRequested = false;
         }
 
         public Vector2 Position
@@ -103,6 +103,17 @@ namespace teambot.Bot
             set;
         }
 
+        public bool PositionReached
+        {
+            get;
+            set;
+        }
+
+        public bool PositionRequested
+        {
+            get;
+            set;
+        }
 
         internal void draw(ref SpriteBatch spriteBatch)
         {
@@ -114,11 +125,14 @@ namespace teambot.Bot
             if (_RobotState == RobotStates.PositionMode)
             {
                 Vector2 t;
-                float velocity = 250;
+                float velocity = 400;
                 if (!targetPositionReached(out t))
                 {
+                    PositionReached = false;
                     if (t.Length() <= 10)
-                        velocity = 1000 - ((10 - t.Length()) * 100);
+                        velocity = 400 - ((4 - t.Length()) * 100);
+                    if (velocity < 1)
+                        velocity = 1;
                     if (_PositionForward)
                     {
                         _vLeft = (int)velocity;
@@ -132,9 +146,16 @@ namespace teambot.Bot
                 }
                 else if (!targetAngleReached())
                 {
-                     float a = _TargetAngle - Angle;
+                    PositionReached = false;
+                    float a = _TargetAngle - Angle;
+
+                    a = a > (float)Math.PI ? a - 2f * (float)Math.PI : a;
+                    a = a < -(float)Math.PI ? a + 2f * (float)Math.PI : a;
+
                     if (Math.Abs(a) <= MathHelper.ToRadians(10))
-                        velocity = 1000 - ((10 - Math.Abs(MathHelper.ToDegrees(a))) * 100);
+                        velocity = 400 - ((4 - Math.Abs(MathHelper.ToDegrees(a))) * 100);
+                    if (velocity < 1)
+                        velocity = 1;
                     if (_AngleClockwise)
                     {
                         _vLeft = (int)velocity;
@@ -150,6 +171,11 @@ namespace teambot.Bot
                 {
                     _vLeft = 0;
                     _vRight = 0;
+                    if (PositionRequested == true)
+                    {
+                        PositionRequested = false;
+                        PositionReached = true;
+                    }
                 }
             }
 
@@ -185,7 +211,7 @@ namespace teambot.Bot
             _CurrentMiddleSensorDistance = _InfraSensor.checkMiddleSensor(Position, (float)Angle);
             _CurrentRightSensorDistance = _InfraSensor.checkRightSensor(Position, (float)Angle);
 
-            _DebugIndex = DebugLayer.addString("VLeft: " + this._vLeft.ToString() + "\nVRight: " + this._vRight.ToString() + "\nAngle: " + Math.Round(MathHelper.ToDegrees(this.Angle), 2).ToString() + "\nRobotPos: \nX: " + Math.Round(this.Position.X, 2).ToString() + " Y: " + Math.Round(this.Position.Y, 2).ToString()
+            _DebugIndex = DebugLayer.addString("VLeft: " + this._vLeft.ToString() + "\nVRight: " + this._vRight.ToString() + "\nAngle: " + Math.Round(MathHelper.ToDegrees((float)(-this.Angle + Math.PI * 0.5)), 2).ToString() + "\nRobotPos: \nX: " + Math.Round(this.Position.X * Map.PixelToCm, 2).ToString() + " Y: " + Math.Round(this.Position.Y * Map.PixelToCm, 2).ToString()
                 + "\nSensoren L|M|R:\n| " + _CurrentLeftSensorDistance.ToString() + " | " + _CurrentMiddleSensorDistance + " | " + _CurrentRightSensorDistance.ToString() + " | ", _DebugIndex);
         }
 
@@ -254,7 +280,7 @@ namespace teambot.Bot
                 _PositionForward = false;
 
             double cAngle = Angle + Math.PI;
-             float p2 = p * Map.PixelToCm;
+             float p2 = p * Map.PixelToCm * 0.1f;
              _TargetPosition.X = (float)(_Position.X - p2 * Math.Sin(cAngle));
              _TargetPosition.Y = (float)(_Position.Y + p2 * Math.Cos(cAngle));
 
@@ -264,7 +290,7 @@ namespace teambot.Bot
         {
             if (this._RobotState != RobotStates.PositionMode)
                 return;
-            float p2 = MathHelper.ToRadians(p / 100f);
+            float p2 = Angle + MathHelper.ToRadians(p / 100f);
             if (p2 < -Math.PI)
                 p2 += (float)(2 * Math.PI);
             else if (p2 > Math.PI)
@@ -272,7 +298,7 @@ namespace teambot.Bot
             _AngleClockwise = true;
             if (p < 0)
                 _AngleClockwise = false;
-            _TargetAngle += p2;
+            _TargetAngle = p2;
         }
     }
 }

@@ -616,6 +616,304 @@ namespace teambot
         [_System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1720")]
         [_System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1722")]
         [_System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1724")]
+        public partial class TBPositionData : teambot.communication.TBFrame
+        {
+            #region Slice data members
+
+            [_System.CodeDom.Compiler.GeneratedCodeAttribute("slice2cs", "3.4.2")]
+            public short x;
+
+            [_System.CodeDom.Compiler.GeneratedCodeAttribute("slice2cs", "3.4.2")]
+            public short y;
+
+            [_System.CodeDom.Compiler.GeneratedCodeAttribute("slice2cs", "3.4.2")]
+            public short angle;
+
+            #endregion
+
+            #region Constructors
+
+            [_System.CodeDom.Compiler.GeneratedCodeAttribute("slice2cs", "3.4.2")]
+            public TBPositionData() : base()
+            {
+            }
+
+            [_System.CodeDom.Compiler.GeneratedCodeAttribute("slice2cs", "3.4.2")]
+            public TBPositionData(byte Id, byte SubId, short TimeStamp, short x, short y, short angle) : base(Id, SubId, TimeStamp)
+            {
+                this.x = x;
+                this.y = y;
+                this.angle = angle;
+            }
+
+            #endregion
+
+            #region Slice type-related members
+
+            [_System.CodeDom.Compiler.GeneratedCodeAttribute("slice2cs", "3.4.2")]
+            public static new readonly string[] ids__ = 
+            {
+                "::Ice::Object",
+                "::teambot::communication::TBFrame",
+                "::teambot::communication::TBPositionData"
+            };
+
+            [_System.CodeDom.Compiler.GeneratedCodeAttribute("slice2cs", "3.4.2")]
+            public override bool ice_isA(string s)
+            {
+                return _System.Array.BinarySearch(ids__, s, IceUtilInternal.StringUtil.OrdinalStringComparer) >= 0;
+            }
+
+            [_System.CodeDom.Compiler.GeneratedCodeAttribute("slice2cs", "3.4.2")]
+            public override bool ice_isA(string s, Ice.Current current__)
+            {
+                return _System.Array.BinarySearch(ids__, s, IceUtilInternal.StringUtil.OrdinalStringComparer) >= 0;
+            }
+
+            [_System.CodeDom.Compiler.GeneratedCodeAttribute("slice2cs", "3.4.2")]
+            public override string[] ice_ids()
+            {
+                return ids__;
+            }
+
+            [_System.CodeDom.Compiler.GeneratedCodeAttribute("slice2cs", "3.4.2")]
+            public override string[] ice_ids(Ice.Current current__)
+            {
+                return ids__;
+            }
+
+            [_System.CodeDom.Compiler.GeneratedCodeAttribute("slice2cs", "3.4.2")]
+            public override string ice_id()
+            {
+                return ids__[2];
+            }
+
+            [_System.CodeDom.Compiler.GeneratedCodeAttribute("slice2cs", "3.4.2")]
+            public override string ice_id(Ice.Current current__)
+            {
+                return ids__[2];
+            }
+
+            [_System.CodeDom.Compiler.GeneratedCodeAttribute("slice2cs", "3.4.2")]
+            public static new string ice_staticId()
+            {
+                return ids__[2];
+            }
+
+            #endregion
+
+            #region Operation dispatch
+
+            #endregion
+
+            #region Marshaling support
+
+            [_System.CodeDom.Compiler.GeneratedCodeAttribute("slice2cs", "3.4.2")]
+            public override void write__(IceInternal.BasicStream os__)
+            {
+                os__.writeTypeId(ice_staticId());
+                os__.startWriteSlice();
+                os__.writeShort(x);
+                os__.writeShort(y);
+                os__.writeShort(angle);
+                os__.endWriteSlice();
+                base.write__(os__);
+            }
+
+            [_System.CodeDom.Compiler.GeneratedCodeAttribute("slice2cs", "3.4.2")]
+            public override void read__(IceInternal.BasicStream is__, bool rid__)
+            {
+                if(rid__)
+                {
+                    /* string myId = */ is__.readTypeId();
+                }
+                is__.startReadSlice();
+                x = is__.readShort();
+                y = is__.readShort();
+                angle = is__.readShort();
+                is__.endReadSlice();
+                base.read__(is__, true);
+            }
+
+            [_System.CodeDom.Compiler.GeneratedCodeAttribute("slice2cs", "3.4.2")]
+            public override void write__(Ice.OutputStream outS__)
+            {
+                Ice.MarshalException ex = new Ice.MarshalException();
+                ex.reason = "type teambot::communication::TBPositionData was not generated with stream support";
+                throw ex;
+            }
+
+            [_System.CodeDom.Compiler.GeneratedCodeAttribute("slice2cs", "3.4.2")]
+            public override void read__(Ice.InputStream inS__, bool rid__)
+            {
+                Ice.MarshalException ex = new Ice.MarshalException();
+                ex.reason = "type teambot::communication::TBPositionData was not generated with stream support";
+                throw ex;
+            }
+
+            #endregion
+        }
+
+        [_System.Runtime.InteropServices.ComVisible(false)]
+        [_System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1704")]
+        [_System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707")]
+        [_System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1709")]
+        [_System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1710")]
+        [_System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1711")]
+        [_System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1715")]
+        [_System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1716")]
+        [_System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1720")]
+        [_System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1722")]
+        [_System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1724")]
+        public partial class TBPositionReached : teambot.communication.TBFrame
+        {
+            #region Slice data members
+
+            [_System.CodeDom.Compiler.GeneratedCodeAttribute("slice2cs", "3.4.2")]
+            public short x;
+
+            [_System.CodeDom.Compiler.GeneratedCodeAttribute("slice2cs", "3.4.2")]
+            public short y;
+
+            [_System.CodeDom.Compiler.GeneratedCodeAttribute("slice2cs", "3.4.2")]
+            public short angle;
+
+            #endregion
+
+            #region Constructors
+
+            [_System.CodeDom.Compiler.GeneratedCodeAttribute("slice2cs", "3.4.2")]
+            public TBPositionReached() : base()
+            {
+            }
+
+            [_System.CodeDom.Compiler.GeneratedCodeAttribute("slice2cs", "3.4.2")]
+            public TBPositionReached(byte Id, byte SubId, short TimeStamp, short x, short y, short angle) : base(Id, SubId, TimeStamp)
+            {
+                this.x = x;
+                this.y = y;
+                this.angle = angle;
+            }
+
+            #endregion
+
+            #region Slice type-related members
+
+            [_System.CodeDom.Compiler.GeneratedCodeAttribute("slice2cs", "3.4.2")]
+            public static new readonly string[] ids__ = 
+            {
+                "::Ice::Object",
+                "::teambot::communication::TBFrame",
+                "::teambot::communication::TBPositionReached"
+            };
+
+            [_System.CodeDom.Compiler.GeneratedCodeAttribute("slice2cs", "3.4.2")]
+            public override bool ice_isA(string s)
+            {
+                return _System.Array.BinarySearch(ids__, s, IceUtilInternal.StringUtil.OrdinalStringComparer) >= 0;
+            }
+
+            [_System.CodeDom.Compiler.GeneratedCodeAttribute("slice2cs", "3.4.2")]
+            public override bool ice_isA(string s, Ice.Current current__)
+            {
+                return _System.Array.BinarySearch(ids__, s, IceUtilInternal.StringUtil.OrdinalStringComparer) >= 0;
+            }
+
+            [_System.CodeDom.Compiler.GeneratedCodeAttribute("slice2cs", "3.4.2")]
+            public override string[] ice_ids()
+            {
+                return ids__;
+            }
+
+            [_System.CodeDom.Compiler.GeneratedCodeAttribute("slice2cs", "3.4.2")]
+            public override string[] ice_ids(Ice.Current current__)
+            {
+                return ids__;
+            }
+
+            [_System.CodeDom.Compiler.GeneratedCodeAttribute("slice2cs", "3.4.2")]
+            public override string ice_id()
+            {
+                return ids__[2];
+            }
+
+            [_System.CodeDom.Compiler.GeneratedCodeAttribute("slice2cs", "3.4.2")]
+            public override string ice_id(Ice.Current current__)
+            {
+                return ids__[2];
+            }
+
+            [_System.CodeDom.Compiler.GeneratedCodeAttribute("slice2cs", "3.4.2")]
+            public static new string ice_staticId()
+            {
+                return ids__[2];
+            }
+
+            #endregion
+
+            #region Operation dispatch
+
+            #endregion
+
+            #region Marshaling support
+
+            [_System.CodeDom.Compiler.GeneratedCodeAttribute("slice2cs", "3.4.2")]
+            public override void write__(IceInternal.BasicStream os__)
+            {
+                os__.writeTypeId(ice_staticId());
+                os__.startWriteSlice();
+                os__.writeShort(x);
+                os__.writeShort(y);
+                os__.writeShort(angle);
+                os__.endWriteSlice();
+                base.write__(os__);
+            }
+
+            [_System.CodeDom.Compiler.GeneratedCodeAttribute("slice2cs", "3.4.2")]
+            public override void read__(IceInternal.BasicStream is__, bool rid__)
+            {
+                if(rid__)
+                {
+                    /* string myId = */ is__.readTypeId();
+                }
+                is__.startReadSlice();
+                x = is__.readShort();
+                y = is__.readShort();
+                angle = is__.readShort();
+                is__.endReadSlice();
+                base.read__(is__, true);
+            }
+
+            [_System.CodeDom.Compiler.GeneratedCodeAttribute("slice2cs", "3.4.2")]
+            public override void write__(Ice.OutputStream outS__)
+            {
+                Ice.MarshalException ex = new Ice.MarshalException();
+                ex.reason = "type teambot::communication::TBPositionReached was not generated with stream support";
+                throw ex;
+            }
+
+            [_System.CodeDom.Compiler.GeneratedCodeAttribute("slice2cs", "3.4.2")]
+            public override void read__(Ice.InputStream inS__, bool rid__)
+            {
+                Ice.MarshalException ex = new Ice.MarshalException();
+                ex.reason = "type teambot::communication::TBPositionReached was not generated with stream support";
+                throw ex;
+            }
+
+            #endregion
+        }
+
+        [_System.Runtime.InteropServices.ComVisible(false)]
+        [_System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1704")]
+        [_System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707")]
+        [_System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1709")]
+        [_System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1710")]
+        [_System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1711")]
+        [_System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1715")]
+        [_System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1716")]
+        [_System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1720")]
+        [_System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1722")]
+        [_System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1724")]
         public partial interface IData : Ice.Object, IDataOperations_, IDataOperationsNC_
         {
         }
@@ -652,6 +950,16 @@ namespace teambot
 
         [_System.CodeDom.Compiler.GeneratedCodeAttribute("slice2cs", "3.4.2")]
         public interface TBInfraredDataPrx : teambot.communication.TBFramePrx
+        {
+        }
+
+        [_System.CodeDom.Compiler.GeneratedCodeAttribute("slice2cs", "3.4.2")]
+        public interface TBPositionDataPrx : teambot.communication.TBFramePrx
+        {
+        }
+
+        [_System.CodeDom.Compiler.GeneratedCodeAttribute("slice2cs", "3.4.2")]
+        public interface TBPositionReachedPrx : teambot.communication.TBFramePrx
         {
         }
 
@@ -1335,6 +1643,326 @@ namespace teambot
 
         [_System.Runtime.InteropServices.ComVisible(false)]
         [_System.CodeDom.Compiler.GeneratedCodeAttribute("slice2cs", "3.4.2")]
+        public sealed class TBPositionDataPrxHelper : Ice.ObjectPrxHelperBase, TBPositionDataPrx
+        {
+            #region Asynchronous operations
+
+            #endregion
+
+            #region Checked and unchecked cast operations
+
+            public static TBPositionDataPrx checkedCast(Ice.ObjectPrx b)
+            {
+                if(b == null)
+                {
+                    return null;
+                }
+                TBPositionDataPrx r = b as TBPositionDataPrx;
+                if((r == null) && b.ice_isA(ice_staticId()))
+                {
+                    TBPositionDataPrxHelper h = new TBPositionDataPrxHelper();
+                    h.copyFrom__(b);
+                    r = h;
+                }
+                return r;
+            }
+
+            public static TBPositionDataPrx checkedCast(Ice.ObjectPrx b, _System.Collections.Generic.Dictionary<string, string> ctx)
+            {
+                if(b == null)
+                {
+                    return null;
+                }
+                TBPositionDataPrx r = b as TBPositionDataPrx;
+                if((r == null) && b.ice_isA(ice_staticId(), ctx))
+                {
+                    TBPositionDataPrxHelper h = new TBPositionDataPrxHelper();
+                    h.copyFrom__(b);
+                    r = h;
+                }
+                return r;
+            }
+
+            public static TBPositionDataPrx checkedCast(Ice.ObjectPrx b, string f)
+            {
+                if(b == null)
+                {
+                    return null;
+                }
+                Ice.ObjectPrx bb = b.ice_facet(f);
+                try
+                {
+                    if(bb.ice_isA(ice_staticId()))
+                    {
+                        TBPositionDataPrxHelper h = new TBPositionDataPrxHelper();
+                        h.copyFrom__(bb);
+                        return h;
+                    }
+                }
+                catch(Ice.FacetNotExistException)
+                {
+                }
+                return null;
+            }
+
+            public static TBPositionDataPrx checkedCast(Ice.ObjectPrx b, string f, _System.Collections.Generic.Dictionary<string, string> ctx)
+            {
+                if(b == null)
+                {
+                    return null;
+                }
+                Ice.ObjectPrx bb = b.ice_facet(f);
+                try
+                {
+                    if(bb.ice_isA(ice_staticId(), ctx))
+                    {
+                        TBPositionDataPrxHelper h = new TBPositionDataPrxHelper();
+                        h.copyFrom__(bb);
+                        return h;
+                    }
+                }
+                catch(Ice.FacetNotExistException)
+                {
+                }
+                return null;
+            }
+
+            public static TBPositionDataPrx uncheckedCast(Ice.ObjectPrx b)
+            {
+                if(b == null)
+                {
+                    return null;
+                }
+                TBPositionDataPrx r = b as TBPositionDataPrx;
+                if(r == null)
+                {
+                    TBPositionDataPrxHelper h = new TBPositionDataPrxHelper();
+                    h.copyFrom__(b);
+                    r = h;
+                }
+                return r;
+            }
+
+            public static TBPositionDataPrx uncheckedCast(Ice.ObjectPrx b, string f)
+            {
+                if(b == null)
+                {
+                    return null;
+                }
+                Ice.ObjectPrx bb = b.ice_facet(f);
+                TBPositionDataPrxHelper h = new TBPositionDataPrxHelper();
+                h.copyFrom__(bb);
+                return h;
+            }
+
+            public static readonly string[] ids__ =
+            {
+                "::Ice::Object",
+                "::teambot::communication::TBFrame",
+                "::teambot::communication::TBPositionData"
+            };
+
+            public static string ice_staticId()
+            {
+                return ids__[2];
+            }
+
+            #endregion
+
+            #region Marshaling support
+
+            protected override Ice.ObjectDelM_ createDelegateM__()
+            {
+                return new TBPositionDataDelM_();
+            }
+
+            protected override Ice.ObjectDelD_ createDelegateD__()
+            {
+                return new TBPositionDataDelD_();
+            }
+
+            public static void write__(IceInternal.BasicStream os__, TBPositionDataPrx v__)
+            {
+                os__.writeProxy(v__);
+            }
+
+            public static TBPositionDataPrx read__(IceInternal.BasicStream is__)
+            {
+                Ice.ObjectPrx proxy = is__.readProxy();
+                if(proxy != null)
+                {
+                    TBPositionDataPrxHelper result = new TBPositionDataPrxHelper();
+                    result.copyFrom__(proxy);
+                    return result;
+                }
+                return null;
+            }
+
+            #endregion
+        }
+
+        [_System.Runtime.InteropServices.ComVisible(false)]
+        [_System.CodeDom.Compiler.GeneratedCodeAttribute("slice2cs", "3.4.2")]
+        public sealed class TBPositionReachedPrxHelper : Ice.ObjectPrxHelperBase, TBPositionReachedPrx
+        {
+            #region Asynchronous operations
+
+            #endregion
+
+            #region Checked and unchecked cast operations
+
+            public static TBPositionReachedPrx checkedCast(Ice.ObjectPrx b)
+            {
+                if(b == null)
+                {
+                    return null;
+                }
+                TBPositionReachedPrx r = b as TBPositionReachedPrx;
+                if((r == null) && b.ice_isA(ice_staticId()))
+                {
+                    TBPositionReachedPrxHelper h = new TBPositionReachedPrxHelper();
+                    h.copyFrom__(b);
+                    r = h;
+                }
+                return r;
+            }
+
+            public static TBPositionReachedPrx checkedCast(Ice.ObjectPrx b, _System.Collections.Generic.Dictionary<string, string> ctx)
+            {
+                if(b == null)
+                {
+                    return null;
+                }
+                TBPositionReachedPrx r = b as TBPositionReachedPrx;
+                if((r == null) && b.ice_isA(ice_staticId(), ctx))
+                {
+                    TBPositionReachedPrxHelper h = new TBPositionReachedPrxHelper();
+                    h.copyFrom__(b);
+                    r = h;
+                }
+                return r;
+            }
+
+            public static TBPositionReachedPrx checkedCast(Ice.ObjectPrx b, string f)
+            {
+                if(b == null)
+                {
+                    return null;
+                }
+                Ice.ObjectPrx bb = b.ice_facet(f);
+                try
+                {
+                    if(bb.ice_isA(ice_staticId()))
+                    {
+                        TBPositionReachedPrxHelper h = new TBPositionReachedPrxHelper();
+                        h.copyFrom__(bb);
+                        return h;
+                    }
+                }
+                catch(Ice.FacetNotExistException)
+                {
+                }
+                return null;
+            }
+
+            public static TBPositionReachedPrx checkedCast(Ice.ObjectPrx b, string f, _System.Collections.Generic.Dictionary<string, string> ctx)
+            {
+                if(b == null)
+                {
+                    return null;
+                }
+                Ice.ObjectPrx bb = b.ice_facet(f);
+                try
+                {
+                    if(bb.ice_isA(ice_staticId(), ctx))
+                    {
+                        TBPositionReachedPrxHelper h = new TBPositionReachedPrxHelper();
+                        h.copyFrom__(bb);
+                        return h;
+                    }
+                }
+                catch(Ice.FacetNotExistException)
+                {
+                }
+                return null;
+            }
+
+            public static TBPositionReachedPrx uncheckedCast(Ice.ObjectPrx b)
+            {
+                if(b == null)
+                {
+                    return null;
+                }
+                TBPositionReachedPrx r = b as TBPositionReachedPrx;
+                if(r == null)
+                {
+                    TBPositionReachedPrxHelper h = new TBPositionReachedPrxHelper();
+                    h.copyFrom__(b);
+                    r = h;
+                }
+                return r;
+            }
+
+            public static TBPositionReachedPrx uncheckedCast(Ice.ObjectPrx b, string f)
+            {
+                if(b == null)
+                {
+                    return null;
+                }
+                Ice.ObjectPrx bb = b.ice_facet(f);
+                TBPositionReachedPrxHelper h = new TBPositionReachedPrxHelper();
+                h.copyFrom__(bb);
+                return h;
+            }
+
+            public static readonly string[] ids__ =
+            {
+                "::Ice::Object",
+                "::teambot::communication::TBFrame",
+                "::teambot::communication::TBPositionReached"
+            };
+
+            public static string ice_staticId()
+            {
+                return ids__[2];
+            }
+
+            #endregion
+
+            #region Marshaling support
+
+            protected override Ice.ObjectDelM_ createDelegateM__()
+            {
+                return new TBPositionReachedDelM_();
+            }
+
+            protected override Ice.ObjectDelD_ createDelegateD__()
+            {
+                return new TBPositionReachedDelD_();
+            }
+
+            public static void write__(IceInternal.BasicStream os__, TBPositionReachedPrx v__)
+            {
+                os__.writeProxy(v__);
+            }
+
+            public static TBPositionReachedPrx read__(IceInternal.BasicStream is__)
+            {
+                Ice.ObjectPrx proxy = is__.readProxy();
+                if(proxy != null)
+                {
+                    TBPositionReachedPrxHelper result = new TBPositionReachedPrxHelper();
+                    result.copyFrom__(proxy);
+                    return result;
+                }
+                return null;
+            }
+
+            #endregion
+        }
+
+        [_System.Runtime.InteropServices.ComVisible(false)]
+        [_System.CodeDom.Compiler.GeneratedCodeAttribute("slice2cs", "3.4.2")]
         public sealed class IDataPrxHelper : Ice.ObjectPrxHelperBase, IDataPrx
         {
             #region Synchronous operations
@@ -1619,6 +2247,16 @@ namespace teambot
         }
 
         [_System.CodeDom.Compiler.GeneratedCodeAttribute("slice2cs", "3.4.2")]
+        public interface TBPositionDataDel_ : teambot.communication.TBFrameDel_
+        {
+        }
+
+        [_System.CodeDom.Compiler.GeneratedCodeAttribute("slice2cs", "3.4.2")]
+        public interface TBPositionReachedDel_ : teambot.communication.TBFrameDel_
+        {
+        }
+
+        [_System.CodeDom.Compiler.GeneratedCodeAttribute("slice2cs", "3.4.2")]
         public interface IDataDel_ : Ice.ObjectDel_
         {
             void receive(teambot.communication.TBFrame data, _System.Collections.Generic.Dictionary<string, string> context__);
@@ -1651,6 +2289,18 @@ namespace teambot
         [_System.Runtime.InteropServices.ComVisible(false)]
         [_System.CodeDom.Compiler.GeneratedCodeAttribute("slice2cs", "3.4.2")]
         public sealed class TBInfraredDataDelM_ : Ice.ObjectDelM_, TBInfraredDataDel_
+        {
+        }
+
+        [_System.Runtime.InteropServices.ComVisible(false)]
+        [_System.CodeDom.Compiler.GeneratedCodeAttribute("slice2cs", "3.4.2")]
+        public sealed class TBPositionDataDelM_ : Ice.ObjectDelM_, TBPositionDataDel_
+        {
+        }
+
+        [_System.Runtime.InteropServices.ComVisible(false)]
+        [_System.CodeDom.Compiler.GeneratedCodeAttribute("slice2cs", "3.4.2")]
+        public sealed class TBPositionReachedDelM_ : Ice.ObjectDelM_, TBPositionReachedDel_
         {
         }
 
@@ -1731,6 +2381,18 @@ namespace teambot
         [_System.Runtime.InteropServices.ComVisible(false)]
         [_System.CodeDom.Compiler.GeneratedCodeAttribute("slice2cs", "3.4.2")]
         public sealed class TBInfraredDataDelD_ : Ice.ObjectDelD_, TBInfraredDataDel_
+        {
+        }
+
+        [_System.Runtime.InteropServices.ComVisible(false)]
+        [_System.CodeDom.Compiler.GeneratedCodeAttribute("slice2cs", "3.4.2")]
+        public sealed class TBPositionDataDelD_ : Ice.ObjectDelD_, TBPositionDataDel_
+        {
+        }
+
+        [_System.Runtime.InteropServices.ComVisible(false)]
+        [_System.CodeDom.Compiler.GeneratedCodeAttribute("slice2cs", "3.4.2")]
+        public sealed class TBPositionReachedDelD_ : Ice.ObjectDelD_, TBPositionReachedDel_
         {
         }
 

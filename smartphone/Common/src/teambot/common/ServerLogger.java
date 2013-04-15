@@ -1,7 +1,7 @@
 package teambot.common;
 
-import teambot.common.data.IceDataMapper;
 import teambot.common.interfaces.ILogger;
+import teambot.common.usb.data.IceDataMapper;
 import Communication.DataInterfacePrx;
 import Ice.Application;
 
@@ -48,8 +48,8 @@ public class ServerLogger extends Application implements ILogger {
 		initializationData.properties = properties;
 		communicator = Ice.Util.initialize(initializationData);
 		
-        Ice.ObjectPrx prx = communicator.stringToProxy(proxyName +":tcp -h "+ ip + " -p "+ port).ice_oneway();
-        networkDataProxy = Communication.DataInterfacePrxHelper.checkedCast(prx);
+        Ice.ObjectPrx prx = communicator.stringToProxy(proxyName +":tcp -h "+ ip + " -p "+ port);//.ice_datagram();
+        networkDataProxy = Communication.DataInterfacePrxHelper.uncheckedCast(prx);
         communicator.waitForShutdown();
         return 0;
 	}
@@ -59,7 +59,7 @@ public class ServerLogger extends Application implements ILogger {
 	}
 
 	@Override
-	public void save(teambot.common.data.ByteArrayData data) {
+	public void save(teambot.common.usb.data.ByteArrayData data) {
 		while(networkDataProxy == null)
 		{//wait for networkDataProxy initialization
 			try {
@@ -68,11 +68,11 @@ public class ServerLogger extends Application implements ILogger {
 				e.printStackTrace();
 			}
 		}
-		networkDataProxy.begin_sendByteData(IceDataMapper.map(data));		
+		networkDataProxy.sendByteData(IceDataMapper.map(data));
 	}
 
 	@Override
-	public void save(teambot.common.data.FloatArrayData data) {
+	public void save(teambot.common.usb.data.FloatArrayData data) {
 		while(networkDataProxy == null)
 		{//wait for networkDataProxy initialization
 			try {
@@ -81,6 +81,6 @@ public class ServerLogger extends Application implements ILogger {
 				e.printStackTrace();
 			}
 		}
-		networkDataProxy.begin_sendFloatData(IceDataMapper.map(data));				
+		networkDataProxy.sendFloatData(IceDataMapper.map(data));	
 	}
 }

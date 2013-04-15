@@ -1,4 +1,4 @@
-package teambot.common.data;
+package teambot.common.usb.data;
 
 public class ByteArrayData extends Data {
 

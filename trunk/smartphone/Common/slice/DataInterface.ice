@@ -11,7 +11,6 @@ module Communication
 		LOGGERINFO,
 		ACCELEROMETER,
 		GYROSCOPE,
-		SIMULATOR,
 		UNSPECIFIED
 	};
 
@@ -19,11 +18,24 @@ module Communication
 	class ByteData
 	{
 		DataTypeIce type;
-		long timeStamp;	
+		long timeStamp;
 		byteSequence byteArrayData;
 			
 	};
-	
+
+	class Image
+	{
+		long timeStamp;	
+		int width;
+		int height;
+		byteSequence data;			
+	};
+		
+	interface ImageInterface
+	{
+	    idempotent void send(Image anImage);
+	};
+
 	sequence<float> floatSequence;
 	class FloatData
 	{

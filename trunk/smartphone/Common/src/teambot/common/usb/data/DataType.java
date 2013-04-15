@@ -1,4 +1,4 @@
-package teambot.common.data;
+package teambot.common.usb.data;
 
 public enum DataType {
 	PICTURE,

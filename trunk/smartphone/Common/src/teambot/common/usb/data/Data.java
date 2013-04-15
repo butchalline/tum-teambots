@@ -1,11 +1,11 @@
-package teambot.common.data;
+package teambot.common.usb.data;
 
 import teambot.common.Bot;
 
 public abstract class Data {
 
 	protected long timestamp;
-	protected int botId = Bot.getId();
+	protected String botId = Bot.getId();
 	protected DataType type = DataType.UNSPECIFIED;
 
 	public Data() {
@@ -17,6 +17,7 @@ public abstract class Data {
 	}
 	
 	public Data(DataType type) {
+		this.type = type;
 		this.timestamp = System.currentTimeMillis();
 	}
 	
@@ -33,7 +34,7 @@ public abstract class Data {
 		return type;
 	}
 	
-	public int getBotId() {
+	public String getBotId() {
 		return botId;
 	}
 	

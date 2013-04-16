@@ -76,88 +76,82 @@ namespace teambot.communication
 
         internal void update(GameTime gameTime)
         {
-            lock (_Bot._lockObject)
+            //if(_Time <= gameTime.TotalGameTime.TotalMilliseconds) {
+            sendInfraredFrame(_Bot.getLeftSensorDistance(), _Bot.getMiddleSensorDistance(), _Bot.getRightSensorDistance(), gameTime);
+
+            if (_Bot.PositionReached)
             {
-                //if(_Time <= gameTime.TotalGameTime.TotalMilliseconds) {
-                sendInfraredFrame(_Bot.getLeftSensorDistance(), _Bot.getMiddleSensorDistance(), _Bot.getRightSensorDistance(), gameTime);
-
-                if (_Bot.PositionReached)
-                {
-                    if (_Bot.Angle > Math.PI || _Bot.Angle < -Math.PI)
-                        sendPositionReachedFrame((short)(_Bot.Position.X * Map.PixelToCm * 10f), (short)(_Bot.Position.Y * Map.PixelToCm * 10f), (short)(MathHelper.ToDegrees(_Bot.Angle * 100)), gameTime);
-                    else
-                        sendPositionReachedFrame((short)(_Bot.Position.X * Map.PixelToCm * 10f), (short)(_Bot.Position.Y * Map.PixelToCm * 10f), (short)(MathHelper.ToDegrees(_Bot.Angle * 100)), gameTime);
-
-                    _Bot.PositionReached = false;
-                }
+                if (_Bot.Angle > Math.PI || _Bot.Angle < -Math.PI)
+                    sendPositionReachedFrame((short)(_Bot.Position.X * Map.PixelToCm * 10f), (short)(_Bot.Position.Y * Map.PixelToCm * 10f), (short)(MathHelper.ToDegrees(_Bot.Angle * 100)), gameTime);
                 else
-                {
-                    if (_Bot.Angle > Math.PI || _Bot.Angle < -Math.PI)
-                        sendPositionFrame((short)(_Bot.Position.X * Map.PixelToCm * 10f), (short)(_Bot.Position.Y * Map.PixelToCm * 10f), (short)(MathHelper.ToDegrees(_Bot.Angle * 100)), gameTime);
-                    else
-                        sendPositionFrame((short)(_Bot.Position.X * Map.PixelToCm * 10f), (short)(_Bot.Position.Y * Map.PixelToCm * 10f), (short)(MathHelper.ToDegrees(_Bot.Angle * 100)), gameTime);
-                }
-                //    _Time = gameTime.TotalGameTime.TotalMilliseconds + 100.0;
-                //}
+                    sendPositionReachedFrame((short)(_Bot.Position.X * Map.PixelToCm * 10f), (short)(_Bot.Position.Y * Map.PixelToCm * 10f), (short)(MathHelper.ToDegrees(_Bot.Angle * 100)), gameTime);
+                
+                _Bot.PositionReached = false;
             }
+            else
+            {
+                if (_Bot.Angle > Math.PI || _Bot.Angle < -Math.PI)
+                    sendPositionFrame((short)(_Bot.Position.X * Map.PixelToCm * 10f), (short)(_Bot.Position.Y * Map.PixelToCm * 10f), (short)(MathHelper.ToDegrees(_Bot.Angle * 100)), gameTime);
+                else
+                    sendPositionFrame((short)(_Bot.Position.X * Map.PixelToCm * 10f), (short)(_Bot.Position.Y * Map.PixelToCm * 10f), (short)(MathHelper.ToDegrees(_Bot.Angle * 100)), gameTime);
+            }
+            //    _Time = gameTime.TotalGameTime.TotalMilliseconds + 100.0;
+            //}
         }
 
         public override void receive(TBFrame frame, Ice.Current current__)
         {
             System.Console.WriteLine("Received package");
-            lock (_Bot._lockObject)
+            switch (frame.Id)
             {
-                switch (frame.Id)
-                {
-                    case Constants.TB_COMMAND_ID:
-                        break;
-                    case Constants.TB_VELOCITY_ID:
-                        if (!(frame is TBVelocity))
-                            throw new Exception("Frame is not a Velocity Frame");
-                        TBVelocity velocityData = (TBVelocity)frame;
+                case Constants.TB_COMMAND_ID:
+                    break;
+                case Constants.TB_VELOCITY_ID:
+                    if (!(frame is TBVelocity))
+                        throw new Exception("Frame is not a Velocity Frame");
+                    TBVelocity velocityData = (TBVelocity)frame;
 
-                        if (velocityData.SubId == Constants.TB_VELOCITY_FORWARD)
-                        {
-                            _Bot.setVelocity(velocityData.speedLeft * 4, velocityData.speedRight * 4, WheelDirection.Forwards, WheelDirection.Forwards);
-                        }
-                        else if (velocityData.SubId == Constants.TB_VELOCITY_BACKWARD)
-                        {
-                            _Bot.setVelocity(velocityData.speedLeft * 4, velocityData.speedRight * 4, WheelDirection.Backwards, WheelDirection.Backwards);
-                        }
-                        else if (velocityData.SubId == Constants.TB_VELOCITY_TURN_LEFT)
-                        {
-                            _Bot.setVelocity(velocityData.speedLeft * 4, velocityData.speedRight * 4, WheelDirection.Backwards, WheelDirection.Forwards);
-                        }
-                        else if (velocityData.SubId == Constants.TB_VELOCITY_TURN_RIGHT)
-                        {
-                            _Bot.setVelocity(velocityData.speedLeft * 4, velocityData.speedRight * 4, WheelDirection.Forwards, WheelDirection.Backwards);
-                        }
-                        break;
-                    case Constants.TB_POSITION_ID:
-                        if (!(frame is TBPosition))
-                            throw new Exception("Frame is not a Position Frame");
-                        TBPosition positionData = (TBPosition)frame;
-                        if (positionData.SubId == Constants.TB_POSITION_FORWARD)
-                        {
-                            _Bot.setPosition((ushort)positionData.distance);
-                        }
-                        else if (positionData.SubId == Constants.TB_POSITION_BACKWARD)
-                        {
-                            _Bot.setPosition(-(ushort)positionData.distance);
-                        }
-                        else if (positionData.SubId == Constants.TB_POSITION_TURN_LEFT)
-                        {
-                            _Bot.setAngle(-(ushort)positionData.distance);
-                        }
-                        else if (positionData.SubId == Constants.TB_POSITION_TURN_RIGHT)
-                        {
-                            _Bot.setAngle((ushort)positionData.distance);
-                        }
-                        _Bot.PositionRequested = true;
-                        break;
-                    case Constants.TB_ERROR_ID:
-                        break;
-                }
+                    if (velocityData.SubId == Constants.TB_VELOCITY_FORWARD)
+                    {
+                        _Bot.setVelocity(velocityData.speedLeft * 4, velocityData.speedRight * 4, WheelDirection.Forwards, WheelDirection.Forwards);
+                    }
+                    else if (velocityData.SubId == Constants.TB_VELOCITY_BACKWARD)
+                    {
+                        _Bot.setVelocity(velocityData.speedLeft * 4, velocityData.speedRight * 4, WheelDirection.Backwards, WheelDirection.Backwards);
+                    }
+                    else if (velocityData.SubId == Constants.TB_VELOCITY_TURN_LEFT)
+                    {
+                        _Bot.setVelocity(velocityData.speedLeft * 4, velocityData.speedRight * 4, WheelDirection.Backwards, WheelDirection.Forwards);
+                    }
+                    else if (velocityData.SubId == Constants.TB_VELOCITY_TURN_RIGHT)
+                    {
+                        _Bot.setVelocity(velocityData.speedLeft * 4, velocityData.speedRight * 4, WheelDirection.Forwards, WheelDirection.Backwards);
+                    }
+                    break;
+                case Constants.TB_POSITION_ID:
+                    if (!(frame is TBPosition))
+                        throw new Exception("Frame is not a Position Frame");
+                    TBPosition positionData = (TBPosition)frame;
+                    _Bot.PositionRequested = true;
+                    if (positionData.SubId == Constants.TB_POSITION_FORWARD)
+                    {
+                        _Bot.setPosition((ushort)positionData.distance);
+                    }
+                    else if (positionData.SubId == Constants.TB_POSITION_BACKWARD)
+                    {
+                        _Bot.setPosition(-(ushort)positionData.distance);
+                    }
+                    else if (positionData.SubId == Constants.TB_POSITION_TURN_LEFT)
+                    {
+                        _Bot.setAngle(-(ushort)positionData.distance);
+                    }
+                    else if (positionData.SubId == Constants.TB_POSITION_TURN_RIGHT)
+                    {
+                        _Bot.setAngle((ushort)positionData.distance);
+                    }
+                    break;
+                case Constants.TB_ERROR_ID:
+                    break;
             }
         }
 

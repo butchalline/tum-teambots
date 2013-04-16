@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
+using System.Threading;
 using teambot.Bot;
 
 
@@ -17,25 +18,86 @@ namespace teambot.communication
     }
 
 
-    class DataHandler : IDataDisp_
+    class DataHandler : IDataServerDisp_
     {
         private Robot _Bot;
-        private double _Time;
-        private IDataPrx _Proxy;
-        private Ice.Communicator _Communicator;
-        private Ice.ObjectAdapter _Adapter = null;
-
+        private List<IDataClientPrx> _Clients;
         private double lastAngle = 0;
+
+        class Receiver
+        {
+            private TBFrame _Frame;
+            private Robot _Bot;
+            static Object _ReceiveLocker = new Object();
+            public Receiver(ref TBFrame frame, ref Robot bot)
+            {
+                _Frame = frame;
+                _Bot = bot;
+            }
+            public void ThreadPoolCallback(Object threadContext)
+            {
+                _receiveMessage();
+            }
+            private void _receiveMessage()
+            {
+                switch (_Frame.Id)
+                {
+                    case Constants.TB_COMMAND_ID:
+                        break;
+                    case Constants.TB_VELOCITY_ID:
+                        if (!(_Frame is TBVelocity))
+                            throw new Exception("Frame is not a Velocity Frame");
+                        TBVelocity velocityData = (TBVelocity)_Frame;
+
+                        if (velocityData.SubId == Constants.TB_VELOCITY_FORWARD)
+                        {
+                            _Bot.setVelocity(velocityData.speedLeft * 4, velocityData.speedRight * 4, WheelDirection.Forwards, WheelDirection.Forwards);
+                        }
+                        else if (velocityData.SubId == Constants.TB_VELOCITY_BACKWARD)
+                        {
+                            _Bot.setVelocity(velocityData.speedLeft * 4, velocityData.speedRight * 4, WheelDirection.Backwards, WheelDirection.Backwards);
+                        }
+                        else if (velocityData.SubId == Constants.TB_VELOCITY_TURN_LEFT)
+                        {
+                            _Bot.setVelocity(velocityData.speedLeft * 4, velocityData.speedRight * 4, WheelDirection.Backwards, WheelDirection.Forwards);
+                        }
+                        else if (velocityData.SubId == Constants.TB_VELOCITY_TURN_RIGHT)
+                        {
+                            _Bot.setVelocity(velocityData.speedLeft * 4, velocityData.speedRight * 4, WheelDirection.Forwards, WheelDirection.Backwards);
+                        }
+                        break;
+                    case Constants.TB_POSITION_ID:
+                        if (!(_Frame is TBPosition))
+                            throw new Exception("Frame is not a Position Frame");
+                        TBPosition positionData = (TBPosition)_Frame;
+                        _Bot.PositionRequested = true;
+                        if (positionData.SubId == Constants.TB_POSITION_FORWARD)
+                        {
+                            _Bot.setPosition((ushort)positionData.distance);
+                        }
+                        else if (positionData.SubId == Constants.TB_POSITION_BACKWARD)
+                        {
+                            _Bot.setPosition(-(ushort)positionData.distance);
+                        }
+                        else if (positionData.SubId == Constants.TB_POSITION_TURN_LEFT)
+                        {
+                            _Bot.setAngle(-(ushort)positionData.distance);
+                        }
+                        else if (positionData.SubId == Constants.TB_POSITION_TURN_RIGHT)
+                        {
+                            _Bot.setAngle((ushort)positionData.distance);
+                        }
+                        break;
+                    case Constants.TB_ERROR_ID:
+                        break;
+                }
+            }
+        }
 
         public DataHandler(Robot robot)
         {
             _Bot = robot;
-            Ice.Properties props = Ice.Util.createProperties();
-            //props.setProperty("Ice.Warn.Connections", "2");
-            //props.setProperty("Ice.Trace.Protocol", "2");
-            Ice.InitializationData initData = new Ice.InitializationData();
-            initData.properties = props;
-            _Communicator = Ice.Util.initialize(initData);
+            _Clients = new List<IDataClientPrx>();
         }
 
         public void sendPositionFrame(short x, short y, short angle, GameTime gameTime)
@@ -47,7 +109,7 @@ namespace teambot.communication
             positionData.x = x;
             positionData.y = y;
             positionData.angle = angle;
-            sendData(positionData);
+            updateData(positionData);
         }
 
         public void sendPositionReachedFrame(short x, short y, short angle, GameTime gameTime)
@@ -59,7 +121,7 @@ namespace teambot.communication
             positionReachedData.x = x;
             positionReachedData.y = y;
             positionReachedData.angle = angle;
-            sendData(positionReachedData);
+            updateData(positionReachedData);
         }
 
         public void sendInfraredFrame(byte left, byte middle, byte right, GameTime gameTime)
@@ -71,12 +133,11 @@ namespace teambot.communication
             infraredData.leftDistance = left;
             infraredData.middleDistance = middle;
             infraredData.rightDistance = right;
-            sendData(infraredData);
+            updateData(infraredData);
         }
 
         internal void update(GameTime gameTime)
         {
-            //if(_Time <= gameTime.TotalGameTime.TotalMilliseconds) {
             sendInfraredFrame(_Bot.getLeftSensorDistance(), _Bot.getMiddleSensorDistance(), _Bot.getRightSensorDistance(), gameTime);
 
             if (_Bot.PositionReached)
@@ -85,7 +146,7 @@ namespace teambot.communication
                     sendPositionReachedFrame((short)(_Bot.Position.X * Map.PixelToCm * 10f), (short)(_Bot.Position.Y * Map.PixelToCm * 10f), (short)(MathHelper.ToDegrees(_Bot.Angle * 100)), gameTime);
                 else
                     sendPositionReachedFrame((short)(_Bot.Position.X * Map.PixelToCm * 10f), (short)(_Bot.Position.Y * Map.PixelToCm * 10f), (short)(MathHelper.ToDegrees(_Bot.Angle * 100)), gameTime);
-                
+
                 _Bot.PositionReached = false;
             }
             else
@@ -95,95 +156,51 @@ namespace teambot.communication
                 else
                     sendPositionFrame((short)(_Bot.Position.X * Map.PixelToCm * 10f), (short)(_Bot.Position.Y * Map.PixelToCm * 10f), (short)(MathHelper.ToDegrees(_Bot.Angle * 100)), gameTime);
             }
-            //    _Time = gameTime.TotalGameTime.TotalMilliseconds + 100.0;
-            //}
         }
 
-        public override void receive(TBFrame frame, Ice.Current current__)
+        public void updateData(TBFrame data)
         {
-            System.Console.WriteLine("Received package");
-            switch (frame.Id)
+            List<IDataClientPrx> clients;
+            lock (this)
             {
-                case Constants.TB_COMMAND_ID:
-                    break;
-                case Constants.TB_VELOCITY_ID:
-                    if (!(frame is TBVelocity))
-                        throw new Exception("Frame is not a Velocity Frame");
-                    TBVelocity velocityData = (TBVelocity)frame;
-
-                    if (velocityData.SubId == Constants.TB_VELOCITY_FORWARD)
-                    {
-                        _Bot.setVelocity(velocityData.speedLeft * 4, velocityData.speedRight * 4, WheelDirection.Forwards, WheelDirection.Forwards);
-                    }
-                    else if (velocityData.SubId == Constants.TB_VELOCITY_BACKWARD)
-                    {
-                        _Bot.setVelocity(velocityData.speedLeft * 4, velocityData.speedRight * 4, WheelDirection.Backwards, WheelDirection.Backwards);
-                    }
-                    else if (velocityData.SubId == Constants.TB_VELOCITY_TURN_LEFT)
-                    {
-                        _Bot.setVelocity(velocityData.speedLeft * 4, velocityData.speedRight * 4, WheelDirection.Backwards, WheelDirection.Forwards);
-                    }
-                    else if (velocityData.SubId == Constants.TB_VELOCITY_TURN_RIGHT)
-                    {
-                        _Bot.setVelocity(velocityData.speedLeft * 4, velocityData.speedRight * 4, WheelDirection.Forwards, WheelDirection.Backwards);
-                    }
-                    break;
-                case Constants.TB_POSITION_ID:
-                    if (!(frame is TBPosition))
-                        throw new Exception("Frame is not a Position Frame");
-                    TBPosition positionData = (TBPosition)frame;
-                    _Bot.PositionRequested = true;
-                    if (positionData.SubId == Constants.TB_POSITION_FORWARD)
-                    {
-                        _Bot.setPosition((ushort)positionData.distance);
-                    }
-                    else if (positionData.SubId == Constants.TB_POSITION_BACKWARD)
-                    {
-                        _Bot.setPosition(-(ushort)positionData.distance);
-                    }
-                    else if (positionData.SubId == Constants.TB_POSITION_TURN_LEFT)
-                    {
-                        _Bot.setAngle(-(ushort)positionData.distance);
-                    }
-                    else if (positionData.SubId == Constants.TB_POSITION_TURN_RIGHT)
-                    {
-                        _Bot.setAngle((ushort)positionData.distance);
-                    }
-                    break;
-                case Constants.TB_ERROR_ID:
-                    break;
+                clients = new List<IDataClientPrx>(_Clients);
             }
+            foreach (var client in clients)
+            {
+                try
+                {
+                    client.begin_update(data);
+                }
+                catch (Ice.TimeoutException te)
+                {
+                    //DO Nothing! :D
+                }
+                catch (Ice.LocalException le)
+                {
+                    Console.Error.WriteLine("Remove Client because of: " + le.ToString());
+                    lock (this)
+                    {
+                        _Clients.Remove(client);
+                    }
+                }
+            }
+           
         }
 
-        public void sendData(TBFrame data)
+
+        public override void update_async(AMD_IDataServer_update cb__, TBFrame data, Ice.Current current__)
         {
-            if (_Communicator.isShutdown())
+            Receiver r = new Receiver(ref data, ref _Bot);
+            ThreadPool.QueueUserWorkItem(r.ThreadPoolCallback);
+        }
+
+        public override void addClient(Ice.Identity ident, Ice.Current current__)
+        {
+            lock (this)
             {
-                Ice.Properties props = Ice.Util.createProperties();
-                //props.setProperty("Ice.Warn.Connections", "2");
-                //props.setProperty("Ice.Trace.Protocol", "2");
-                Ice.InitializationData initData = new Ice.InitializationData();
-                initData.properties = props;
-                _Communicator = Ice.Util.initialize(initData);
-                _Proxy = null;
-            }
-            if (_Adapter == null)
-            {
-                _Adapter = _Communicator.createObjectAdapterWithEndpoints("Simulator", "tcp -p 55001");
-                _Adapter.add(this, _Communicator.stringToIdentity("simUsb")).ice_oneway();
-                _Adapter.activate();
-            }
-            if (_Proxy == null)
-            {
-                _Proxy = IDataPrxHelper.uncheckedCast(_Communicator.stringToProxy("usb:tcp -h localhost -p 55000").ice_oneway());
-            }
-            try
-            {
-                _Proxy.receive(data);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine("Error DataHandler: " + e.Message);
+                Ice.ObjectPrx @base = current__.con.createProxy(ident);
+                IDataClientPrx client = IDataClientPrxHelper.uncheckedCast(@base);
+                _Clients.Add(client);
             }
         }
     }

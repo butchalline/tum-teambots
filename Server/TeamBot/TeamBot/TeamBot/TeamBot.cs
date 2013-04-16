@@ -29,14 +29,14 @@ namespace teambot
         Robot _Bot;
         Map map;
         communication.DataHandler _DataHandler;
-        communication.KeyboardHandyDummy HandyDummy = new communication.KeyboardHandyDummy();
 
-                bool a, b, c, d, e, f, g, h;
-            
+        //ICE
+        private Ice.Communicator _Communicator;
+        private Ice.ObjectAdapter _Adapter;
+
         public Simulator()
         {
             graphics = new GraphicsDeviceManager(this);
-            a = b = c = d = e = f = g = h = false;
         }
 
         private object locker = new Object();
@@ -80,8 +80,16 @@ namespace teambot
             }
             _Bot = new Robot(map);
             _Bot.changeState(Robot.RobotStates.PositionMode);
+
+            Ice.Properties properties = Ice.Util.createProperties();
+            Ice.InitializationData initData = new Ice.InitializationData();
+            initData.properties = properties;
+            _Communicator = Ice.Util.initialize(initData);
+            Ice.ObjectAdapter adapter = _Communicator.createObjectAdapterWithEndpoints("Simulator", "tcp -p 55001");
             _DataHandler = new communication.DataHandler(_Bot);
             graphics.ApplyChanges();
+            adapter.add(_DataHandler, _Communicator.stringToIdentity("sender"));
+            adapter.activate();
             base.Initialize();
         }
 
@@ -134,16 +142,6 @@ namespace teambot
 
             _debugIndex = DebugLayer.addString("Mouse X: " + currentMState.X + " Y: " + currentMState.Y, _debugIndex);
 
-            if (previousKState.IsKeyUp(Keys.Up) && currentKState.IsKeyDown(Keys.Up))
-                HandyDummy.incForward();
-            if (previousKState.IsKeyUp(Keys.Down) && currentKState.IsKeyDown(Keys.Down))
-                HandyDummy.incBackward();
-            if (previousKState.IsKeyUp(Keys.Left) && currentKState.IsKeyDown(Keys.Left))
-                HandyDummy.incLeft();
-            if (previousKState.IsKeyUp(Keys.Right) && currentKState.IsKeyDown(Keys.Right))
-                HandyDummy.incRight();
-            if (currentKState.IsKeyDown(Keys.Space))
-                HandyDummy.reset();
             if (currentKState.IsKeyDown(Keys.LeftControl) && currentKState.IsKeyDown(Keys.D) && previousKState.IsKeyUp(Keys.D))
                 DebugLayer.DebugActivated = !DebugLayer.DebugActivated;
 
@@ -166,7 +164,6 @@ namespace teambot
 
 
             // TODO: Add your update logic here
-            HandyDummy.update(_DataHandler);
             _Bot.update(gameTime);
             _DataHandler.update(gameTime);
 

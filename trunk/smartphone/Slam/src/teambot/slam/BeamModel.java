@@ -14,6 +14,10 @@ public class BeamModel {
 	protected float _gridSize_mm;
 	protected float _maxRange_mm;
 
+	public BeamModel(float cellSize_mm, float maxRange_mm) {
+		// TODO Auto-generated constructor stub
+	}
+
 	public synchronized LinkedList<SimpleEntry<Point, Occupation>> calculateBeam(float distance_mm, PositionOrientation positionOrientation) {
 		
 		PointF rayEnd = new PointF(); 

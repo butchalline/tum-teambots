@@ -20,12 +20,9 @@
 			<storageModule moduleId="cdtBuildSystem" version="4.0.0">
 				<configuration artifactName="${ProjName}" buildProperties="" description="" id="com.android.toolchain.gcc.1997836350" name="Default" parent="org.eclipse.cdt.build.core.emptycfg">
 					<folderInfo id="com.android.toolchain.gcc.1997836350.867690692" name="/" resourcePath="">
-						<toolChain id="com.android.toolchain.gcc.451483539" name="com.android.toolchain.gcc" superClass="com.android.toolchain.gcc">
-							<targetPlatform binaryParser="org.eclipse.cdt.core.ELF" id="com.android.targetPlatform.2022440837" isAbstract="false" superClass="com.android.targetPlatform"/>
-							<builder autoBuildTarget="all" command="D:\NVPACK\android-ndk-r8\ndk-build.cmd" enableAutoBuild="true" enableCleanBuild="false" id="com.android.builder.1679136442" incrementalBuildTarget="all" keepEnvironmentInBuildfile="false" managedBuildOn="false" name="Android Builder" superClass="com.android.builder"/>
-							<tool id="com.android.gcc.compiler.2031005723" name="Android GCC Compiler" superClass="com.android.gcc.compiler">
-								<inputType id="com.android.gcc.inputType.1266105795" superClass="com.android.gcc.inputType"/>
-							</tool>
+						<toolChain id="com.android.toolchain.gcc.451483539" name="com.android.toolchain.gcc">
+							<targetPlatform binaryParser="org.eclipse.cdt.core.ELF" id="com.android.targetPlatform.2022440837" isAbstract="false"/>
+							<builder autoBuildTarget="all" command="C:\NVPACK\android-ndk-r8\ndk-build.cmd" enableAutoBuild="true" enableCleanBuild="false" id="com.android.builder.1679136442" incrementalBuildTarget="all" keepEnvironmentInBuildfile="false" managedBuildOn="false" name="Android Builder"/>
 						</toolChain>
 					</folderInfo>
 				</configuration>

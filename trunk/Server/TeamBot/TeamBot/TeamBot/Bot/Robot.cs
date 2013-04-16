@@ -221,10 +221,13 @@ namespace teambot.Bot
 
         internal void setVelocity(int velocityLeft, int veloctiyRight, WheelDirection wheelDirectionLeft, WheelDirection wheelDirectionRight)
         {
-            if (this._RobotState != RobotStates.VelocityMode)
-                return;
-            _vLeft = velocityLeft * (wheelDirectionLeft.Equals(WheelDirection.Forwards) ? 1 : -1);
-            _vRight = veloctiyRight * (wheelDirectionRight.Equals(WheelDirection.Forwards) ? 1 : -1);
+            lock (_lockObject)
+            {
+                if (this._RobotState != RobotStates.VelocityMode)
+                    return;
+                _vLeft = velocityLeft * (wheelDirectionLeft.Equals(WheelDirection.Forwards) ? 1 : -1);
+                _vRight = veloctiyRight * (wheelDirectionRight.Equals(WheelDirection.Forwards) ? 1 : -1);
+            }
         }
 
         public void LoadContent(ContentManager manager)
@@ -277,6 +280,8 @@ namespace teambot.Bot
 
         internal void setPosition(int p)
         {
+            lock (_lockObject)
+            {
                 if (this._RobotState != RobotStates.PositionMode)
                     return;
                 _PositionForward = true;
@@ -287,6 +292,7 @@ namespace teambot.Bot
                 float p2 = (p * 0.1f) / Map.PixelToCm;
                 _TargetPosition.X = (float)(_Position.X - p2 * Math.Sin(cAngle));
                 _TargetPosition.Y = (float)(_Position.Y + p2 * Math.Cos(cAngle));
+            }
         }
 
         internal void setAngle(int p)

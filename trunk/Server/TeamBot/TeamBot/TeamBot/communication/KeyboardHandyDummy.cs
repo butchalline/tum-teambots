@@ -13,7 +13,7 @@ namespace teambot.communication
         int velocityLeft = 0;
         int velocityRight = 0;
 
-        internal void update(IData toUpdate)
+        internal void update(IDataServer toUpdate)
         {
             TBVelocity frame = new TBVelocity();
             frame.Id = Constants.TB_VELOCITY_ID;

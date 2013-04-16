@@ -1,4 +1,6 @@
-﻿module teambot
+﻿#include <Ice/Identity.ice>
+
+module teambot
 {
 	module communication
 	{
@@ -42,9 +44,15 @@
 			short angle; //in angle	in 360.xx * 100
 		};
 
-		interface IData
+		interface IDataClient
 		{
-			void receive(TBFrame data);
+			["amd"] void update(TBFrame data);
+		};
+					  
+		interface IDataServer
+		{
+			["amd"] void update(TBFrame data);
+			void addClient(Ice::Identity ident);
 		};
 	};
  };

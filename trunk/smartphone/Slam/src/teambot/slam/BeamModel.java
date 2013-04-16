@@ -11,11 +11,12 @@ import android.graphics.PointF;
 
 public class BeamModel {
 	
-	protected float _gridSize_mm;
+	protected float _cellSize_mm;
 	protected float _maxRange_mm;
 
 	public BeamModel(float cellSize_mm, float maxRange_mm) {
-		// TODO Auto-generated constructor stub
+		_cellSize_mm = cellSize_mm;
+		_maxRange_mm = maxRange_mm;
 	}
 
 	public synchronized LinkedList<SimpleEntry<Point, Occupation>> calculateBeam(float distance_mm, PositionOrientation positionOrientation) {
@@ -32,7 +33,7 @@ public class BeamModel {
 		
 		if (distance_mm < _maxRange_mm)
 		{
-			Point rayEndDiscretized = new Point((int)(rayEnd.x / _gridSize_mm), (int)(rayEnd.y / _gridSize_mm));
+			Point rayEndDiscretized = new Point((int)(rayEnd.x / _cellSize_mm), (int)(rayEnd.y / _cellSize_mm));
 			pointsOnBeam.add(new SimpleEntry<Point, Occupation>(rayEndDiscretized, Occupation.occupied));
 		}		
 		
@@ -46,7 +47,7 @@ public class BeamModel {
 	
 	public PointF realToGridCoordinates(PointF point)
 	{
-		return new PointF(point.x / _gridSize_mm, point.y / _gridSize_mm);
+		return new PointF(point.x / _cellSize_mm, point.y / _cellSize_mm);
 	}
 	
 	private Vector<Point> calculateFreePoints(float distance, PointF rayStart, PointF rayEnd)

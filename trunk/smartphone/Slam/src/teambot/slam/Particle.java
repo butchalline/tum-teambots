@@ -40,6 +40,10 @@ public class Particle
 		_weight = weight;
 	}
 
+	public Particle(Particle actualParticle) {
+		// TODO Auto-generated constructor stub
+	}
+
 	public synchronized void updatePositionOrientation(PositionOrientation newPositionOrientation)
 	{
 		PositionOrientation noisyPositionOrientation = new PositionOrientation(newPositionOrientation.getX() + _noiseProvider.noiseX(),
@@ -48,7 +52,7 @@ public class Particle
 		_positionOrientation = noisyPositionOrientation;
 	}
 
-	public float getAndUpdateWeight(float distance_mm)
+	public float updateAndGetWeight(float distance_mm)
 	{
 		LinkedList<SimpleEntry<Point, Occupation>> measuredPoints = _beamModel
 				.calculateBeam(distance_mm, _positionOrientation);
@@ -76,5 +80,10 @@ public class Particle
 	public void updateMap(LinkedList<SimpleEntry<Point, Occupation>> points)
 	{
 		_map.updateMap(points);
+	}
+
+	public void updateMap(float distance_mm) {
+		// TODO Auto-generated method stub
+		
 	}
 }

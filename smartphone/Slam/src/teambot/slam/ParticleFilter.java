@@ -1,7 +1,5 @@
 package teambot.slam;
 
-import java.util.Arrays;
-
 import teambot.common.data.PositionOrientation;
 import teambot.common.interfaces.IDistanceListener;
 import teambot.common.interfaces.IPositionListener;
@@ -23,17 +21,19 @@ public class ParticleFilter implements IPositionListener, IDistanceListener
 	ProbabilityMap _map;
 	BeamModel _beamModel;
 	
-	public ParticleFilter(float cellSize_mm,float maxRange_mm, float p0, float pOccupation, float pFree, float varianceX, float varianceY, float varianceAngle)
+	public ParticleFilter(float cellSize_mm, float maxRange_mm, float p0, float pOccupation, float pFree, float varianceX, float varianceY, float varianceAngle)
 	{
 		_particles = new Particle[_particleAmount];
 		
 		BeamProbabilities rayProbability = new BeamProbabilities(cellSize_mm, maxRange_mm, p0, pOccupation, pFree);
 		BeamModel rayModel = new BeamModel(cellSize_mm, maxRange_mm);
-		NoiseProvider noiser = new NoiseProvider(varianceX, varianceY, varianceAngle)
-		for(Particle particle: _particles){
+		NoiseProvider noiser = new NoiseProvider(varianceX, varianceY, varianceAngle);
+		
+		for(int i = 0; i < _particles.length; ++i)
+		{
 			PositionOrientation posOr = new PositionOrientation(0, 0, 0);
 			ProbabilityMap probMap = new ProbabilityMap(rayProbability);
-			particle = new Particle(posOr,probMap,rayModel, noiser, _slidingFactor)
+			_particles[i] = new Particle(posOr,probMap,rayModel, noiser, _slidingFactor);
 		}
 	}
 	

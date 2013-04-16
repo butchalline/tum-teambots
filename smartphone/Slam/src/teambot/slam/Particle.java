@@ -15,7 +15,7 @@ public class Particle
 	BeamModel _beamModel;
 	NoiseProvider _noiseProvider;
 	float _slidingFactor;
-	float _weight;
+	float _weight = 0.5f;
 
 	public Particle(PositionOrientation positionOrientation,
 			ProbabilityMap map, BeamModel beamModel, NoiseProvider noise,
@@ -65,6 +65,11 @@ public class Particle
 		}
 
 		_weight = _weight * (1 - _slidingFactor) + newWeight * _slidingFactor;
+		return _weight;
+	}
+	
+	public float getWeight()
+	{
 		return _weight;
 	}
 

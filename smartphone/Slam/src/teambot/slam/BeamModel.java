@@ -18,6 +18,11 @@ public class BeamModel {
 		_cellSize_mm = cellSize_mm;
 		_maxRange_mm = maxRange_mm;
 	}
+	
+	public BeamModel(BeamModel model) {
+		_cellSize_mm = model._cellSize_mm;
+		_maxRange_mm = model._maxRange_mm;
+	}
 
 	public synchronized LinkedList<SimpleEntry<Point, Occupation>> calculateBeam(float distance_mm, PositionOrientation positionOrientation) {
 		
@@ -33,7 +38,7 @@ public class BeamModel {
 		
 		if (distance_mm < _maxRange_mm)
 		{
-			Point rayEndDiscretized = new Point((int)(rayEnd.x / _cellSize_mm), (int)(rayEnd.y / _cellSize_mm));
+			Point rayEndDiscretized = new Point((int)(rayEnd.x), (int)(rayEnd.y));
 			pointsOnBeam.add(new SimpleEntry<Point, Occupation>(rayEndDiscretized, Occupation.occupied));
 		}		
 		
@@ -93,6 +98,7 @@ public class BeamModel {
 				freePoints.add(newTopField);
 			}
 		}
+		
 		return freePoints;
 	}
 }

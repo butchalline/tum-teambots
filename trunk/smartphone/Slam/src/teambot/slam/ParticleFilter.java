@@ -27,7 +27,7 @@ public class ParticleFilter implements IPositionListener, IDistanceListener
 	{
 		_particles = new Particle[_particleAmount];
 		
-		BeamProbabilities rayProbability = new BeamProbabilities(cellSize_mm, maxRange_mm, p0, pOccupation, pFree);
+		BeamProbabilities rayProbability = new BeamProbabilities(p0, pOccupation, pFree);
 		BeamModel rayModel = new BeamModel(cellSize_mm, maxRange_mm);
 		NoiseProvider noiser = new NoiseProvider(varianceX, varianceY, varianceAngle);
 		
@@ -35,7 +35,7 @@ public class ParticleFilter implements IPositionListener, IDistanceListener
 		{
 			PositionOrientation posOr = new PositionOrientation(0, 0, 0);
 			ProbabilityMap probMap = new ProbabilityMap(rayProbability);
-			_particles[i] = new Particle(posOr,probMap,rayModel, noiser, _slidingFactor);
+			_particles[i] = new Particle(posOr, probMap, rayModel, noiser, _slidingFactor);
 		}
 	}
 	
@@ -61,15 +61,16 @@ public class ParticleFilter implements IPositionListener, IDistanceListener
 		}
 		
 		// Weights sortieren (quasi Dartscheibe erstellen)
-		weightArray[0] = 0;
+		weightArray[0] = _particles[0].getWeight()/totalWeight;
 		for(int i = 1; i < _particles.length; i++){
 			weightArray[i] = weightArray[i-1] + _particles[i].getWeight()/totalWeight ; 
 		}
+		weightArray[weightArray.length -1] = 1;
 		
-		// Zufallszahlen erstellen (maybe not perfect working) 
+		// Zufallszahlen erstellen (maybe not perfectly working) 
 		float[] randomSortedArray = new float[_particles.length];
 		for(int i = 0; i < _particles.length; i++){
-			randomSortedArray[i] = (i + random.nextFloat()) / _particles.length;
+			randomSortedArray[i] = (i  + random.nextFloat()) / _particles.length;
 		}
 		
 		// Resamplen
@@ -78,17 +79,20 @@ public class ParticleFilter implements IPositionListener, IDistanceListener
 		Particle actualParticle = _particles[0];
 		int newParticleIndex = 0;
 		int actualParticleIndex = 0;
+		
 		while(newParticleIndex != _particles.length){
-			if(randomSortedArray[newParticleIndex] < weightArray[actualParticleIndex]){
+			if(randomSortedArray[newParticleIndex] <= weightArray[actualParticleIndex]){
 				newParticles[newParticleIndex] = new Particle(actualParticle);
 				newParticleIndex += 1;
 			}
-			else if (randomSortedArray[newParticleIndex] >= weightArray[actualParticleIndex]) {
+			else if (randomSortedArray[newParticleIndex] > weightArray[actualParticleIndex]) {
 				actualParticleIndex += 1;
 				actualParticle = _particles[actualParticleIndex];
 			}
 		}
+		
 		_particles = newParticles;
+		
 		// Map Aktualisieren 
 		for(Particle particle: _particles){
 			particle.updateMap(distance_mm);

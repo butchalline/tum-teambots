@@ -40,8 +40,13 @@ public class Particle
 		_weight = weight;
 	}
 
-	public Particle(Particle actualParticle) {
-		// TODO Auto-generated constructor stub
+	public Particle(Particle particle) {
+		_positionOrientation = new PositionOrientation(particle._positionOrientation);
+		_map = new ProbabilityMap(particle._map);
+		_beamModel = new BeamModel(particle._beamModel);
+		_noiseProvider = new NoiseProvider(particle._noiseProvider);
+		_slidingFactor = particle._slidingFactor;
+		_weight = particle._weight;
 	}
 
 	public synchronized void updatePositionOrientation(PositionOrientation newPositionOrientation)
@@ -77,13 +82,9 @@ public class Particle
 		return _weight;
 	}
 
-	public void updateMap(LinkedList<SimpleEntry<Point, Occupation>> points)
-	{
-		_map.updateMap(points);
-	}
-
 	public void updateMap(float distance_mm) {
-		// TODO Auto-generated method stub
-		
+		LinkedList<SimpleEntry<Point, Occupation>> measuredPoints = _beamModel
+				.calculateBeam(distance_mm, _positionOrientation);
+		_map.update(measuredPoints);		
 	}
 }

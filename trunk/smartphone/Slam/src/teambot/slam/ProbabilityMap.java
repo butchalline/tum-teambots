@@ -17,18 +17,24 @@ public class ProbabilityMap
 		_probabilities = probabilities;
 	}
 
-	void updateMap(LinkedList<SimpleEntry<Point, Occupation>> points)
+	public ProbabilityMap(ProbabilityMap map)
+	{
+		_map = new Hashtable<Point, Float>(map._map);
+		_probabilities = new BeamProbabilities(map._probabilities);
+	}
+	
+	void update(LinkedList<SimpleEntry<Point, Occupation>> points)
 	{
 		Float currentValue;
 
-		for (SimpleEntry<Point, Occupation> point : points)
+		for (SimpleEntry<Point, Occupation> pointInfo : points)
 		{
-			if (!_map.containsKey(point))
-				_map.put(point.getKey(), _probabilities.getLogStartProbability());
+			if (!_map.containsKey(pointInfo))
+				_map.put(pointInfo.getKey(), _probabilities.getLogStartProbability());
 			else
 			{
-				currentValue = _map.get(point);
-				if (point.getValue() == Occupation.occupied)
+				currentValue = _map.get(pointInfo.getKey());
+				if (pointInfo.getValue() == Occupation.occupied)
 				{
 					currentValue += _probabilities.getLogOccupationProbability() - _probabilities.getLogStartProbability();
 				}
@@ -37,13 +43,19 @@ public class ProbabilityMap
 					currentValue += _probabilities.getLogFreeProbability() - _probabilities.getLogStartProbability();
 				}
 				
-				_map.put(point.getKey(), currentValue);
+				_map.put(pointInfo.getKey(), currentValue);
 			}
 		}
 	}
 	
 	public float getProbability(Point point)
 	{
-		return (float) (1 - 1/(1 + Math.exp(_map.get(point))));
+		if(_map.contains(point))
+			return (float) (1 - 1/(1 + Math.exp(_map.get(point))));
+		else
+		{
+			_map.put(point, 0.5f);
+			return 0.5f;
+		}
 	}
 }

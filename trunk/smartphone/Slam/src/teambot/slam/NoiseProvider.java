@@ -7,10 +7,17 @@ public class NoiseProvider {
 	float varianceX;
 	float varianceY;
 	float varianceAngle;
+	
 	public NoiseProvider(float varianceX,float varianceY, float varianceAngle){	
 		this.varianceAngle = varianceAngle;
 		this.varianceX = varianceX;
 		this.varianceY = varianceY;
+	}
+	
+	public NoiseProvider(NoiseProvider noise){	
+		this.varianceAngle = noise.varianceAngle;
+		this.varianceX = noise.varianceX;
+		this.varianceY = noise.varianceY;
 	}
 	
 	public float noiseX(){

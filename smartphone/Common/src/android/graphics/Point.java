@@ -13,6 +13,12 @@ public class Point {
 		this.y = y;
 	}
 
+	public Point(Point point)
+	{
+		x = point.x;
+		y = point.y;
+	}
+
 	@Override
 	public boolean equals(Object o) {
 		// Return true if the objects are identical.

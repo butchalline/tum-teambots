@@ -21,7 +21,7 @@ public class Agent {
 		this.target = null;
 		this.position = new Point(0, 0);
 		_distanceFromWall_cells = distanceFromWall_cells;
-		this.map = new Map(3, distanceFromWall_cells);
+		this.map = new Map(2, distanceFromWall_cells);
 		this.waveFrontAlg = new WaveFrontAlg();
 	}
 
@@ -205,7 +205,7 @@ public class Agent {
 				* side_offset + (float) Math.sin(robot_angle) * front_offset);
 
 		float max_range_left = 200 / this.field_size;
-		float max_range_mid = 1200 / this.field_size;
+		float max_range_mid = 1500 / this.field_size;
 		float max_range_right = 200 / this.field_size;
 
 		float dist_left = (dist_left_cm * 10) / this.field_size;

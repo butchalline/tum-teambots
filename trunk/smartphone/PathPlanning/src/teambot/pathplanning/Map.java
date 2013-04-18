@@ -72,9 +72,9 @@ public class Map implements IPathMapUpdate {
 		{
 			Point startPosition = new Point((int) start_of_ray.x, (int) start_of_ray.y);
 			Point position;
-			for(int x = startPosition.x - _distanceFromWall_cells; x <= startPosition.x + _distanceFromWall_cells; ++x)
+			for(int x = startPosition.x - _distanceFromWall_cells*2; x <= startPosition.x + _distanceFromWall_cells*2; ++x)
 			{
-				for(int y = startPosition.y - _distanceFromWall_cells; y <= startPosition.y + _distanceFromWall_cells; ++y)
+				for(int y = startPosition.y - _distanceFromWall_cells*2; y <= startPosition.y + _distanceFromWall_cells*2; ++y)
 				{
 					position = new Point(x, y);
 					_mapGrid.put(position, new Field(this._subCellSize, position, this));
@@ -82,7 +82,6 @@ public class Map implements IPathMapUpdate {
 				}
 			}
 
-			_mapGrid.get(start_of_ray);
 			_firstMeasurement = false;
 		}
 

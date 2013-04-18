@@ -2,12 +2,13 @@ package teambot.pathplanning;
 
 public class Valid implements ValidityBase {
 	private byte counter;
-	static final int validityCheckFreeNeighbourFieldsCount = 24;
+	static int validityCheckFreeNeighbourFieldsCount = 24;
 	public Valid()
 	{
 		counter = 0;
 	}
 
+	@Override
 	public void incCounter()
 	{
 		if(!isValid())
@@ -24,6 +25,8 @@ public class Valid implements ValidityBase {
 		return false;
 	}
 
-
-
+	public static void setCountOfFreeNeighboursForValidity(int count)
+	{
+		validityCheckFreeNeighbourFieldsCount = count;
+	}
 }

@@ -32,7 +32,7 @@ public class WaveFrontAlg {
 			neighbors[3] = new Point(current.x, current.y - 1);
 
 			for (int i = 0; i < 4; i++) {
-				if (!visited_fields.containsKey(neighbors[i]) && (map.getOccupation(neighbors[i]) == Occupation.free)) {
+				if (!visited_fields.containsKey(neighbors[i]) && map.isValidPathPoint(neighbors[i])) {
 					visited_fields.put(neighbors[i], wave_counter + 1);
 					front_fields.add(neighbors[i]);
 					if (neighbors[i].equals(target)) {
@@ -57,12 +57,12 @@ public class WaveFrontAlg {
 			Point neighbors[] = new Point[4];
 
 			while (!current.equals(start)) {
-				
+
 				neighbors[0] = new Point(current.x + 1, current.y);
 				neighbors[1] = new Point(current.x - 1, current.y);
 				neighbors[2] = new Point(current.x, current.y + 1);
 				neighbors[3] = new Point(current.x, current.y - 1);
-				
+
 				for (int i = 0; i < 4; i++) {
 					if (visited_fields.containsKey(neighbors[i]) && visited_fields.get(neighbors[i]) == wave_counter - 1) {
 						wave_counter--;
@@ -70,13 +70,6 @@ public class WaveFrontAlg {
 						path[wave_counter] = current;
 						break;
 					}
-				}
-			}
-			for (int i = 0; i < path.length; i++)
-			{
-				if (map.getOccupation(new Point(path[i].x, path[i].y)) == Occupation.occupied)
-				{
-					System.out.println("FEHLER!!!");
 				}
 			}
 			return path;

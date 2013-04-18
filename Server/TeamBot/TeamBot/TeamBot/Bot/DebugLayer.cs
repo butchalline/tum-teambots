@@ -20,7 +20,7 @@ namespace teambot.Bot
         static Object _DebugMapLocker = new object();
 
         private static short _DebugGridWidth;
-        private static communication.DebugGridPoint[] _DebugMap;
+        private static communication.DebugGridPoint[] _DebugMap = new communication.DebugGridPoint[0];
 
         const float leftOffset = 10.0f;
         const float spacing = .75f;

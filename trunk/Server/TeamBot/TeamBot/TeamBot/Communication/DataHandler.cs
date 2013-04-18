@@ -105,6 +105,7 @@ namespace teambot.communication
             {
                 _Map = map;
                 _GridWidth = gridwidth;
+                _CallBack = cb;
             }
             public void ThreadPoolCallback(Object threadContext)
             {

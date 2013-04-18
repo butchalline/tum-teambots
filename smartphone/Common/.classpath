@@ -4,7 +4,7 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
 	<classpathentry exported="true" kind="con" path="com.zeroc.Slice2JavaPlugin.ICE_FRAMEWORK"/>
-	<classpathentry kind="lib" path="/jars/commons-lang3-3.1/commons-lang3-3.1.jar" sourcepath="/jars/commons-lang3-3.1/commons-lang3-3.1-sources.jar">
+	<classpathentry exported="true" kind="lib" path="/jars/commons-lang3-3.1/commons-lang3-3.1.jar" sourcepath="/jars/commons-lang3-3.1/commons-lang3-3.1-sources.jar">
 		<attributes>
 			<attribute name="javadoc_location" value="jar:platform:/resource/jars/commons-lang3-3.1/commons-lang3-3.1-javadoc.jar!/"/>
 		</attributes>

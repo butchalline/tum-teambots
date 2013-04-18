@@ -161,20 +161,13 @@ namespace teambot.communication
             sendInfraredFrame(_Bot.getLeftSensorDistance(), _Bot.getMiddleSensorDistance(), _Bot.getRightSensorDistance(), gameTime);
 
             if (_Bot.PositionReached)
-            {
-                if (_Bot.Angle > Math.PI || _Bot.Angle < -Math.PI)
-                    sendPositionReachedFrame((short)(_Bot.Position.X * Map.PixelToCm * 10f), (short)(_Bot.Position.Y * Map.PixelToCm * 10f), (short)(MathHelper.ToDegrees(_Bot.Angle * 100)), gameTime);
-                else
-                    sendPositionReachedFrame((short)(_Bot.Position.X * Map.PixelToCm * 10f), (short)(_Bot.Position.Y * Map.PixelToCm * 10f), (short)(MathHelper.ToDegrees(_Bot.Angle * 100)), gameTime);
-
+            {           
+                sendPositionReachedFrame((short)(_Bot.Position.X * Map.PixelToCm * 10f), (short)(_Bot.Position.Y * Map.PixelToCm * 10f), (short)(MathHelper.ToDegrees(_Bot.Angle * 100)), gameTime);
                 _Bot.PositionReached = false;
             }
             else
             {
-                if (_Bot.Angle > Math.PI || _Bot.Angle < -Math.PI)
-                    sendPositionFrame((short)(_Bot.Position.X * Map.PixelToCm * 10f), (short)(_Bot.Position.Y * Map.PixelToCm * 10f), (short)(MathHelper.ToDegrees(_Bot.Angle * 100)), gameTime);
-                else
-                    sendPositionFrame((short)(_Bot.Position.X * Map.PixelToCm * 10f), (short)(_Bot.Position.Y * Map.PixelToCm * 10f), (short)(MathHelper.ToDegrees(_Bot.Angle * 100)), gameTime);
+                sendPositionFrame((short)(_Bot.Position.X * Map.PixelToCm * 10f), (short)(_Bot.Position.Y * Map.PixelToCm * 10f), (short)(MathHelper.ToDegrees(_Bot.Angle * 100)), gameTime);
             }
         }
 

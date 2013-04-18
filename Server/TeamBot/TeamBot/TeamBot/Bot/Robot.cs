@@ -25,9 +25,9 @@ namespace teambot.Bot
 
 
         #region Properties
-        public const float WheelDiameter = 17.0f / Map.PixelToCm;
-        public const float WheelPerimeter = ((float)Math.PI * WheelDiameter) / Map.PixelToCm;
-        public const float AxialDistance = 27.5f / Map.PixelToCm;
+        public const float WheelDiameter = 17.0f * Map.CmToPixel;
+        public const float WheelPerimeter = ((float)Math.PI * WheelDiameter) * Map.CmToPixel;
+        public const float AxialDistance = 27.5f * Map.CmToPixel;
         public const int maxRPM = 114;
         public const int hexRPM = 1023;
         public const float scaleFactor = .23f;
@@ -289,7 +289,7 @@ namespace teambot.Bot
                     _PositionForward = false;
 
                 double cAngle = Angle + Math.PI;
-                float p2 = (p * 0.1f) / Map.PixelToCm;
+                float p2 = p * 0.1f * Map.CmToPixel;
                 _TargetPosition.X = (float)(_Position.X - p2 * Math.Sin(cAngle));
                 _TargetPosition.Y = (float)(_Position.Y + p2 * Math.Cos(cAngle));
             }

@@ -78,10 +78,12 @@ namespace teambot.Bot
                 if (_draw)
                 {
                     //float textureScale = 1 / (100 / _DebugGridWidth);
-                    int gridScale =(int)((_DebugGridWidth / 10.0f) * Map.PixelToCm);
+                    int gridScale = (int)((_DebugGridWidth / 10.0f) * Map.CmToPixel);
                     foreach (var point in _DebugMap)
                     {
-                        Rectangle targetPosition = new Rectangle((point.x * gridScale), (point.y * gridScale), gridScale, gridScale);
+                        int x = (int)((point.x / 10.0f) * Map.CmToPixel);
+                        int y = (int)((point.y / 10.0f) * Map.CmToPixel);
+                        Rectangle targetPosition = new Rectangle(x, y, gridScale, gridScale);
                         switch (point.status)
                         {
                             case communication.DebugGridPointStatus.Invalid:

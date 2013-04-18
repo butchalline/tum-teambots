@@ -108,11 +108,11 @@ namespace teambot
             _Map.LoadContent(this.Content);
             DebugLayer.LoadContent(this.Content);
             DebugLayer.setDebugColors(new Color(0, 255, 0, 50), //green
-            new Color(255, 0, 0, 50), //red
-            new Color(255, 170, 0, 50)); //orange
+            new Color(0, 0, 255, 50), //blue
+            new Color(255, 0, 0, 50)); //red
 
             //Test debugLayeMap
-        /*    communication.DebugGridPoint[] points = new communication.DebugGridPoint[100*100];
+    /*        communication.DebugGridPoint[] points = new communication.DebugGridPoint[100*100];
             Random random = new Random();
             for(int x = 0; x < 100; x++)
             {
@@ -122,19 +122,19 @@ namespace teambot
                     switch (i)
                     {
                         case 0:
-                            points[y * 100 + x] = new communication.DebugGridPoint(x + 50, y + 50, communication.DebugGridPointStatus.Wall);
+                            points[y * 100 + x] = new communication.DebugGridPoint(x * 10 + 500, y * 10 + 500, communication.DebugGridPointStatus.Wall);
                             break;
                         case 1:
-                            points[y * 100 + x] = new communication.DebugGridPoint(x + 50, y + 50, communication.DebugGridPointStatus.Valid);
-                            break;
+                            points[y * 100 + x] = new communication.DebugGridPoint(x * 10 + 500, y * 10 + 500, communication.DebugGridPointStatus.Valid);
+                            break;                                                            
                         case 2:
-                            points[y * 100 + x] = new communication.DebugGridPoint(x + 50, y + 50, communication.DebugGridPointStatus.Invalid);
+                            points[y * 100 + x] = new communication.DebugGridPoint(x * 10 + 500, y * 10 + 500, communication.DebugGridPointStatus.Invalid);
                             break;
                     }
 
                 }
             }
-            DebugLayer.setDebugMap(points, 50);    */
+            DebugLayer.setDebugMap(points, 50); */   
         }
 
         /// <summary>

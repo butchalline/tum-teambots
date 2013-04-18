@@ -6,6 +6,7 @@ import java.util.LinkedList;
 import teambot.common.data.PositionOrientation;
 import teambot.pathplanning.Occupation;
 import android.graphics.Point;
+import android.graphics.PointF;
 
 public class Particle
 {
@@ -86,5 +87,10 @@ public class Particle
 		LinkedList<SimpleEntry<Point, Occupation>> measuredPoints = _beamModel
 				.calculateBeam(distance_mm, _positionOrientation);
 		_map.update(measuredPoints);		
+	}
+	
+	public PositionOrientation getPositionOrientation()
+	{
+		return _positionOrientation;
 	}
 }

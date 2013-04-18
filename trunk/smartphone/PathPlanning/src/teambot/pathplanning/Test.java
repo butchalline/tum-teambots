@@ -26,7 +26,7 @@ public class Test {
 
 	public static void main(String [ ] args)
 	{
-		Map map = new Map(1);
+		Map map = new Map(1, 2);
 		WaveFrontAlg wfa = new WaveFrontAlg();
 
 		System.out.println("PATHFINDING TESTS \n");
@@ -119,7 +119,7 @@ public class Test {
 		Point[] freePoints;
 
 		System.out.println("----TEST1----");
-		map = new Map(1);
+		map = new Map(1, 2);
 		Test.clearMap(map, 5, 5, Occupation.free);
 		for (int i = 0; i < 5; i++)
 			map.setOccupation(new Point(2,i), Occupation.occupied);

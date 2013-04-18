@@ -32,10 +32,7 @@ public class Field extends Point {
 
 	public void setSubFieldFree(int x, int y)
 	{
-		if (this.occupation == Occupation.free)
-			return;
-
-		if (this.occupation == Occupation.occupied)
+		if (this.occupation == Occupation.free || this.occupation == Occupation.occupied)
 			return;
 
 		if (this.occupiedSubGrid == null)
@@ -72,6 +69,7 @@ public class Field extends Point {
 			mapUpdateCallBack.updatePathMap(this, occupation);
 			return;
 		}
+
 		if (this.free_counter > 0.9* this.sub_size* this.sub_size)
 		{
 //			System.out.println("Discovered free field at (" + this.x + "," + this.y + ")");
@@ -84,9 +82,6 @@ public class Field extends Point {
 
 	public void setSubFieldOccupied(int x, int y)
 	{
-		if (this.occupation == Occupation.free)
-			return;
-
 		if (this.occupation == Occupation.occupied)
 			return;
 
@@ -123,6 +118,22 @@ public class Field extends Point {
 
 	public void setOccupation(Occupation occupation) {
 
-		this.occupation = occupation;
+		if(occupation == Occupation.unknown)
+		{
+			this.occupation = occupation;
+			return;
+		}
+
+		if(occupation == Occupation.free)
+		{
+			free_counter = this.sub_size* this.sub_size;
+			occupied_counter = 0;
+		}
+		else if(occupation == Occupation.occupied)
+		{
+			occupied_counter = this.sub_size* this.sub_size;
+			free_counter = 0;
+		}
+		updateOccupationStatus();
 	}
 }

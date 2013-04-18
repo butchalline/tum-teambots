@@ -20,60 +20,6 @@
       <Time>2012-12-03T18:08:51.6614115+01:00</Time>
     </Item>
     <Item>
-      <Source>GreenInfra.png</Source>
-      <Name>GreenInfra</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-      <Options>None</Options>
-      <Output>C:\dev\TeamBots\Server\TeamBot\TeamBot\TeamBot\bin\x86\Debug\Content\GreenInfra.xnb</Output>
-      <Time>2012-12-03T18:58:55.1271999+01:00</Time>
-    </Item>
-    <Item>
-      <Source>RedInfra.png</Source>
-      <Name>RedInfra</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-      <Options>None</Options>
-      <Output>C:\dev\TeamBots\Server\TeamBot\TeamBot\TeamBot\bin\x86\Debug\Content\RedInfra.xnb</Output>
-      <Time>2012-12-03T19:00:01.6590053+01:00</Time>
-    </Item>
-    <Item>
-      <Source>TeamBotLGRG.png</Source>
-      <Name>TeamBotLGRG</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-      <Options>None</Options>
-      <Output>C:\dev\TeamBots\Server\TeamBot\TeamBot\TeamBot\bin\x86\Debug\Content\TeamBotLGRG.xnb</Output>
-      <Time>2012-12-07T17:24:07.0446394+01:00</Time>
-    </Item>
-    <Item>
-      <Source>TeamBotLGRR.png</Source>
-      <Name>TeamBotLGRR</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-      <Options>None</Options>
-      <Output>C:\dev\TeamBots\Server\TeamBot\TeamBot\TeamBot\bin\x86\Debug\Content\TeamBotLGRR.xnb</Output>
-      <Time>2012-12-07T17:23:19.9929566+01:00</Time>
-    </Item>
-    <Item>
-      <Source>TeamBotLRRG.png</Source>
-      <Name>TeamBotLRRG</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-      <Options>None</Options>
-      <Output>C:\dev\TeamBots\Server\TeamBot\TeamBot\TeamBot\bin\x86\Debug\Content\TeamBotLRRG.xnb</Output>
-      <Time>2012-12-07T17:22:48.8377018+01:00</Time>
-    </Item>
-    <Item>
-      <Source>TeamBotLRRR.png</Source>
-      <Name>TeamBotLRRR</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-      <Options>None</Options>
-      <Output>C:\dev\TeamBots\Server\TeamBot\TeamBot\TeamBot\bin\x86\Debug\Content\TeamBotLRRR.xnb</Output>
-      <Time>2012-12-07T17:23:05.5931313+01:00</Time>
-    </Item>
-    <Item>
       <Source>greenI.png</Source>
       <Name>greenI</Name>
       <Importer>TextureImporter</Importer>
@@ -108,6 +54,15 @@
       <Options>None</Options>
       <Output>C:\dev\TeamBots\Server\TeamBot\TeamBot\TeamBot\bin\x86\Debug\Content\effects.xnb</Output>
       <Time>2012-12-03T14:45:21.793047+01:00</Time>
+    </Item>
+    <Item>
+      <Source>Block10.png</Source>
+      <Name>Block10</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\dev\TeamBots\Server\TeamBot\TeamBot\TeamBot\bin\x86\Debug\Content\Block10.xnb</Output>
+      <Time>2013-04-18T18:10:25.3041428+02:00</Time>
     </Item>
     <BuildSuccessful>true</BuildSuccessful>
     <Settings>

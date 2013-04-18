@@ -28,15 +28,17 @@ namespace teambot.communication
         {
             private TBFrame _Frame;
             private Robot _Bot;
-            static Object _ReceiveLocker = new Object();
-            public Receiver(ref TBFrame frame, ref Robot bot)
+            private AMD_IDataServer_update _CallBack;
+            public Receiver(ref TBFrame frame, ref Robot bot, ref AMD_IDataServer_update cb)
             {
                 _Frame = frame;
                 _Bot = bot;
+                _CallBack = cb;
             }
             public void ThreadPoolCallback(Object threadContext)
             {
                 _receiveMessage();
+                _CallBack.ice_response();
             }
             private void _receiveMessage()
             {
@@ -91,6 +93,23 @@ namespace teambot.communication
                     case Constants.TB_ERROR_ID:
                         break;
                 }
+            }
+        }
+
+        class DebugReceiver
+        {
+            private DebugGridPoint[] _Map;
+            private short _GridWidth;
+            private AMD_IDataServer_debugMap _CallBack;
+            public DebugReceiver(ref DebugGridPoint[] map, ref short gridwidth, ref AMD_IDataServer_debugMap cb)
+            {
+                _Map = map;
+                _GridWidth = gridwidth;
+            }
+            public void ThreadPoolCallback(Object threadContext)
+            {
+                DebugLayer.setDebugMap(_Map, _GridWidth);
+                _CallBack.ice_response();
             }
         }
 
@@ -190,7 +209,7 @@ namespace teambot.communication
 
         public override void update_async(AMD_IDataServer_update cb__, TBFrame data, Ice.Current current__)
         {
-            Receiver r = new Receiver(ref data, ref _Bot);
+            Receiver r = new Receiver(ref data, ref _Bot, ref cb__);
             ThreadPool.QueueUserWorkItem(r.ThreadPoolCallback);
         }
 
@@ -202,6 +221,12 @@ namespace teambot.communication
                 IDataClientPrx client = IDataClientPrxHelper.uncheckedCast(@base);
                 _Clients.Add(client);
             }
+        }
+
+        public override void debugMap_async(AMD_IDataServer_debugMap cb__, DebugGridPoint[] map, short gridWidth, Ice.Current current__)
+        {
+            DebugReceiver r = new DebugReceiver(ref map, ref gridWidth, ref cb__);
+            ThreadPool.QueueUserWorkItem(r.ThreadPoolCallback);
         }
     }
 }

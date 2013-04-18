@@ -46,9 +46,9 @@ namespace teambot.Bot
         Texture2D _RedInfra;
         Texture2D _GreenInfra;
 
-        const int LeftSensorLength = 25;
-        const int RightSensorLength = 25;
-        const int MiddleSensorLength = 125;
+        const float LeftSensorLength = 20 * Map.CmToPixel;
+        const float RightSensorLength = 20 * Map.CmToPixel;
+        const float MiddleSensorLength = 150 * Map.CmToPixel;
         readonly Vector2 LeftSensorPosition;
         readonly Vector2 RightSensorPosition;
         readonly Vector2 MiddleSensorPosition;
@@ -87,9 +87,9 @@ namespace teambot.Bot
             {
                 Vector2 pos = Vector2.Lerp(_LeftSensorLine.start, _LeftSensorLine.stop, i * (1.0f / (LeftSensorLength / 5.0f)));
                 if (_Map.isWallAt((int)pos.X, (int)pos.Y))
-                    return Math.Max(0, (float)Math.Round((Vector2.Distance(_LeftSensorLine.start, pos) - 5), 2));
+                    return Math.Max(0, (float)Math.Round(Vector2.Distance(_LeftSensorLine.start, pos) * Map.PixelToCm, 2));
             }
-            return LeftSensorLength - 5;
+            return LeftSensorLength * Map.PixelToCm;
         }
 
         public float checkRightSensor(Vector2 position, float angle)
@@ -110,9 +110,9 @@ namespace teambot.Bot
             {
                 Vector2 pos = Vector2.Lerp(_RightSensorLine.start, _RightSensorLine.stop, i * (1.0f / (RightSensorLength / 5.0f)));
                 if (_Map.isWallAt((int)pos.X, (int)pos.Y))
-                    return Math.Max(0, (float)Math.Round((Vector2.Distance(_RightSensorLine.start, pos) - 5), 2));
+                    return Math.Max(0, (float)Math.Round(Vector2.Distance(_RightSensorLine.start, pos) * Map.PixelToCm, 2));
             }
-            return RightSensorLength - 5;
+            return RightSensorLength * Map.PixelToCm;
         }
 
         public float checkMiddleSensor(Vector2 position, float angle)
@@ -133,9 +133,9 @@ namespace teambot.Bot
             {
                 Vector2 pos = Vector2.Lerp(_MiddleSensorLine.start, _MiddleSensorLine.stop, i * (1.0f / (MiddleSensorLength / 5.0f)));
                 if (_Map.isWallAt((int)pos.X, (int)pos.Y))
-                    return Math.Max(0, (float)Math.Round((Vector2.Distance(_MiddleSensorLine.start, pos) - 5), 2));
+                    return Math.Max(0, (float)Math.Round(Vector2.Distance(_MiddleSensorLine.start, pos) * Map.PixelToCm, 2));
             }
-            return MiddleSensorLength - 5;
+            return MiddleSensorLength * Map.PixelToCm;
         }
 
         internal void Draw(ref SpriteBatch spriteBatch)

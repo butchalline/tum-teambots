@@ -1,6 +1,7 @@
 package teambot.simulator;
 
 import teambot.common.Bot;
+import teambot.communication.DebugGridPoint;
 import teambot.communication.IDataServerPrx;
 import teambot.communication.IDataServerPrxHelper;
 import teambot.communication.TBFrame;
@@ -88,6 +89,20 @@ public class SimulatorCommunicator extends Application implements Runnable {
 
 	public synchronized void sendFrame(TBFrame frame) {
 		
+		interfaceCheck();
+	
+		serverInterface.update(frame);
+	}
+	
+	public synchronized void sendDebugMap(DebugGridPoint[] points, short cellSize) {
+		
+		interfaceCheck();
+	
+		serverInterface.debugMap(points, cellSize);
+	}
+	
+	private void interfaceCheck()
+	{
 		if (serverInterface == null) {
 			Ice.ObjectPrx prx;
 
@@ -110,7 +125,5 @@ public class SimulatorCommunicator extends Application implements Runnable {
 				e.printStackTrace();
 			}
 		}
-	
-		serverInterface.update(frame);
 	}
 }

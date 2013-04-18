@@ -1,6 +1,7 @@
 package teambot.pathplanning;
 
 import java.util.ArrayDeque;
+import java.util.Map.Entry;
 
 import android.graphics.Point;
 import android.graphics.PointF;
@@ -51,6 +52,7 @@ public class Agent {
 		printMapInConsole(null);
 		if(bestPath != null)
 			printMapInConsole(bestPath);
+		System.out.println("Best Utility: " + bestUtility);
 
 		if (bestPath != null && bestPath.length != 0)
 		{
@@ -94,17 +96,17 @@ public class Agent {
 		int minY = minX;
 		int maxY = maxX;
 
-		for(Point point : map.getMapGrid())
+		for(Entry<Point, Field> field : map.getMapGrid())
 		{
-			if(point.x < minX)
-				minX = point.x;
-			if(point.x > maxX)
-				maxX = point.x;
+			if(field.getKey().x < minX)
+				minX = field.getKey().x;
+			if(field.getKey().x > maxX)
+				maxX = field.getKey().x;
 
-			if(point.y < minY)
-				minY = point.y;
-			if(point.y > maxY)
-				maxY = point.y;
+			if(field.getKey().y < minY)
+				minY = field.getKey().y;
+			if(field.getKey().y > maxY)
+				maxY = field.getKey().y;
 		}
 
 		int rangeX = maxX - minX + 1;
@@ -161,9 +163,12 @@ public class Agent {
 		System.out.println("----------------------------------------------");
 	}
 
+	public Map getMap()
+	{
+		return map;
+	}
+
 	/**
-	 * Class which other bots can use to register at this bot (= tell them that
-	 * they exist)
 	 *
 	 * @param robot_position
 	 *            in mm

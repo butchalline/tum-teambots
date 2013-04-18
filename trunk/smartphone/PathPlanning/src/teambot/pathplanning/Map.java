@@ -103,7 +103,7 @@ public class Map implements IPathMapUpdate {
 			float a = delta_y / delta_x;
 			float b = start_of_ray_sf.y - a * start_of_ray_sf.x;
 			int min_x = (int) Math.min(start_of_ray_sf.x, end_of_ray_sf.x) + 1;
-			int max_x = (int) Math.max(start_of_ray_sf.x, end_of_ray_sf.x);
+			int max_x = (int) Math.max(start_of_ray_sf.x, end_of_ray_sf.x) - 1;
 
 			for (int x = min_x; x <= max_x; x++)
 			{
@@ -125,7 +125,7 @@ public class Map implements IPathMapUpdate {
 			float a = delta_x / delta_y;
 			float b = start_of_ray_sf.x - a * start_of_ray_sf.y;
 			int min_y = (int) Math.min(start_of_ray_sf.y, end_of_ray_sf.y) + 1;
-			int max_y = (int) Math.max(start_of_ray_sf.y, end_of_ray_sf.y);
+			int max_y = (int) Math.max(start_of_ray_sf.y, end_of_ray_sf.y) - 1;
 
 			for (int y = min_y; y <= max_y; y++)
 			{
@@ -218,8 +218,13 @@ public class Map implements IPathMapUpdate {
 		}
 	}
 
-	public Set<Point> getMapGrid()
+	public Set<Entry<Point, Field>> getMapGrid()
 	{
-		return _mapGrid.keySet();
+		return _mapGrid.entrySet();
+	}
+
+	public Hashtable<Point, ValidityBase> getValidPathMapGrid()
+	{
+		return _validPathGrid;
 	}
 }

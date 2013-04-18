@@ -1,6 +1,7 @@
 package teambot.simulator;
 
 import teambot.communication.AMD_IDataClient_update;
+import teambot.communication.DebugGridPoint;
 import teambot.communication.TBFrame;
 import teambot.communication.TBInfraredData;
 import teambot.communication.TBPositionData;
@@ -87,6 +88,15 @@ public class SimulatorProxy extends _IDataClientDisp {
 	public void send(TBFrame frame) {
 		try {
 			simulatorInterface.sendFrame(frame);
+		} catch (Exception ex) {
+
+		}
+	}
+	
+	public void sendDebugMap(DebugGridPoint[] points, short cellSize)
+	{
+		try {
+			simulatorInterface.sendDebugMap(points, cellSize);
 		} catch (Exception ex) {
 
 		}

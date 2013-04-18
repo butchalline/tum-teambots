@@ -32,6 +32,7 @@ namespace teambot
 
         //ICE
         private Ice.Communicator _Communicator;
+        private Ice.ObjectAdapter _Adapter;
 
         public Simulator()
         {
@@ -83,12 +84,14 @@ namespace teambot
             Ice.Properties properties = Ice.Util.createProperties();
             Ice.InitializationData initData = new Ice.InitializationData();
             initData.properties = properties;
+
             _Communicator = Ice.Util.initialize(initData);
-            Ice.ObjectAdapter adapter = _Communicator.createObjectAdapterWithEndpoints("Simulator", "tcp -p 55001");
+            _Adapter = _Communicator.createObjectAdapterWithEndpoints("Simulator", "tcp -h localhost -p 55001");
             _DataHandler = new communication.DataHandler(_Bot);
+            _Adapter.add(_DataHandler, _Communicator.stringToIdentity("Simulator"));
+            _Adapter.activate();
+
             graphics.ApplyChanges();
-            adapter.add(_DataHandler, _Communicator.stringToIdentity("sender"));
-            adapter.activate();
             base.Initialize();
         }
 

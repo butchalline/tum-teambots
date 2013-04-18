@@ -17,6 +17,11 @@ public class PositionOrientation {
 		position = new PointF(x, y);
 		this.angleInRadian = anlgeInRadian;
 	}
+	
+	public PositionOrientation(PositionOrientation positionOrientation) {
+		this.position = new PointF(positionOrientation.getPosition());
+		this.angleInRadian = positionOrientation.getAngleInRadian();
+	}
 
 	public synchronized void setPosition(PointF position) {
 		this.position = position;

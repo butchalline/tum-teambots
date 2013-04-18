@@ -5,12 +5,18 @@ import java.util.LinkedList;
 import teambot.common.data.PositionOrientation;
 import teambot.common.interfaces.IPositionListener;
 import teambot.common.interfaces.IPositionOrientationSupplier;
-import teambot.common.utils.Constants;
 import android.graphics.PointF;
 
+
+/**
+ * 
+ * Class which supplies the current position of an sensor or the Bot
+ * The orientation is x-axis show forwards from the robot, y-axis to the left 
+ * 
+ */
 public class PositionOrientationSupplier implements IPositionOrientationSupplier, IPositionListener
 {
-
+	private PositionOrientation _position = new PositionOrientation(0, 0, 0); 
 	private LinkedList<IPositionListener> _listeners = new LinkedList<IPositionListener>();
 	protected PointF _offsetFromBotCenter = new PointF(0, 0);
 	protected float _offsetAngleFromBotCenter = 0;
@@ -20,36 +26,34 @@ public class PositionOrientationSupplier implements IPositionOrientationSupplier
 
 	}
 
-	public PositionOrientationSupplier(PointF offsetFromBotCenter)
+	public PositionOrientationSupplier(PointF offsetFromBotCenter_mm)
 	{
-		_offsetFromBotCenter = offsetFromBotCenter;
+		_offsetFromBotCenter = offsetFromBotCenter_mm;
+		_position = addOffset(_position);
 	}
 
-	public PositionOrientationSupplier(PointF offsetFromBotCenter, float offsetAngleFromBotCenter)
+	public PositionOrientationSupplier(PointF offsetFromBotCenter_mm, float offsetAngleFromBotCenter_rad)
 	{
-		_offsetFromBotCenter = offsetFromBotCenter;
-		_offsetAngleFromBotCenter = offsetAngleFromBotCenter;
+		_offsetFromBotCenter = offsetFromBotCenter_mm;
+		_offsetAngleFromBotCenter = offsetAngleFromBotCenter_rad;
+		_position = addOffset(_position);
 	}
 
-	public PositionOrientation getBotPositionOrientation()
+	public synchronized PositionOrientation getBotPositionOrientation()
 	{
-		// TODO: Wrong calculation
-		PositionOrientation positionOrientation = Bot.getPositionOrientation();
-		positionOrientation.setX(positionOrientation.getX() + _offsetFromBotCenter.x);
-		positionOrientation.setY(positionOrientation.getY() + _offsetFromBotCenter.y);
-		positionOrientation.setAngleInRadian(positionOrientation.getAngleInRadian() + _offsetAngleFromBotCenter);
-		return positionOrientation;
+		return _position;
 	}
 
 	@Override
-	public void register(IPositionListener listener)
+	public synchronized void register(IPositionListener listener)
 	{
 		_listeners.add(listener);
 	}
 
 	@Override
-	public void callback_PositionChanged(PositionOrientation newPositionOrientation)
+	public synchronized void callback_PositionChanged(PositionOrientation newPositionOrientation)
 	{
+		_position = addOffset(newPositionOrientation);
 		for (IPositionListener listener : _listeners)
 		{
 			listener.callback_PositionChanged(newPositionOrientation);
@@ -58,32 +62,38 @@ public class PositionOrientationSupplier implements IPositionOrientationSupplier
 
 	public synchronized PointF getPosition()
 	{
-		// TODO: Wrong calculation
-		PointF position = Bot.getPositionOrientation().getPosition();
-		position.x += _offsetFromBotCenter.x;
-		position.y += _offsetFromBotCenter.y;
-		return position;
+		return _position.getPosition();
 	}
 
 	public synchronized float getX()
 	{
-		// TODO: Wrong calculation
-		return Bot.getPositionOrientation().getX() + _offsetFromBotCenter.x;
+		return _position.getX();
 	}
 
 	public synchronized float getY()
 	{
-		// TODO: Wrong calculation
-		return Bot.getPositionOrientation().getY() + _offsetFromBotCenter.y;
+		return _position.getY();
 	}
 
 	public synchronized float getAngleInRadian()
 	{
-		return Bot.getPositionOrientation().getAngleInRadian() + _offsetAngleFromBotCenter;
+		return _position.getAngleInRadian();
 	}
 
 	public synchronized float getAngleInDegree()
 	{
-		return (Bot.getPositionOrientation().getAngleInRadian() + _offsetAngleFromBotCenter) * Constants.RadianToDegree;
+		return _position.getAngleInDegree();
+	}
+	
+	private PositionOrientation addOffset(PositionOrientation currentBotPosition)
+	{		
+		float x = currentBotPosition.getX() + (float) Math.cos(currentBotPosition.getAngleInRadian() + Math.PI / 2) * _offsetFromBotCenter.y
+				+ (float) Math.cos(currentBotPosition.getAngleInRadian()) * _offsetFromBotCenter.x;
+		float y = currentBotPosition.getX() + (float) Math.sin(currentBotPosition.getAngleInRadian() + Math.PI / 2) * _offsetFromBotCenter.y
+				+ (float) Math.cos(currentBotPosition.getAngleInRadian()) * _offsetFromBotCenter.x;
+		
+		float angle = PositionOrientation.normalizeAngle_plusMinusPi(currentBotPosition.getAngleInRadian() + _offsetAngleFromBotCenter);
+		
+		return new PositionOrientation(x, y, angle);		
 	}
 }

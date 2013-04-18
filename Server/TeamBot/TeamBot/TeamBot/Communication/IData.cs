@@ -779,6 +779,139 @@ namespace teambot
             #endregion
         }
 
+        [_System.CodeDom.Compiler.GeneratedCodeAttribute("slice2cs", "3.5.0")]
+        public enum DebugGridPointStatus
+        {
+            Valid,
+            Invalid,
+            Wall
+        }
+
+        [_System.Runtime.InteropServices.ComVisible(false)]
+        [_System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1704")]
+        [_System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707")]
+        [_System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1709")]
+        [_System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1710")]
+        [_System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1711")]
+        [_System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1715")]
+        [_System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1716")]
+        [_System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1720")]
+        [_System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1722")]
+        [_System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1724")]
+        public partial class DebugGridPoint : Ice.ObjectImpl
+        {
+            #region Slice data members
+
+            [_System.CodeDom.Compiler.GeneratedCodeAttribute("slice2cs", "3.5.0")]
+            public int x;
+
+            [_System.CodeDom.Compiler.GeneratedCodeAttribute("slice2cs", "3.5.0")]
+            public int y;
+
+            [_System.CodeDom.Compiler.GeneratedCodeAttribute("slice2cs", "3.5.0")]
+            public teambot.communication.DebugGridPointStatus status;
+
+            #endregion
+
+            #region Constructors
+
+            [_System.CodeDom.Compiler.GeneratedCodeAttribute("slice2cs", "3.5.0")]
+            public DebugGridPoint()
+            {
+            }
+
+            [_System.CodeDom.Compiler.GeneratedCodeAttribute("slice2cs", "3.5.0")]
+            public DebugGridPoint(int x, int y, teambot.communication.DebugGridPointStatus status)
+            {
+                this.x = x;
+                this.y = y;
+                this.status = status;
+            }
+
+            #endregion
+
+            #region Slice type-related members
+
+            [_System.CodeDom.Compiler.GeneratedCodeAttribute("slice2cs", "3.5.0")]
+            public static new readonly string[] ids__ = 
+            {
+                "::Ice::Object",
+                "::teambot::communication::DebugGridPoint"
+            };
+
+            [_System.CodeDom.Compiler.GeneratedCodeAttribute("slice2cs", "3.5.0")]
+            public override bool ice_isA(string s)
+            {
+                return _System.Array.BinarySearch(ids__, s, IceUtilInternal.StringUtil.OrdinalStringComparer) >= 0;
+            }
+
+            [_System.CodeDom.Compiler.GeneratedCodeAttribute("slice2cs", "3.5.0")]
+            public override bool ice_isA(string s, Ice.Current current__)
+            {
+                return _System.Array.BinarySearch(ids__, s, IceUtilInternal.StringUtil.OrdinalStringComparer) >= 0;
+            }
+
+            [_System.CodeDom.Compiler.GeneratedCodeAttribute("slice2cs", "3.5.0")]
+            public override string[] ice_ids()
+            {
+                return ids__;
+            }
+
+            [_System.CodeDom.Compiler.GeneratedCodeAttribute("slice2cs", "3.5.0")]
+            public override string[] ice_ids(Ice.Current current__)
+            {
+                return ids__;
+            }
+
+            [_System.CodeDom.Compiler.GeneratedCodeAttribute("slice2cs", "3.5.0")]
+            public override string ice_id()
+            {
+                return ids__[1];
+            }
+
+            [_System.CodeDom.Compiler.GeneratedCodeAttribute("slice2cs", "3.5.0")]
+            public override string ice_id(Ice.Current current__)
+            {
+                return ids__[1];
+            }
+
+            [_System.CodeDom.Compiler.GeneratedCodeAttribute("slice2cs", "3.5.0")]
+            public static new string ice_staticId()
+            {
+                return ids__[1];
+            }
+
+            #endregion
+
+            #region Operation dispatch
+
+            #endregion
+
+            #region Marshaling support
+
+            [_System.CodeDom.Compiler.GeneratedCodeAttribute("slice2cs", "3.5.0")]
+            protected override void writeImpl__(IceInternal.BasicStream os__)
+            {
+                os__.startWriteSlice(ice_staticId(), -1, true);
+                os__.writeInt(x);
+                os__.writeInt(y);
+                os__.writeEnum((int)status, 2);
+                os__.endWriteSlice();
+            }
+
+            [_System.CodeDom.Compiler.GeneratedCodeAttribute("slice2cs", "3.5.0")]
+            protected override void readImpl__(IceInternal.BasicStream is__)
+            {
+                is__.startReadSlice();
+                x = is__.readInt();
+                y = is__.readInt();
+                status = (teambot.communication.DebugGridPointStatus)is__.readEnum(2);
+                is__.endReadSlice();
+            }
+
+            #endregion
+        }
+
         [_System.Runtime.InteropServices.ComVisible(false)]
         [_System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1704")]
         [_System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707")]
@@ -823,6 +956,9 @@ namespace teambot
 
         [_System.CodeDom.Compiler.GeneratedCodeAttribute("slice2cs", "3.5.0")]
         public delegate void Callback_IDataServer_addClient();
+
+        [_System.CodeDom.Compiler.GeneratedCodeAttribute("slice2cs", "3.5.0")]
+        public delegate void Callback_IDataServer_debugMap();
     }
 }
 
@@ -857,6 +993,11 @@ namespace teambot
 
         [_System.CodeDom.Compiler.GeneratedCodeAttribute("slice2cs", "3.5.0")]
         public interface TBPositionReachedPrx : teambot.communication.TBFramePrx
+        {
+        }
+
+        [_System.CodeDom.Compiler.GeneratedCodeAttribute("slice2cs", "3.5.0")]
+        public interface DebugGridPointPrx : Ice.ObjectPrx
         {
         }
 
@@ -899,6 +1040,17 @@ namespace teambot
             Ice.AsyncResult begin_addClient(Ice.Identity ident, _System.Collections.Generic.Dictionary<string, string> ctx__, Ice.AsyncCallback cb__, object cookie__);
 
             void end_addClient(Ice.AsyncResult r__);
+
+            void debugMap(teambot.communication.DebugGridPoint[] map, short gridWidth);
+            void debugMap(teambot.communication.DebugGridPoint[] map, short gridWidth, _System.Collections.Generic.Dictionary<string, string> context__);
+
+            Ice.AsyncResult<teambot.communication.Callback_IDataServer_debugMap> begin_debugMap(teambot.communication.DebugGridPoint[] map, short gridWidth);
+            Ice.AsyncResult<teambot.communication.Callback_IDataServer_debugMap> begin_debugMap(teambot.communication.DebugGridPoint[] map, short gridWidth, _System.Collections.Generic.Dictionary<string, string> ctx__);
+
+            Ice.AsyncResult begin_debugMap(teambot.communication.DebugGridPoint[] map, short gridWidth, Ice.AsyncCallback cb__, object cookie__);
+            Ice.AsyncResult begin_debugMap(teambot.communication.DebugGridPoint[] map, short gridWidth, _System.Collections.Generic.Dictionary<string, string> ctx__, Ice.AsyncCallback cb__, object cookie__);
+
+            void end_debugMap(Ice.AsyncResult r__);
         }
     }
 }
@@ -925,6 +1077,8 @@ namespace teambot
             void update_async(teambot.communication.AMD_IDataServer_update cb__, teambot.communication.TBFrame data, Ice.Current current__);
 
             void addClient(Ice.Identity ident, Ice.Current current__);
+
+            void debugMap_async(teambot.communication.AMD_IDataServer_debugMap cb__, teambot.communication.DebugGridPoint[] map, short gridWidth, Ice.Current current__);
         }
 
         [_System.CodeDom.Compiler.GeneratedCodeAttribute("slice2cs", "3.5.0")]
@@ -933,6 +1087,8 @@ namespace teambot
             void update_async(teambot.communication.AMD_IDataServer_update cb__, teambot.communication.TBFrame data);
 
             void addClient(Ice.Identity ident);
+
+            void debugMap_async(teambot.communication.AMD_IDataServer_debugMap cb__, teambot.communication.DebugGridPoint[] map, short gridWidth);
         }
     }
 }
@@ -1902,6 +2058,200 @@ namespace teambot
 
         [_System.Runtime.InteropServices.ComVisible(false)]
         [_System.CodeDom.Compiler.GeneratedCodeAttribute("slice2cs", "3.5.0")]
+        public sealed class DebugGridPointPrxHelper : Ice.ObjectPrxHelperBase, DebugGridPointPrx
+        {
+            #region Asynchronous operations
+
+            #endregion
+
+            #region Checked and unchecked cast operations
+
+            public static DebugGridPointPrx checkedCast(Ice.ObjectPrx b)
+            {
+                if(b == null)
+                {
+                    return null;
+                }
+                DebugGridPointPrx r = b as DebugGridPointPrx;
+                if((r == null) && b.ice_isA(ice_staticId()))
+                {
+                    DebugGridPointPrxHelper h = new DebugGridPointPrxHelper();
+                    h.copyFrom__(b);
+                    r = h;
+                }
+                return r;
+            }
+
+            public static DebugGridPointPrx checkedCast(Ice.ObjectPrx b, _System.Collections.Generic.Dictionary<string, string> ctx)
+            {
+                if(b == null)
+                {
+                    return null;
+                }
+                DebugGridPointPrx r = b as DebugGridPointPrx;
+                if((r == null) && b.ice_isA(ice_staticId(), ctx))
+                {
+                    DebugGridPointPrxHelper h = new DebugGridPointPrxHelper();
+                    h.copyFrom__(b);
+                    r = h;
+                }
+                return r;
+            }
+
+            public static DebugGridPointPrx checkedCast(Ice.ObjectPrx b, string f)
+            {
+                if(b == null)
+                {
+                    return null;
+                }
+                Ice.ObjectPrx bb = b.ice_facet(f);
+                try
+                {
+                    if(bb.ice_isA(ice_staticId()))
+                    {
+                        DebugGridPointPrxHelper h = new DebugGridPointPrxHelper();
+                        h.copyFrom__(bb);
+                        return h;
+                    }
+                }
+                catch(Ice.FacetNotExistException)
+                {
+                }
+                return null;
+            }
+
+            public static DebugGridPointPrx checkedCast(Ice.ObjectPrx b, string f, _System.Collections.Generic.Dictionary<string, string> ctx)
+            {
+                if(b == null)
+                {
+                    return null;
+                }
+                Ice.ObjectPrx bb = b.ice_facet(f);
+                try
+                {
+                    if(bb.ice_isA(ice_staticId(), ctx))
+                    {
+                        DebugGridPointPrxHelper h = new DebugGridPointPrxHelper();
+                        h.copyFrom__(bb);
+                        return h;
+                    }
+                }
+                catch(Ice.FacetNotExistException)
+                {
+                }
+                return null;
+            }
+
+            public static DebugGridPointPrx uncheckedCast(Ice.ObjectPrx b)
+            {
+                if(b == null)
+                {
+                    return null;
+                }
+                DebugGridPointPrx r = b as DebugGridPointPrx;
+                if(r == null)
+                {
+                    DebugGridPointPrxHelper h = new DebugGridPointPrxHelper();
+                    h.copyFrom__(b);
+                    r = h;
+                }
+                return r;
+            }
+
+            public static DebugGridPointPrx uncheckedCast(Ice.ObjectPrx b, string f)
+            {
+                if(b == null)
+                {
+                    return null;
+                }
+                Ice.ObjectPrx bb = b.ice_facet(f);
+                DebugGridPointPrxHelper h = new DebugGridPointPrxHelper();
+                h.copyFrom__(bb);
+                return h;
+            }
+
+            public static readonly string[] ids__ =
+            {
+                "::Ice::Object",
+                "::teambot::communication::DebugGridPoint"
+            };
+
+            public static string ice_staticId()
+            {
+                return ids__[1];
+            }
+
+            #endregion
+
+            #region Marshaling support
+
+            protected override Ice.ObjectDelM_ createDelegateM__()
+            {
+                return new DebugGridPointDelM_();
+            }
+
+            protected override Ice.ObjectDelD_ createDelegateD__()
+            {
+                return new DebugGridPointDelD_();
+            }
+
+            public static void write__(IceInternal.BasicStream os__, DebugGridPointPrx v__)
+            {
+                os__.writeProxy(v__);
+            }
+
+            public static DebugGridPointPrx read__(IceInternal.BasicStream is__)
+            {
+                Ice.ObjectPrx proxy = is__.readProxy();
+                if(proxy != null)
+                {
+                    DebugGridPointPrxHelper result = new DebugGridPointPrxHelper();
+                    result.copyFrom__(proxy);
+                    return result;
+                }
+                return null;
+            }
+
+            #endregion
+        }
+
+        [_System.CodeDom.Compiler.GeneratedCodeAttribute("slice2cs", "3.5.0")]
+        public sealed class currentMapHelper
+        {
+            public static void write(IceInternal.BasicStream os__, teambot.communication.DebugGridPoint[] v__)
+            {
+                if(v__ == null)
+                {
+                    os__.writeSize(0);
+                }
+                else
+                {
+                    os__.writeSize(v__.Length);
+                    for(int ix__ = 0; ix__ < v__.Length; ++ix__)
+                    {
+                        os__.writeObject(v__[ix__]);
+                    }
+                }
+            }
+
+            public static teambot.communication.DebugGridPoint[] read(IceInternal.BasicStream is__)
+            {
+                teambot.communication.DebugGridPoint[] v__;
+                {
+                    int szx__ = is__.readAndCheckSeqSize(1);
+                    v__ = new teambot.communication.DebugGridPoint[szx__];
+                    for(int ix__ = 0; ix__ < szx__; ++ix__)
+                    {
+                        IceInternal.ArrayPatcher<teambot.communication.DebugGridPoint> spx = new IceInternal.ArrayPatcher<teambot.communication.DebugGridPoint>("::teambot::communication::DebugGridPoint", v__, ix__);
+                        is__.readObject(spx);
+                    }
+                }
+                return v__;
+            }
+        }
+
+        [_System.Runtime.InteropServices.ComVisible(false)]
+        [_System.CodeDom.Compiler.GeneratedCodeAttribute("slice2cs", "3.5.0")]
         public sealed class IDataClientPrxHelper : Ice.ObjectPrxHelperBase, IDataClientPrx
         {
             #region Synchronous operations
@@ -2225,6 +2575,55 @@ namespace teambot
                 }
             }
 
+            public void debugMap(teambot.communication.DebugGridPoint[] map, short gridWidth)
+            {
+                debugMap(map, gridWidth, null, false);
+            }
+
+            public void debugMap(teambot.communication.DebugGridPoint[] map, short gridWidth, _System.Collections.Generic.Dictionary<string, string> context__)
+            {
+                debugMap(map, gridWidth, context__, true);
+            }
+
+            private void debugMap(teambot.communication.DebugGridPoint[] map, short gridWidth, _System.Collections.Generic.Dictionary<string, string> context__, bool explicitContext__)
+            {
+                if(explicitContext__ && context__ == null)
+                {
+                    context__ = emptyContext_;
+                }
+                Ice.Instrumentation.InvocationObserver observer__ = IceInternal.ObserverHelper.get(this, __debugMap_name, context__);
+                int cnt__ = 0;
+                try
+                {
+                    while(true)
+                    {
+                        Ice.ObjectDel_ delBase__ = null;
+                        try
+                        {
+                            delBase__ = getDelegate__(false);
+                            IDataServerDel_ del__ = (IDataServerDel_)delBase__;
+                            del__.debugMap(map, gridWidth, context__, observer__);
+                            return;
+                        }
+                        catch(IceInternal.LocalExceptionWrapper ex__)
+                        {
+                            handleExceptionWrapper__(delBase__, ex__, observer__);
+                        }
+                        catch(Ice.LocalException ex__)
+                        {
+                            handleException__(delBase__, ex__, true, ref cnt__, observer__);
+                        }
+                    }
+                }
+                finally
+                {
+                    if(observer__ != null)
+                    {
+                        observer__.detach();
+                    }
+                }
+            }
+
             public void update(teambot.communication.TBFrame data)
             {
                 update(data, null, false);
@@ -2336,6 +2735,65 @@ namespace teambot
             }
 
             private void addClient_completed__(teambot.communication.Callback_IDataServer_addClient cb__)
+            {
+                if(cb__ != null)
+                {
+                    cb__();
+                }
+            }
+
+            public Ice.AsyncResult<teambot.communication.Callback_IDataServer_debugMap> begin_debugMap(teambot.communication.DebugGridPoint[] map, short gridWidth)
+            {
+                return begin_debugMap(map, gridWidth, null, false, null, null);
+            }
+
+            public Ice.AsyncResult<teambot.communication.Callback_IDataServer_debugMap> begin_debugMap(teambot.communication.DebugGridPoint[] map, short gridWidth, _System.Collections.Generic.Dictionary<string, string> ctx__)
+            {
+                return begin_debugMap(map, gridWidth, ctx__, true, null, null);
+            }
+
+            public Ice.AsyncResult begin_debugMap(teambot.communication.DebugGridPoint[] map, short gridWidth, Ice.AsyncCallback cb__, object cookie__)
+            {
+                return begin_debugMap(map, gridWidth, null, false, cb__, cookie__);
+            }
+
+            public Ice.AsyncResult begin_debugMap(teambot.communication.DebugGridPoint[] map, short gridWidth, _System.Collections.Generic.Dictionary<string, string> ctx__, Ice.AsyncCallback cb__, object cookie__)
+            {
+                return begin_debugMap(map, gridWidth, ctx__, true, cb__, cookie__);
+            }
+
+            private const string __debugMap_name = "debugMap";
+
+            public void end_debugMap(Ice.AsyncResult r__)
+            {
+                end__(r__, __debugMap_name);
+            }
+
+            private Ice.AsyncResult<teambot.communication.Callback_IDataServer_debugMap> begin_debugMap(teambot.communication.DebugGridPoint[] map, short gridWidth, _System.Collections.Generic.Dictionary<string, string> ctx__, bool explicitContext__, Ice.AsyncCallback cb__, object cookie__)
+            {
+                IceInternal.OnewayOutgoingAsync<teambot.communication.Callback_IDataServer_debugMap> result__ = new IceInternal.OnewayOutgoingAsync<teambot.communication.Callback_IDataServer_debugMap>(this, __debugMap_name, debugMap_completed__, cookie__);
+                if(cb__ != null)
+                {
+                    result__.whenCompletedWithAsyncCallback(cb__);
+                }
+                try
+                {
+                    result__.prepare__(__debugMap_name, Ice.OperationMode.Normal, ctx__, explicitContext__);
+                    IceInternal.BasicStream os__ = result__.startWriteParams__(Ice.FormatType.DefaultFormat);
+                    teambot.communication.currentMapHelper.write(os__, map);
+                    os__.writeShort(gridWidth);
+                    os__.writePendingObjects();
+                    result__.endWriteParams__();
+                    result__.send__(true);
+                }
+                catch(Ice.LocalException ex__)
+                {
+                    result__.exceptionAsync__(ex__);
+                }
+                return result__;
+            }
+
+            private void debugMap_completed__(teambot.communication.Callback_IDataServer_debugMap cb__)
             {
                 if(cb__ != null)
                 {
@@ -2591,6 +3049,11 @@ namespace teambot
         }
 
         [_System.CodeDom.Compiler.GeneratedCodeAttribute("slice2cs", "3.5.0")]
+        public interface DebugGridPointDel_ : Ice.ObjectDel_
+        {
+        }
+
+        [_System.CodeDom.Compiler.GeneratedCodeAttribute("slice2cs", "3.5.0")]
         public interface IDataClientDel_ : Ice.ObjectDel_
         {
             void update(teambot.communication.TBFrame data, _System.Collections.Generic.Dictionary<string, string> context__, Ice.Instrumentation.InvocationObserver observer__);
@@ -2602,6 +3065,8 @@ namespace teambot
             void update(teambot.communication.TBFrame data, _System.Collections.Generic.Dictionary<string, string> context__, Ice.Instrumentation.InvocationObserver observer__);
 
             void addClient(Ice.Identity ident, _System.Collections.Generic.Dictionary<string, string> context__, Ice.Instrumentation.InvocationObserver observer__);
+
+            void debugMap(teambot.communication.DebugGridPoint[] map, short gridWidth, _System.Collections.Generic.Dictionary<string, string> context__, Ice.Instrumentation.InvocationObserver observer__);
         }
     }
 }
@@ -2643,6 +3108,12 @@ namespace teambot
         [_System.Runtime.InteropServices.ComVisible(false)]
         [_System.CodeDom.Compiler.GeneratedCodeAttribute("slice2cs", "3.5.0")]
         public sealed class TBPositionReachedDelM_ : Ice.ObjectDelM_, TBPositionReachedDel_
+        {
+        }
+
+        [_System.Runtime.InteropServices.ComVisible(false)]
+        [_System.CodeDom.Compiler.GeneratedCodeAttribute("slice2cs", "3.5.0")]
+        public sealed class DebugGridPointDelM_ : Ice.ObjectDelM_, DebugGridPointDel_
         {
         }
 
@@ -2718,6 +3189,53 @@ namespace teambot
                         {
                             ident.write__(os__);
                         }
+                        og__.endWriteParams();
+                    }
+                    catch(Ice.LocalException ex__)
+                    {
+                        og__.abort(ex__);
+                    }
+                    bool ok__ = og__.invoke();
+                    if(og__.hasResponse())
+                    {
+                        try
+                        {
+                            if(!ok__)
+                            {
+                                try
+                                {
+                                    og__.throwUserException();
+                                }
+                                catch(Ice.UserException ex__)
+                                {
+                                    throw new Ice.UnknownUserException(ex__.ice_name(), ex__);
+                                }
+                            }
+                            og__.readEmptyParams();
+                        }
+                        catch(Ice.LocalException ex__)
+                        {
+                            throw new IceInternal.LocalExceptionWrapper(ex__, false);
+                        }
+                    }
+                }
+                finally
+                {
+                    handler__.reclaimOutgoing(og__);
+                }
+            }
+
+            public void debugMap(teambot.communication.DebugGridPoint[] map, short gridWidth, _System.Collections.Generic.Dictionary<string, string> context__, Ice.Instrumentation.InvocationObserver observer__)
+            {
+                IceInternal.Outgoing og__ = handler__.getOutgoing("debugMap", Ice.OperationMode.Normal, context__, observer__);
+                try
+                {
+                    try
+                    {
+                        IceInternal.BasicStream os__ = og__.startWriteParams(Ice.FormatType.DefaultFormat);
+                        teambot.communication.currentMapHelper.write(os__, map);
+                        os__.writeShort(gridWidth);
+                        os__.writePendingObjects();
                         og__.endWriteParams();
                     }
                     catch(Ice.LocalException ex__)
@@ -2845,6 +3363,12 @@ namespace teambot
 
         [_System.Runtime.InteropServices.ComVisible(false)]
         [_System.CodeDom.Compiler.GeneratedCodeAttribute("slice2cs", "3.5.0")]
+        public sealed class DebugGridPointDelD_ : Ice.ObjectDelD_, DebugGridPointDel_
+        {
+        }
+
+        [_System.Runtime.InteropServices.ComVisible(false)]
+        [_System.CodeDom.Compiler.GeneratedCodeAttribute("slice2cs", "3.5.0")]
         public sealed class IDataClientDelD_ : Ice.ObjectDelD_, IDataClientDel_
         {
             [_System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031")]
@@ -2899,6 +3423,12 @@ namespace teambot
                 {
                     IceInternal.LocalExceptionWrapper.throwWrapper(ex__);
                 }
+            }
+
+            [_System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031")]
+            public void debugMap(teambot.communication.DebugGridPoint[] map, short gridWidth, _System.Collections.Generic.Dictionary<string, string> context__, Ice.Instrumentation.InvocationObserver observer__)
+            {
+                throw new Ice.CollocationOptimizationException();
             }
 
             [_System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031")]
@@ -3081,6 +3611,13 @@ namespace teambot
 
             public abstract void addClient(Ice.Identity ident, Ice.Current current__);
 
+            public void debugMap_async(teambot.communication.AMD_IDataServer_debugMap cb__, teambot.communication.DebugGridPoint[] map, short gridWidth)
+            {
+                debugMap_async(cb__, map, gridWidth, Ice.ObjectImpl.defaultCurrent);
+            }
+
+            public abstract void debugMap_async(teambot.communication.AMD_IDataServer_debugMap cb__, teambot.communication.DebugGridPoint[] map, short gridWidth, Ice.Current current__);
+
             #endregion
 
             #region Slice type-related members
@@ -3169,9 +3706,33 @@ namespace teambot
                 return Ice.DispatchStatus.DispatchOK;
             }
 
+            [_System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011")]
+            public static Ice.DispatchStatus debugMap___(IDataServer obj__, IceInternal.Incoming inS__, Ice.Current current__)
+            {
+                checkMode__(Ice.OperationMode.Normal, current__.mode);
+                IceInternal.BasicStream is__ = inS__.startReadParams();
+                teambot.communication.DebugGridPoint[] map;
+                short gridWidth;
+                map = teambot.communication.currentMapHelper.read(is__);
+                gridWidth = is__.readShort();
+                is__.readPendingObjects();
+                inS__.endReadParams();
+                AMD_IDataServer_debugMap cb__ = new _AMD_IDataServer_debugMap(inS__);
+                try
+                {
+                    obj__.debugMap_async(cb__, map, gridWidth, current__);
+                }
+                catch(_System.Exception ex__)
+                {
+                    cb__.ice_exception(ex__);
+                }
+                return Ice.DispatchStatus.DispatchAsync;
+            }
+
             private static string[] all__ =
             {
                 "addClient",
+                "debugMap",
                 "ice_id",
                 "ice_ids",
                 "ice_isA",
@@ -3195,21 +3756,25 @@ namespace teambot
                     }
                     case 1:
                     {
-                        return ice_id___(this, inS__, current__);
+                        return debugMap___(this, inS__, current__);
                     }
                     case 2:
                     {
-                        return ice_ids___(this, inS__, current__);
+                        return ice_id___(this, inS__, current__);
                     }
                     case 3:
                     {
-                        return ice_isA___(this, inS__, current__);
+                        return ice_ids___(this, inS__, current__);
                     }
                     case 4:
                     {
-                        return ice_ping___(this, inS__, current__);
+                        return ice_isA___(this, inS__, current__);
                     }
                     case 5:
+                    {
+                        return ice_ping___(this, inS__, current__);
+                    }
+                    case 6:
                     {
                         return update___(this, inS__, current__);
                     }
@@ -3279,6 +3844,30 @@ namespace teambot
         class _AMD_IDataServer_update : IceInternal.IncomingAsync, AMD_IDataServer_update
         {
             public _AMD_IDataServer_update(IceInternal.Incoming inc) : base(inc)
+            {
+            }
+
+            public void ice_response()
+            {
+                if(validateResponse__(true))
+                {
+                    writeEmptyParams__();
+                    response__();
+                }
+            }
+        }
+
+        [_System.Runtime.InteropServices.ComVisible(false)]
+        [_System.CodeDom.Compiler.GeneratedCodeAttribute("slice2cs", "3.5.0")]
+        public interface AMD_IDataServer_debugMap : Ice.AMDCallback
+        {
+            void ice_response();
+        }
+
+        [_System.CodeDom.Compiler.GeneratedCodeAttribute("slice2cs", "3.5.0")]
+        class _AMD_IDataServer_debugMap : IceInternal.IncomingAsync, AMD_IDataServer_debugMap
+        {
+            public _AMD_IDataServer_debugMap(IceInternal.Incoming inc) : base(inc)
             {
             }
 

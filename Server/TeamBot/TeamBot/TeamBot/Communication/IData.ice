@@ -44,15 +44,31 @@ module teambot
 			short angle; //in angle	in 360.xx * 100
 		};
 
+		//Debug stuff
+		enum DebugGridPointStatus
+		{
+			Valid, Invalid, Wall
+		};
+		class DebugGridPoint
+		{
+			int x; //Grid Position X
+			int y; //Grid Position Y
+			DebugGridPointStatus status;
+		};
+		sequence<DebugGridPoint> currentMap;
+
 		interface IDataClient
 		{
 			["amd"] void update(TBFrame data);
-		};
-					  
+		};				  
+
 		interface IDataServer
 		{
 			["amd"] void update(TBFrame data);
 			void addClient(Ice::Identity ident);
+
+			//Debug stuff
+			["amd"] void debugMap(currentMap map, short gridWidth);
 		};
 	};
  };

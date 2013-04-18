@@ -18,7 +18,6 @@ namespace teambot.Bot
         public struct Line
         {
             public Vector2 start, stop;
-            public Texture2D color;
         }
 
         public bool drawLeftLine
@@ -40,17 +39,12 @@ namespace teambot.Bot
             set;
         }
 
-
-
-
         Line _LeftSensorLine;
         Line _RightSensorLine;
         Line _MiddleSensorLine;
 
         Texture2D _RedInfra;
         Texture2D _GreenInfra;
-
-
 
         const int LeftSensorLength = 25;
         const int RightSensorLength = 25;
@@ -115,7 +109,6 @@ namespace teambot.Bot
             for (int i = 0; i < RightSensorLength / 5; i++)
             {
                 Vector2 pos = Vector2.Lerp(_RightSensorLine.start, _RightSensorLine.stop, i * (1.0f / (RightSensorLength / 5.0f)));
-                float scale = 0.25f + (1.0f / (RightSensorLength / 5.0f)) * 4f * i * 0.25f;
                 if (_Map.isWallAt((int)pos.X, (int)pos.Y))
                     return Math.Max(0, (float)Math.Round((Vector2.Distance(_RightSensorLine.start, pos) - 5), 2));
             }
@@ -139,7 +132,6 @@ namespace teambot.Bot
             for (int i = 0; i < MiddleSensorLength / 5; i++)
             {
                 Vector2 pos = Vector2.Lerp(_MiddleSensorLine.start, _MiddleSensorLine.stop, i * (1.0f / (MiddleSensorLength / 5.0f)));
-                float scale = 0.25f + (1.0f / (MiddleSensorLength / 5.0f)) * 4f * i * 0.25f;
                 if (_Map.isWallAt((int)pos.X, (int)pos.Y))
                     return Math.Max(0, (float)Math.Round((Vector2.Distance(_MiddleSensorLine.start, pos) - 5), 2));
             }

@@ -27,12 +27,11 @@ namespace teambot
         int? _debugIndex = null;
 
         Robot _Bot;
-        Map map;
+        Map _Map;
         communication.DataHandler _DataHandler;
 
         //ICE
         private Ice.Communicator _Communicator;
-        private Ice.ObjectAdapter _Adapter;
 
         public Simulator()
         {
@@ -72,13 +71,13 @@ namespace teambot
             graphics.PreferredBackBufferWidth = 800;
 
             Content.RootDirectory = "Content";
-            if (!Map.DeserializeFromXML(out map, this.Content.RootDirectory))
+            if (!Map.DeserializeFromXML(out _Map, this.Content.RootDirectory))
             {
-                map = new Map();
-                map.initEmpty();
-                Map.SerializeToXML(ref map, this.Content.RootDirectory);
+                _Map = new Map();
+                _Map.initEmpty();
+                Map.SerializeToXML(ref _Map, this.Content.RootDirectory);
             }
-            _Bot = new Robot(map);
+            _Bot = new Robot(_Map);
             _Bot.changeState(Robot.RobotStates.PositionMode);
 
             Ice.Properties properties = Ice.Util.createProperties();
@@ -103,8 +102,36 @@ namespace teambot
             spriteBatch = new SpriteBatch(GraphicsDevice);
             // TODO: use this.Content to load your game content here
             _Bot.LoadContent(this.Content);
-            map.LoadContent(this.Content);
-            DebugLayer.BasicFont = this.Content.Load<SpriteFont>("BasicFont");
+            _Map.LoadContent(this.Content);
+            DebugLayer.LoadContent(this.Content);
+            DebugLayer.setDebugColors(new Color(0, 255, 0, 50), //green
+            new Color(255, 0, 0, 50), //red
+            new Color(255, 170, 0, 50)); //orange
+
+            //Test debugLayeMap
+        /*    communication.DebugGridPoint[] points = new communication.DebugGridPoint[100*100];
+            Random random = new Random();
+            for(int x = 0; x < 100; x++)
+            {
+                for(int y = 0; y < 100; y++)
+                {
+                    int i = random.Next(0,3);
+                    switch (i)
+                    {
+                        case 0:
+                            points[y * 100 + x] = new communication.DebugGridPoint(x + 50, y + 50, communication.DebugGridPointStatus.Wall);
+                            break;
+                        case 1:
+                            points[y * 100 + x] = new communication.DebugGridPoint(x + 50, y + 50, communication.DebugGridPointStatus.Valid);
+                            break;
+                        case 2:
+                            points[y * 100 + x] = new communication.DebugGridPoint(x + 50, y + 50, communication.DebugGridPointStatus.Invalid);
+                            break;
+                    }
+
+                }
+            }
+            DebugLayer.setDebugMap(points, 50);    */
         }
 
         /// <summary>
@@ -146,19 +173,19 @@ namespace teambot
                 DebugLayer.DebugActivated = !DebugLayer.DebugActivated;
 
             if (currentKState.IsKeyDown(Keys.LeftControl) && currentKState.IsKeyDown(Keys.G) && previousKState.IsKeyUp(Keys.G))
-                map.drawGrid = !map.drawGrid;
+                _Map.drawGrid = !_Map.drawGrid;
             if (currentKState.IsKeyDown(Keys.LeftControl) && currentKState.IsKeyDown(Keys.M) && previousKState.IsKeyUp(Keys.M))
             {
-                map.editMode = !map.editMode;
-                if (!map.editMode)
-                    Map.SerializeToXML(ref map, Content.RootDirectory);
+                _Map.editMode = !_Map.editMode;
+                if (!_Map.editMode)
+                    Map.SerializeToXML(ref _Map, Content.RootDirectory);
             }
 
-            if (map.editMode)
+            if (_Map.editMode)
             {
                 if (currentMState.LeftButton == ButtonState.Pressed && previousMState.LeftButton == ButtonState.Released)
                 {
-                    map.click(currentMState.X, currentMState.Y);
+                    _Map.click(currentMState.X, currentMState.Y);
                 }
             }
 
@@ -176,11 +203,11 @@ namespace teambot
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.LightGray);
+            GraphicsDevice.Clear(Color.White);
             spriteBatch.Begin();
-            map.draw(ref spriteBatch); //Grid should not be drawn inside of SpriteBatch.begin
-            _Bot.draw(ref spriteBatch);
+            _Map.draw(ref spriteBatch); //Grid should not be drawn inside of SpriteBatch.begin
             DebugLayer.draw(ref spriteBatch);
+            _Bot.draw(ref spriteBatch);
             spriteBatch.End();
             base.Draw(gameTime);
         }

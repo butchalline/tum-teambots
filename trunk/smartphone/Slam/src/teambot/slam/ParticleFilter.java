@@ -1,6 +1,6 @@
 package teambot.slam;
 
-import teambot.common.data.PositionOrientation;
+import teambot.common.data.Position;
 import teambot.common.interfaces.IDistanceListener;
 import teambot.common.interfaces.IPositionListener;
 import java.util.Random;
@@ -13,7 +13,7 @@ public class ParticleFilter implements IPositionListener, IDistanceListener
 	private int _particleAmount = 100;
 	
 	protected Particle[] _particles;
-	protected PositionOrientation _latestPositionOrientation;
+	protected Position _latestPosition;
 	
 	float _slidingFactor = 0.1f;
 	NoiseProvider _noiser;
@@ -30,16 +30,16 @@ public class ParticleFilter implements IPositionListener, IDistanceListener
 		
 		for(int i = 0; i < _particles.length; ++i)
 		{
-			PositionOrientation posOr = new PositionOrientation(0, 0, 0);
+			Position posOr = new Position(0, 0, 0);
 			ProbabilityMap probMap = new ProbabilityMap(rayProbability);
 			_particles[i] = new Particle(posOr, probMap, rayModel, noiser, _slidingFactor);
 		}
 	}
 	
 	@Override
-	public void callback_PositionChanged(PositionOrientation newPositionOrientation)
+	public void callback_PositionChanged(Position newPosition)
 	{
-		_latestPositionOrientation = newPositionOrientation;
+		_latestPosition = newPosition;
 		
 //		//info prints
 //		System.out.println("----------------------before noise added----------------------");
@@ -47,7 +47,7 @@ public class ParticleFilter implements IPositionListener, IDistanceListener
 //		printBestParticleInfo();
 		
 		for(Particle particle: _particles){
-			particle.updatePositionOrientation(newPositionOrientation);
+			particle.updatePosition(newPosition);
 		}
 		
 //		//info prints
@@ -116,33 +116,33 @@ public class ParticleFilter implements IPositionListener, IDistanceListener
 	{		
 		PointF mean = calculateParticleMeanPosition(_particles);
 		PointF deviation = calculateParticleSDeviationPosition(_particles, mean);
-		PointF deviationToRealValue = calculateParticleSDeviationPosition(_particles, _latestPositionOrientation.getPosition());		
+		PointF deviationToRealValue = calculateParticleSDeviationPosition(_particles, _latestPosition.getPosition());		
 		
-		System.out.println("Actual position: " + _latestPositionOrientation.getX() + " - " + _latestPositionOrientation.getY());
+		System.out.println("Actual position: " + _latestPosition.getX() + " - " + _latestPosition.getY());
 		System.out.println("Particle mean: " + mean.x + " - " + mean.y);
 		System.out.println("Particle std: " + deviation.x + " - " + deviation.y);
 		System.out.println("Std to actual position: " + deviationToRealValue.x + " - " + deviationToRealValue.y);
-		System.out.println();		
+		System.out.println();
 	}
 	
 	void printBestParticleInfo()
 	{
-		Particle bestParticle = getBestParticle(_particles);
+		Particle bestParticle = getBestParticle();
 		
-		System.out.println("Actual position: " + _latestPositionOrientation.getX() + " - " 
-				+ _latestPositionOrientation.getY());
-		System.out.println("Best Particle: " + bestParticle.getPositionOrientation().getX() + " - " 
-				+ bestParticle.getPositionOrientation().getY());
+		System.out.println("Actual position: " + _latestPosition.getX() + " - " 
+				+ _latestPosition.getY());
+		System.out.println("Best Particle: " + bestParticle.getPosition().getX() + " - " 
+				+ bestParticle.getPosition().getY());
 		System.out.println("Difference Best Particle: "
-				+ Math.abs(bestParticle.getPositionOrientation().getX() - _latestPositionOrientation.getX()) + " - " 
-				+ Math.abs(bestParticle.getPositionOrientation().getY() - _latestPositionOrientation.getY()));
+				+ Math.abs(bestParticle.getPosition().getX() - _latestPosition.getX()) + " - " 
+				+ Math.abs(bestParticle.getPosition().getY() - _latestPosition.getY()));
 		System.out.println();
 	}
 	
-	Particle getBestParticle(Particle[] particles)
+	public Particle getBestParticle()
 	{
-		Particle bestParticle = particles[0];
-		for(Particle particle : particles)
+		Particle bestParticle = _particles[0];
+		for(Particle particle : _particles)
 		{
 			if(particle.getWeight() > bestParticle.getWeight())
 				bestParticle = particle;
@@ -156,8 +156,8 @@ public class ParticleFilter implements IPositionListener, IDistanceListener
 		
 		for(Particle particle : particles)
 		{
-			mean.x += particle.getPositionOrientation().getX();
-			mean.y += particle.getPositionOrientation().getY();
+			mean.x += particle.getPosition().getX();
+			mean.y += particle.getPosition().getY();
 		}
 		
 		return new PointF(mean.x / particles.length, mean.y / particles.length);
@@ -175,10 +175,10 @@ public class ParticleFilter implements IPositionListener, IDistanceListener
 		
 		for(Particle particle : particles)
 		{
-			deviation.x += (particle.getPositionOrientation().getX() - mean.x)
-					* (particle.getPositionOrientation().getX() - mean.x);
-			deviation.y += (particle.getPositionOrientation().getY() - mean.y)
-					* (particle.getPositionOrientation().getY() - mean.y);
+			deviation.x += (particle.getPosition().getX() - mean.x)
+					* (particle.getPosition().getX() - mean.x);
+			deviation.y += (particle.getPosition().getY() - mean.y)
+					* (particle.getPosition().getY() - mean.y);
 		}
 		
 		deviation.x = (float) Math.sqrt(deviation.x / particles.length);

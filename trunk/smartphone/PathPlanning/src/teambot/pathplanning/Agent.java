@@ -49,9 +49,9 @@ public class Agent {
 			}
 		}
 
-		printMapInConsole(null);
-		if(bestPath != null)
-			printMapInConsole(bestPath);
+//		printMapInConsole(null);
+//		if(bestPath != null)
+//			printMapInConsole(bestPath);
 		System.out.println("Best Utility: " + bestUtility);
 
 		if (bestPath != null && bestPath.length != 0)

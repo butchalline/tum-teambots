@@ -6,31 +6,26 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import android.graphics.PointF;
 
-import teambot.common.data.PositionOrientation;
+import teambot.common.data.Position;
 
 import Ice.Current;
 
 public class Bot {
 	
 	static private String _botId = "12";
-	static private PositionOrientation _positionOrientation= new PositionOrientation(new PointF(0, 0), 0);
+	static private Position _position= new Position(new PointF(0, 0), 0);
 	
 	static public NetworkHub networkHub = new NetworkHub();
 	static public NetworkHub networkDebugHub = new NetworkHub(true);
 	
-	static public PositionOrientation getPositionOrientation()
+	static public Position getPosition()
 	{
-		return _positionOrientation;
-	}
-	
-	static public PointF getPosition()
-	{
-		return _positionOrientation.getPosition();
+		return _position;
 	}
 	
 	static public float getAngleInRadian()
 	{
-		return _positionOrientation.getAngleInRadian();
+		return _position.getAngleInRadian();
 	}
 	
 	/**

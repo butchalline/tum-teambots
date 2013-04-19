@@ -1,17 +1,17 @@
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import android.graphics.PointF;
-
-import teambot.common.PositionOrientationSupplier;
-import teambot.common.data.PositionOrientation;
-import teambot.common.interfaces.IDistanceListener;
+import teambot.common.PositionSupplier;
+import teambot.common.data.Position;
 import teambot.common.interfaces.IPositionListener;
 import teambot.communication.TBInfraredData;
 import teambot.communication.TBPositionData;
 import teambot.pathplanning.Agent;
 import teambot.simulator.SimulatorProxy;
 import teambot.simulator.SimulatorProxy.PositionInfraredData;
+import teambot.slam.Particle;
+import teambot.slam.ParticleFilter;
+import android.graphics.PointF;
 
 public class PathPlanningAgentUpdater implements Runnable {
 
@@ -20,21 +20,23 @@ public class PathPlanningAgentUpdater implements Runnable {
 	protected AtomicBoolean running = new AtomicBoolean(false);
 	protected SimulatorProxy simulator;
 	protected Agent agent;
-	protected PositionOrientation position;
+	protected Position position;
 	protected long timeBetweenUpdates;
-	private IDistanceListener distanceListener;
-	private PositionOrientationSupplier positionSupplier = new PositionOrientationSupplier(new PointF(90.0f, 96.25f));
+	private ParticleFilter filter;
+	private PositionSupplier positionSupplier = new PositionSupplier(new PointF(90.0f, 96.25f));
 	private IPositionListener positionListener = positionSupplier;
+	private MapConverter converter;
 	public AtomicBoolean wasUpdated = new AtomicBoolean(false);
 
-	public PathPlanningAgentUpdater(SimulatorProxy proxy, Agent agent, PositionOrientation position,
-			IPositionListener positionListener, IDistanceListener distanceListener, int updateCycleInHz) {
+	public PathPlanningAgentUpdater(SimulatorProxy proxy, Agent agent, Position position,
+			ParticleFilter filter, MapConverter converter, int updateCycleInHz) {
 		this.simulator = proxy;
 		this.agent = agent;
 		this.position = position;
 		timeBetweenUpdates = (long) (1000 / updateCycleInHz);
-		this.positionSupplier.register(positionListener);
-		this.distanceListener = distanceListener;
+		this.positionSupplier.register(filter);
+		this.filter = filter;
+		this.converter = converter;
 	}
 
 	@Override
@@ -63,18 +65,17 @@ public class PathPlanningAgentUpdater implements Runnable {
 			TBPositionData positionMeasurement = data.positionData;
 			if (positionMeasurement == null)
 				continue;
-
-			float newAngle = PositionOrientation.normalizeAngle_plusMinus180(-positionMeasurement.angle * 0.01f + 90f);
-
-			if(position == null)
-				position = new PositionOrientation(positionMeasurement.x, offsetY - positionMeasurement.y, newAngle);
+			
+			float newAngle = Position.normalizeAngle_plusMinus180(-positionMeasurement.angle * 0.01f + 90f);
 			
 			position.setX(positionMeasurement.x);
-			position.setY(10000 - positionMeasurement.y);
+			position.setY(offsetY - positionMeasurement.y);
 			position.setAngleInDegree(newAngle);
 			
 			positionListener.callback_PositionChanged(position);
-			distanceListener.callback_NewMeasurement(infraredMeasurement.middleDistance * 10);
+			filter.callback_NewMeasurement((infraredMeasurement.middleDistance & 0xFF) * 10);
+			Particle bestParticle = filter.getBestParticle();
+			simulator.sendDebugMap(converter.convertSlamMap(bestParticle.getMap(), bestParticle.getPosition()), (short) converter.getCellSize());
 			
 			if(wasUpdated.get() == false)
 				wasUpdated.set(true);

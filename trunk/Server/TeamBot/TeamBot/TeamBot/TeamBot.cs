@@ -107,9 +107,8 @@ namespace teambot
             _Bot.LoadContent(this.Content);
             _Map.LoadContent(this.Content);
             DebugLayer.LoadContent(this.Content);
-            DebugLayer.setDebugColors(new Color(0, 255, 0, 50), //green
-            new Color(0, 0, 255, 50), //blue
-            new Color(255, 0, 0, 50)); //red
+            DebugLayer.setDebugColors(Color.Green, Color.Blue, Color.Red); 
+
 
             //Test debugLayeMap
     /*        communication.DebugGridPoint[] points = new communication.DebugGridPoint[100*100];

@@ -97,4 +97,9 @@ public class Particle
 	{
 		return _map;
 	}
+
+	public void setWeigth(float f) {
+		// TODO Auto-generated method stub
+		
+	}
 }

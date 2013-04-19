@@ -809,6 +809,9 @@ namespace teambot
             public int y;
 
             [_System.CodeDom.Compiler.GeneratedCodeAttribute("slice2cs", "3.5.0")]
+            public byte alpha;
+
+            [_System.CodeDom.Compiler.GeneratedCodeAttribute("slice2cs", "3.5.0")]
             public teambot.communication.DebugGridPointStatus status;
 
             #endregion
@@ -821,10 +824,11 @@ namespace teambot
             }
 
             [_System.CodeDom.Compiler.GeneratedCodeAttribute("slice2cs", "3.5.0")]
-            public DebugGridPoint(int x, int y, teambot.communication.DebugGridPointStatus status)
+            public DebugGridPoint(int x, int y, byte alpha, teambot.communication.DebugGridPointStatus status)
             {
                 this.x = x;
                 this.y = y;
+                this.alpha = alpha;
                 this.status = status;
             }
 
@@ -895,6 +899,7 @@ namespace teambot
                 os__.startWriteSlice(ice_staticId(), -1, true);
                 os__.writeInt(x);
                 os__.writeInt(y);
+                os__.writeByte(alpha);
                 os__.writeEnum((int)status, 2);
                 os__.endWriteSlice();
             }
@@ -905,6 +910,7 @@ namespace teambot
                 is__.startReadSlice();
                 x = is__.readInt();
                 y = is__.readInt();
+                alpha = is__.readByte();
                 status = (teambot.communication.DebugGridPointStatus)is__.readEnum(2);
                 is__.endReadSlice();
             }

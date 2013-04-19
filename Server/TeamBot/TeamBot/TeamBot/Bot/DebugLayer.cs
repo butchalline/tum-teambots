@@ -87,12 +87,15 @@ namespace teambot.Bot
                         switch (point.status)
                         {
                             case communication.DebugGridPointStatus.Invalid:
+                                _InValidColor.A = (byte)(point.alpha + 50);
                                 spriteBatch.Draw(DebugGridTexture, targetPosition, _InValidColor);
                                 break;
                             case communication.DebugGridPointStatus.Valid:
+                                _ValidColor.A = (byte)(point.alpha + 50);
                                 spriteBatch.Draw(DebugGridTexture, targetPosition, _ValidColor);
                                 break;
                             case communication.DebugGridPointStatus.Wall:
+                                _WallColor.A = (byte)(point.alpha + 50);
                                 spriteBatch.Draw(DebugGridTexture, targetPosition, _WallColor);
                                 break;
                         }

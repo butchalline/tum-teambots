@@ -53,6 +53,7 @@ module teambot
 		{
 			int x; //Grid Position X
 			int y; //Grid Position Y
+			byte alpha;
 			DebugGridPointStatus status;
 		};
 		sequence<DebugGridPoint> currentMap;

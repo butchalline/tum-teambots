@@ -32,6 +32,9 @@ namespace teambot.Bot
         }
 
         [XmlIgnore]
+        public bool drawMap { get; set; }
+
+        [XmlIgnore]
         public bool editMode { get; set; }
 
         [XmlIgnore]
@@ -78,6 +81,7 @@ namespace teambot.Bot
         public Map()
         {
             drawGrid = false;
+            drawMap = true;
             editMode = false;
             lineGrid = new VertexPositionColor[78*2];
             viewMatrix = Matrix.CreateLookAt(new Vector3(0.0f, 0.0f, 1.0f), Vector3.Zero, Vector3.Up);
@@ -166,12 +170,14 @@ namespace teambot.Bot
 
         internal void draw(ref SpriteBatch spriteBatch)
         {
-
-            for (int i = 0; i < 40 * 40; i++)
+            if (drawMap)
             {
-                Field f = _map[i];
-                if(f.value != 0)
-                    spriteBatch.Draw(_WallTexture, new Vector2(f.x * _WallTexture.Width, f.y * _WallTexture.Height), Color.RosyBrown);
+                for (int i = 0; i < 40 * 40; i++)
+                {
+                    Field f = _map[i];
+                    if (f.value != 0)
+                        spriteBatch.Draw(_WallTexture, new Vector2(f.x * _WallTexture.Width, f.y * _WallTexture.Height), Color.RosyBrown);
+                }
             }
 
             if (drawGrid)
@@ -186,13 +192,12 @@ namespace teambot.Bot
 
         }
 
-
-
         internal void LoadContent(ContentManager contentManager)
         {
             _WallTexture = contentManager.Load<Texture2D>("Wall");
             _Effects = contentManager.Load<Effect>("effects");
         }
+
     }
 
 }

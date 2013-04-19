@@ -11,6 +11,7 @@ public class ParticleFilter implements IPositionListener, IDistanceListener
 {	
 	private Random random = new Random();
 	private int _particleAmount = 100;
+	private float nThresh = _particleAmount/2;
 	
 	protected Particle[] _particles;
 	protected Position _latestPosition;
@@ -60,7 +61,7 @@ public class ParticleFilter implements IPositionListener, IDistanceListener
 	public void callback_NewMeasurement(float distance_mm)
 	{
 		
-		float[] weightArray = new float[_particles.length];
+		
 		float totalWeight = 0; 
 		// Weights ausrechnen
 
@@ -68,12 +69,32 @@ public class ParticleFilter implements IPositionListener, IDistanceListener
 			totalWeight += particle.updateAndGetWeight(distance_mm);
 		}
 		
+		//Abfrage ob Resamplen nötig
+		float invNeff = 0;
+		for(Particle particle: _particles){
+			invNeff += (particle.getWeight()/totalWeight)*(particle.getWeight()/totalWeight);
+		}
+		if(1/invNeff< nThresh){
+			this.resample(totalWeight);
+		}
+		
+		
 		//info prints
 //		System.out.println("----------------------after weight update----------------------");
 ////		printParticlesInfo();
 //		printBestParticleInfo();
 		
+		
+		// Map Aktualisieren 
+		for(Particle particle: _particles){
+			particle.updateMap(distance_mm);
+		}
+	}
+	
+	private void resample(float totalWeight) {
+		// Resamplen
 		// Weights sortieren (quasi Dartscheibe erstellen)
+		float[] weightArray = new float[_particles.length];
 		weightArray[0] = _particles[0].getWeight()/totalWeight;
 		for(int i = 1; i < _particles.length; i++){
 			weightArray[i] = weightArray[i-1] + _particles[i].getWeight()/totalWeight ; 
@@ -90,6 +111,7 @@ public class ParticleFilter implements IPositionListener, IDistanceListener
 		
 		Particle[] newParticles = new Particle[_particles.length];
 		Particle actualParticle = _particles[0];
+		actualParticle.setWeigth(1.0f/_particleAmount);
 		int newParticleIndex = 0;
 		int actualParticleIndex = 0;
 		
@@ -101,17 +123,17 @@ public class ParticleFilter implements IPositionListener, IDistanceListener
 			else if (randomSortedArray[newParticleIndex] > weightArray[actualParticleIndex]) {
 				actualParticleIndex += 1;
 				actualParticle = _particles[actualParticleIndex];
+				actualParticle.setWeigth(1.0f/_particleAmount);
 			}
 		}
 		
-		_particles = newParticles;
 		
-		// Map Aktualisieren 
-		for(Particle particle: _particles){
-			particle.updateMap(distance_mm);
-		}
+		//Set Weight
+		
+		
+		_particles = newParticles;
 	}
-	
+
 	void printParticlesInfo()
 	{		
 		PointF mean = calculateParticleMeanPosition(_particles);

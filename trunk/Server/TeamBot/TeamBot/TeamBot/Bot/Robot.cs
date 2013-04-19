@@ -116,9 +116,12 @@ namespace teambot.Bot
             set;
         }
 
+        public bool DrawBot { get; set; }
+
         internal void draw(ref SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(_BotTexture, Position, null, Color.White, (float)Angle, new Vector2(_BotTexture.Width / 2, _BotTexture.Height / 2), scaleFactor, SpriteEffects.None, 1);
+            if (DrawBot)
+                spriteBatch.Draw(_BotTexture, Position, null, Color.White, (float)Angle, new Vector2(_BotTexture.Width / 2, _BotTexture.Height / 2), scaleFactor, SpriteEffects.None, 1);
             _InfraSensor.Draw(ref spriteBatch);
         }
         internal void update(GameTime gameTime)

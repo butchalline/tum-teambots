@@ -177,6 +177,10 @@ namespace teambot
 
             if (currentKState.IsKeyDown(Keys.LeftControl) && currentKState.IsKeyDown(Keys.G) && previousKState.IsKeyUp(Keys.G))
                 _Map.drawGrid = !_Map.drawGrid;
+
+            if (currentKState.IsKeyDown(Keys.LeftControl) && currentKState.IsKeyDown(Keys.B) && previousKState.IsKeyUp(Keys.B))
+                _Bot.DrawBot = !_Bot.DrawBot;
+
             if (currentKState.IsKeyDown(Keys.LeftControl) && currentKState.IsKeyDown(Keys.M) && previousKState.IsKeyUp(Keys.M))
             {
                 _Map.editMode = !_Map.editMode;

@@ -18,18 +18,18 @@ public class BeamProbabilities {
 		this._lFree = probabilities._lFree;
 	}
 	
-	public float getLogStartProbability()
+	public float getLogOddStart()
 	{
 		return _l0;
 	}
 	
-	public float getLogOccupationProbability()
+	public float getLogOddOccupation()
 	{
 		return _lOccupation;
 	}
 	
-	public float getLogFreeProbability()
+	public float getLogOddFree()
 	{
-		return _lOccupation;
+		return _lFree;
 	}
 }

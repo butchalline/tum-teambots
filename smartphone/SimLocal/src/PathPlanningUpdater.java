@@ -1,9 +1,7 @@
 import java.util.ArrayDeque;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import teambot.common.data.PositionOrientation;
-import teambot.common.interfaces.IDistanceListener;
-import teambot.common.interfaces.IPositionListener;
+import teambot.common.data.Position;
 import teambot.common.usb.UsbHeader;
 import teambot.common.utils.Constants;
 import teambot.common.utils.Direction;
@@ -14,6 +12,7 @@ import teambot.communication.TBFrame;
 import teambot.communication.TBPosition;
 import teambot.pathplanning.Agent;
 import teambot.simulator.SimulatorProxy;
+import teambot.slam.ParticleFilter;
 import android.graphics.PointF;
 
 public class PathPlanningUpdater implements Runnable {
@@ -23,26 +22,24 @@ public class PathPlanningUpdater implements Runnable {
 	private static final int cellSize_mm = 50;
 	protected SimulatorProxy simulator;
 	protected Agent agent = new Agent(200, 200, cellSize_mm, 3);
-	protected PositionOrientation position = new PositionOrientation(new PointF(320 * cellSize_mm, 360 * cellSize_mm), 0);
+	protected Position position = new Position(new PointF(320 * cellSize_mm, 360 * cellSize_mm), 0);
 	protected int distanceUpdateSpeedInHz;
 	protected Direction direction = Direction.up;
 	protected PointF targetPoint;
-	protected IPositionListener positionListener;
-	protected IDistanceListener distanceListener;
+	protected ParticleFilter filter;
 	protected MapConverter converter = new MapConverter(cellSize_mm);
 
-	public PathPlanningUpdater(SimulatorProxy proxy, IPositionListener positionListener, IDistanceListener distanceListener, int distanceUpdateSpeedInHz) {
+	public PathPlanningUpdater(SimulatorProxy proxy, ParticleFilter filter, int distanceUpdateSpeedInHz) {
 		simulator = proxy;
 		this.distanceUpdateSpeedInHz = distanceUpdateSpeedInHz;
-		this.positionListener = positionListener;
-		this.distanceListener = distanceListener;
+		this.filter = filter;
 	}
 
 	@Override
 	public void run() {
 		running.set(true);
 
-		PathPlanningAgentUpdater distanceUpdater = new PathPlanningAgentUpdater(simulator, agent, position, positionListener, distanceListener, distanceUpdateSpeedInHz);
+		PathPlanningAgentUpdater distanceUpdater = new PathPlanningAgentUpdater(simulator, agent, position, filter, converter, distanceUpdateSpeedInHz);
 		int walkedFieldsCount = 0;
 		ArrayDeque<PointF> path = new ArrayDeque<PointF>(100);
 		float angleChange;
@@ -69,7 +66,7 @@ public class PathPlanningUpdater implements Runnable {
 				rotate360();
 				path = agent.makePath();
 				walkedFieldsCount = 0;
-				simulator.sendDebugMap(converter.convertMap(agent.getMap()), (short)cellSize_mm);
+//				simulator.sendDebugMap(converter.convertMap(agent.getMap()), (short)cellSize_mm);
 			}
 
 			if (path == null) {
@@ -81,12 +78,6 @@ public class PathPlanningUpdater implements Runnable {
 			//System.out.println("walkedFieldsCount: " + walkedFieldsCount);
 			//System.out.println("path size: " + path.size());
 
-			ArrayDeque<PointF> tempDeque = new ArrayDeque<PointF>(path);
-
-			for (int i = 0; i < path.size(); i++) {
-				PointF p = tempDeque.pollFirst();
-//				System.out.println("Path[" + i + "]: " + p.x + " - " + p.y);
-			}
 
 			targetPoint = path.pollFirst();
 			//System.out.println("current pos: " + position.getX() + " x " + position.getY() + "; a: " + position.getAngleInDegree());

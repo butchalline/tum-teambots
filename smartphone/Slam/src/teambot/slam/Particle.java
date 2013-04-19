@@ -3,37 +3,36 @@ package teambot.slam;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.LinkedList;
 
-import teambot.common.data.PositionOrientation;
+import teambot.common.data.Position;
 import teambot.pathplanning.Occupation;
 import android.graphics.Point;
-import android.graphics.PointF;
 
 public class Particle
 {
 
-	PositionOrientation _positionOrientation;
+	Position _position;
 	ProbabilityMap _map;
 	BeamModel _beamModel;
 	NoiseProvider _noiseProvider;
 	float _slidingFactor;
 	float _weight = 0.5f;
 
-	public Particle(PositionOrientation positionOrientation,
+	public Particle(Position position,
 			ProbabilityMap map, BeamModel beamModel, NoiseProvider noise,
 			float slidingFactor)
 	{
-		_positionOrientation = positionOrientation;
+		_position = position;
 		_map = map;
 		_beamModel = beamModel;
 		_noiseProvider = noise;
 		_slidingFactor = slidingFactor;
 	}
 
-	public Particle(PositionOrientation positionOrientation,
+	public Particle(Position position,
 			ProbabilityMap map, BeamModel beamModel, NoiseProvider noise,
 			float slidingFactor, float weight)
 	{
-		_positionOrientation = positionOrientation;
+		_position = position;
 		_map = map;
 		_beamModel = beamModel;
 		_noiseProvider = noise;
@@ -42,7 +41,7 @@ public class Particle
 	}
 
 	public Particle(Particle particle) {
-		_positionOrientation = new PositionOrientation(particle._positionOrientation);
+		_position = new Position(particle._position);
 		_map = new ProbabilityMap(particle._map);
 		_beamModel = new BeamModel(particle._beamModel);
 		_noiseProvider = new NoiseProvider(particle._noiseProvider);
@@ -50,18 +49,18 @@ public class Particle
 		_weight = particle._weight;
 	}
 
-	public synchronized void updatePositionOrientation(PositionOrientation newPositionOrientation)
+	public synchronized void updatePosition(Position newPosition)
 	{
-		PositionOrientation noisyPositionOrientation = new PositionOrientation(newPositionOrientation.getX() + _noiseProvider.noiseX(),
-				newPositionOrientation.getY() + _noiseProvider.noiseY(), 
-				newPositionOrientation.getAngleInRadian() + _noiseProvider.noiseAngle()); 
-		_positionOrientation = noisyPositionOrientation;
+		Position noisyPosition = new Position(newPosition.getX() + _noiseProvider.noiseX(),
+				newPosition.getY() + _noiseProvider.noiseY(), 
+				newPosition.getAngleInRadian() + _noiseProvider.noiseAngle()); 
+		_position = noisyPosition;
 	}
 
 	public float updateAndGetWeight(float distance_mm)
 	{
 		LinkedList<SimpleEntry<Point, Occupation>> measuredPoints = _beamModel
-				.calculateBeam(distance_mm, _positionOrientation);
+				.calculateBeam(distance_mm, _position);
 		float newWeight = 1;
 
 		for (SimpleEntry<Point, Occupation> pointOccupation : measuredPoints)
@@ -85,12 +84,17 @@ public class Particle
 
 	public void updateMap(float distance_mm) {
 		LinkedList<SimpleEntry<Point, Occupation>> measuredPoints = _beamModel
-				.calculateBeam(distance_mm, _positionOrientation);
+				.calculateBeam(distance_mm, _position);
 		_map.update(measuredPoints);		
 	}
 	
-	public PositionOrientation getPositionOrientation()
+	public Position getPosition()
 	{
-		return _positionOrientation;
+		return _position;
+	}
+	
+	public ProbabilityMap getMap()
+	{
+		return _map;
 	}
 }

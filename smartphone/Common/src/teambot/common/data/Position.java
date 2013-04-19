@@ -3,24 +3,24 @@ package teambot.common.data;
 import teambot.common.utils.Constants;
 import android.graphics.PointF;
 
-public class PositionOrientation {
+public class Position {
 
 	protected PointF position;
 	protected float angleInRadian;
 
-	public PositionOrientation(PointF position, float anlgeInRadian) {
+	public Position(PointF position, float anlgeInRadian) {
 		this.position = position;
 		this.angleInRadian = anlgeInRadian;
 	}
 
-	public PositionOrientation(float x, float y, float anlgeInRadian) {
+	public Position(float x, float y, float anlgeInRadian) {
 		position = new PointF(x, y);
 		this.angleInRadian = anlgeInRadian;
 	}
 	
-	public PositionOrientation(PositionOrientation positionOrientation) {
-		this.position = new PointF(positionOrientation.getPosition());
-		this.angleInRadian = positionOrientation.getAngleInRadian();
+	public Position(Position position) {
+		this.position = new PointF(position.getPosition());
+		this.angleInRadian = position.getAngleInRadian();
 	}
 
 	public synchronized void setPosition(PointF position) {

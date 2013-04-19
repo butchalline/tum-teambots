@@ -29,18 +29,18 @@ public class ProbabilityMap
 
 		for (SimpleEntry<Point, Occupation> pointInfo : points)
 		{
-			if (!_map.containsKey(pointInfo))
-				_map.put(pointInfo.getKey(), _probabilities.getLogStartProbability());
+			if (!_map.containsKey(pointInfo.getKey()))
+				_map.put(pointInfo.getKey(), _probabilities.getLogOddStart());
 			else
 			{
 				currentValue = _map.get(pointInfo.getKey());
 				if (pointInfo.getValue() == Occupation.occupied)
 				{
-					currentValue += _probabilities.getLogOccupationProbability() - _probabilities.getLogStartProbability();
+					currentValue += _probabilities.getLogOddOccupation() - _probabilities.getLogOddStart();
 				}
 				else
 				{
-					currentValue += _probabilities.getLogFreeProbability() - _probabilities.getLogStartProbability();
+					currentValue += _probabilities.getLogOddFree() - _probabilities.getLogOddStart();
 				}
 				
 				_map.put(pointInfo.getKey(), currentValue);
@@ -50,12 +50,17 @@ public class ProbabilityMap
 	
 	public float getProbability(Point point)
 	{
-		if(_map.contains(point))
+		if(_map.containsKey(point))
 			return (float) (1 - 1/(1 + Math.exp(_map.get(point))));
 		else
 		{
-			_map.put(point, 0.5f);
+			_map.put(point, _probabilities.getLogOddStart());
 			return 0.5f;
 		}
+	}
+	
+	public Hashtable<Point, Float> getMap()
+	{
+		return _map;
 	}
 }

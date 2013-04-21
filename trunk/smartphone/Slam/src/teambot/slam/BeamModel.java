@@ -102,4 +102,9 @@ public class BeamModel {
 		
 		return freePoints;
 	}
+	
+	public float getCellSize()
+	{
+		return _cellSize_mm;
+	}
 }

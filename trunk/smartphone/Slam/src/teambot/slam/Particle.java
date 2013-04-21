@@ -49,12 +49,12 @@ public class Particle
 		_weight = particle._weight;
 	}
 
-	public synchronized void updatePosition(Position newPosition)
+	public synchronized void updatePosition(Position positionChange)
 	{
-		Position noisyPosition = new Position(newPosition.getX() + _noiseProvider.noiseX(),
-				newPosition.getY() + _noiseProvider.noiseY(), 
-				newPosition.getAngleInRadian() + _noiseProvider.noiseAngle()); 
-		_position = noisyPosition;
+		float newX = _position.getX() + positionChange.getX() + _noiseProvider.noiseX();
+		float newY = _position.getY() + positionChange.getY() + _noiseProvider.noiseY();
+		float newAngle = _position.getAngleInRadian() + positionChange.getAngleInRadian() + _noiseProvider.noiseAngle();
+		_position = new Position(newX, newY, newAngle);
 	}
 
 	public float updateAndGetWeight(float distance_mm)

@@ -1,8 +1,11 @@
 package teambot.common;
 
+import java.util.AbstractMap.SimpleEntry;
+import java.util.HashMap;
 import java.util.LinkedList;
 
 import teambot.common.data.Position;
+import teambot.common.interfaces.ICyclicCallback;
 import teambot.common.interfaces.IPositionListener;
 import teambot.common.interfaces.IPositionSupplier;
 import android.graphics.PointF;
@@ -12,14 +15,25 @@ import android.graphics.PointF;
  * 
  * Class which supplies the current position of an sensor or the Bot
  * The orientation is x-axis show forwards from the robot, y-axis to the left 
+ *
+ *		  	  ^ x-axis     equals:      ^  y-axis
+ *		  	  |						    |
+ *		<-- |---|					   ---
+ *		y-axis						    |  --->
+ *									   ---  x-axis
+ *
  * 
  */
-public class PositionSupplier implements IPositionSupplier, IPositionListener
+public class PositionSupplier implements IPositionSupplier, IPositionListener, ICyclicCallback
 {
-	private Position _position = new Position(0, 0, 0); 
-	private LinkedList<IPositionListener> _listeners = new LinkedList<IPositionListener>();
+	protected Position _position = new Position(0, 0, 0);
 	protected PointF _offsetFromBotCenter = new PointF(0, 0);
 	protected float _offsetAngleFromBotCenter = 0;
+	
+	protected LinkedList<IPositionListener> _listeners = new LinkedList<IPositionListener>();
+	protected HashMap<SimpleEntry<Integer, Integer>, LinkedList<IPositionListener>> _listeners_changeDelta
+						= new HashMap<SimpleEntry<Integer,Integer>, LinkedList<IPositionListener>>();
+	protected HashMap<Integer, LinkedList<IPositionListener>> _listeners_cyclic = new HashMap<Integer, LinkedList<IPositionListener>>(5);
 
 	public PositionSupplier()
 	{
@@ -42,22 +56,6 @@ public class PositionSupplier implements IPositionSupplier, IPositionListener
 	public synchronized Position getBotPosition()
 	{
 		return _position;
-	}
-
-	@Override
-	public synchronized void register(IPositionListener listener)
-	{
-		_listeners.add(listener);
-	}
-
-	@Override
-	public synchronized void callback_PositionChanged(Position newPosition)
-	{
-		_position = addOffset(newPosition);
-		for (IPositionListener listener : _listeners)
-		{
-			listener.callback_PositionChanged(newPosition);
-		}
 	}
 
 	public synchronized PointF getPosition()
@@ -87,28 +85,85 @@ public class PositionSupplier implements IPositionSupplier, IPositionListener
 	
 	private Position addOffset(Position currentBotPosition)
 	{		
-		float x = currentBotPosition.getX() + (float) Math.cos(currentBotPosition.getAngleInRadian() + Math.PI / 2) * _offsetFromBotCenter.y
-				+ (float) Math.cos(currentBotPosition.getAngleInRadian()) * _offsetFromBotCenter.x;
-		float y = currentBotPosition.getX() + (float) Math.sin(currentBotPosition.getAngleInRadian() + Math.PI / 2) * _offsetFromBotCenter.y
-				+ (float) Math.cos(currentBotPosition.getAngleInRadian()) * _offsetFromBotCenter.x;
+		float x = currentBotPosition.getX() + (float) Math.cos(currentBotPosition.getAngleInRadian()) * _offsetFromBotCenter.x
+				- (float) Math.sin(currentBotPosition.getAngleInRadian()) * _offsetFromBotCenter.y;
+		float y = currentBotPosition.getY() + (float) Math.sin(currentBotPosition.getAngleInRadian()) * _offsetFromBotCenter.x
+				+ (float) Math.cos(currentBotPosition.getAngleInRadian()) * _offsetFromBotCenter.y;
 		
 		float angle = Position.normalizeAngle_plusMinusPi(currentBotPosition.getAngleInRadian() + _offsetAngleFromBotCenter);
 		
-		return new Position(x, y, angle);		
+		return new Position(x, y, angle);
 	}
 
 	@Override
-	public void register(IPositionListener listener, float callbackInterval_Hz)
-	{
-		// TODO Auto-generated method stub
+	public synchronized void callback_PositionChanged(Position newPosition)
+	{	
+		int updateDifferencePosition = Math.round(Position.calculatDistance(_position, newPosition));
+		int updateDifferenceAngle_rad = Math.abs(Math.round(_position.getAngleInRadian() - newPosition.getAngleInRadian()));
+	
+		_position = addOffset(newPosition);
 		
+		for(IPositionListener listener : _listeners)
+		{
+			listener.callback_PositionChanged(_position);
+		}
+		
+		for(SimpleEntry<Integer, Integer> minChangeEntry : _listeners_changeDelta.keySet())
+		{
+			if(updateDifferenceAngle_rad >= minChangeEntry.getValue() || updateDifferencePosition >= minChangeEntry.getKey())
+			{
+				for(IPositionListener listener : _listeners_changeDelta.get(minChangeEntry))
+				{
+					listener.callback_PositionChanged(_position);
+				}
+			}
+		}
+	}
+	
+	@Override
+	public synchronized void callback_cyclic(int callbackIntervalInfo_ms)
+	{
+		LinkedList<IPositionListener> listeners = _listeners_cyclic.get(callbackIntervalInfo_ms);
+		Position newPosition = getBotPosition();
+		
+		for(IPositionListener listener : listeners)
+		{
+			listener.callback_PositionChanged(newPosition);
+		}
 	}
 
 	@Override
-	public void register(IPositionListener listener,
-			float callbackPositionDelta, float callbackAngleDelta_rad)
+	public synchronized void register(IPositionListener listener)
 	{
-		// TODO Auto-generated method stub
+		_listeners.add(listener);
+	}
+
+	@Override
+	public synchronized void register(IPositionListener listener, int callbackInterval_ms)
+	{
+		if(_listeners_cyclic.containsKey(callbackInterval_ms))
+		{
+			_listeners_cyclic.get(callbackInterval_ms).add(listener);
+			return;
+		}
 		
+		_listeners_cyclic.put(callbackInterval_ms, new LinkedList<IPositionListener>());
+		_listeners_cyclic.get(callbackInterval_ms).add(listener);		
+	}
+
+	@Override
+	public synchronized void register(IPositionListener listener,
+			int callbackPositionDelta, int callbackAngleDelta_rad)
+	{
+		SimpleEntry<Integer, Integer> minChangeEntry = new SimpleEntry<Integer, Integer>(callbackPositionDelta, callbackAngleDelta_rad);
+		
+		if(_listeners_changeDelta.containsKey(minChangeEntry))
+		{
+			_listeners_changeDelta.get(minChangeEntry).add(listener);
+			return;
+		}
+		
+		_listeners_changeDelta.put(minChangeEntry, new LinkedList<IPositionListener>());
+		_listeners_changeDelta.get(minChangeEntry).add(listener);		
 	}
 }

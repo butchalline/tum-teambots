@@ -132,4 +132,10 @@ public class Position {
 			angle += 720f;
 		return angle;
 	}
+	
+	static public float calculatDistance(Position position1, Position position2) {
+		float x = (position1.getX() - position2.getX()) * (position1.getX() - position2.getX());
+		float y = (position1.getY() - position2.getY()) * (position1.getY() - position2.getY());
+		return (float) Math.sqrt(x + y);
+	}
 }

@@ -49,9 +49,9 @@ public class Agent {
 			}
 		}
 
-//		printMapInConsole(null);
-//		if(bestPath != null)
-//			printMapInConsole(bestPath);
+		printMapInConsole(null);
+		if(bestPath != null)
+			printMapInConsole(bestPath);
 		System.out.println("Best Utility: " + bestUtility);
 
 		if (bestPath != null && bestPath.length != 0)
@@ -193,16 +193,23 @@ public class Agent {
 		float side_offset = 96.25f / this.field_size;
 
 		// The mid sensor is shifted from the center of the robot in the
-		// direction the robot faces (front offset)
-		// The left and right sensors are also shifted to the side (side offset)
+		// direction the robot faces (front offset) = x-axis
+		// The left and right sensors are also shifted to the side (side offset) = y-axis, positive => left
+		//
+		//			  ^ x-axis     equals:      ^  y-axis
+		//			  |						    |
+		//		<-- |---|					   ---
+		//	   y-axis						    |  --->
+		//									   ---  x-axis
+		//
 		mid_sensor_pos = new PointF(robot_position.x + (float) Math.cos(robot_angle) * front_offset, robot_position.y
 				+ (float) Math.sin(robot_angle) * front_offset);
-		left_sensor_pos = new PointF(robot_position.x + (float) Math.cos(robot_angle + Math.PI / 2) * side_offset
-				+ (float) Math.cos(robot_angle) * front_offset, robot_position.y + (float) Math.sin(robot_angle + Math.PI / 2)
-				* side_offset + (float) Math.sin(robot_angle) * front_offset);
-		right_sensor_pos = new PointF(robot_position.x + (float) Math.cos(robot_angle - Math.PI / 2) * side_offset
-				+ (float) Math.cos(robot_angle) * front_offset, robot_position.y + (float) Math.sin(robot_angle - Math.PI / 2)
-				* side_offset + (float) Math.sin(robot_angle) * front_offset);
+		left_sensor_pos = new PointF(robot_position.x + (float) Math.cos(robot_angle) * front_offset
+				- (float) Math.sin(robot_angle) * side_offset, robot_position.y - (float) Math.sin(robot_angle)
+				* front_offset + (float) Math.cos(robot_angle) * side_offset);
+		right_sensor_pos = new PointF(robot_position.x + (float) Math.cos(robot_angle) * front_offset
+				- (float) Math.sin(robot_angle) * -side_offset, robot_position.y + (float) Math.sin(robot_angle)
+				* front_offset + (float) Math.cos(robot_angle) * -side_offset);
 
 		float max_range_left = 200 / this.field_size;
 		float max_range_mid = 1500 / this.field_size;

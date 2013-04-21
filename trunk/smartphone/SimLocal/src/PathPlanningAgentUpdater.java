@@ -4,6 +4,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import teambot.common.PositionSupplier;
 import teambot.common.data.Position;
 import teambot.common.interfaces.IPositionListener;
+import teambot.common.utils.Constants;
 import teambot.communication.TBInfraredData;
 import teambot.communication.TBPositionData;
 import teambot.pathplanning.Agent;
@@ -23,7 +24,7 @@ public class PathPlanningAgentUpdater implements Runnable {
 	protected Position position;
 	protected long timeBetweenUpdates;
 	private ParticleFilter filter;
-	private PositionSupplier positionSupplier = new PositionSupplier(new PointF(90.0f, 96.25f));
+	private PositionSupplier positionSupplier = new PositionSupplier(new PointF(90.0f, 0));
 	private IPositionListener positionListener = positionSupplier;
 	private MapConverter converter;
 	public AtomicBoolean wasUpdated = new AtomicBoolean(false);
@@ -34,7 +35,7 @@ public class PathPlanningAgentUpdater implements Runnable {
 		this.agent = agent;
 		this.position = position;
 		timeBetweenUpdates = (long) (1000 / updateCycleInHz);
-		this.positionSupplier.register(filter);
+		this.positionSupplier.register(filter, (int)filter.getBeamModel().getCellSize() * 4, (int)(5 * Constants.DegreeToRadian));
 		this.filter = filter;
 		this.converter = converter;
 	}

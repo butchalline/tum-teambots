@@ -6,38 +6,41 @@ import teambot.common.interfaces.ICyclicCallback;
 
 public class CyclicCaller implements Runnable
 {
-	float _interval_Hz = 60;
+	long _callbackInterval_ms = 30;
 	ICyclicCallback _callback;
 	public AtomicBoolean running = new AtomicBoolean(true);
-	long _timeStamp = System.currentTimeMillis();
+	long _timeStamp_ms = System.currentTimeMillis();
 
 	public CyclicCaller(ICyclicCallback callback)
 	{
 		_callback = callback;
 	}
 	
-	public CyclicCaller(ICyclicCallback callback, float interval_Hz)
+	public CyclicCaller(ICyclicCallback callback, long callbackInterval_ms)
 	{
 		_callback = callback;
-		_interval_Hz = interval_Hz;
+		_callbackInterval_ms = callbackInterval_ms;
 	}
 
 	@Override
 	public void run()
 	{
-//		long 
+		long sleepTime_ms = 0; 
 		while(running.get())
-		{
+		{				
+			sleepTime_ms = _callbackInterval_ms - (System.currentTimeMillis() - _timeStamp_ms);
+			_timeStamp_ms = System.currentTimeMillis();
 			
-//			if()
-			try {
-				Thread.sleep(1);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
+			if(sleepTime_ms > 0)
+			{
+				try {
+					Thread.sleep(sleepTime_ms);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
 			}
-			_callback.callback();
+			
+			_callback.callback_cyclic((int) _callbackInterval_ms);
 		}
 	}
-	
-	
 }

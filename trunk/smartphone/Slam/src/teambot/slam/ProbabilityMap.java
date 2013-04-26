@@ -11,7 +11,7 @@ public class ProbabilityMap
 {
 	Hashtable<Point, Float> _map = new Hashtable<Point, Float>();
 	BeamProbabilities _probabilities;
-
+	
 	public ProbabilityMap(BeamProbabilities probabilities)
 	{
 		_probabilities = probabilities;
@@ -48,15 +48,12 @@ public class ProbabilityMap
 		}
 	}
 	
-	public float getProbability(Point point)
+	public Float getProbability(Point point)
 	{
 		if(_map.containsKey(point))
 			return (float) (1 - 1/(1 + Math.exp(_map.get(point))));
 		else
-		{
-			_map.put(point, _probabilities.getLogOddStart());
-			return 0.5f;
-		}
+			return null;
 	}
 	
 	public Hashtable<Point, Float> getMap()

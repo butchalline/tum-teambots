@@ -1,6 +1,6 @@
-import teambot.common.utils.Constants;
 import teambot.common.utils.ThreadUtil;
 import teambot.simulator.SimulatorProxy;
+import teambot.slam.NoiseProvider;
 import teambot.slam.ParticleFilter;
 
 
@@ -12,7 +12,8 @@ public class Main {
 		ThreadUtil.sleepSecs(1);
         simulator.start("localhost", "55000", "55001");
         ThreadUtil.sleepSecs(1);
-        ParticleFilter filter = new ParticleFilter(50, 1500, 0.5f, 0.8f, 0.2f, 20, 20, 2 * Constants.DegreeToRadian);
+        NoiseProvider noiser = new NoiseProvider(5, 5, 1, 0.05f, 0.05f, 0.04f);
+        ParticleFilter filter = new ParticleFilter(50, 1500, 0.5f, 0.8f, 0.2f, noiser);
         PathPlanningUpdater pathUpdater = new PathPlanningUpdater(simulator, filter, 60);
         ThreadUtil.sleepSecs(1);
         new Thread(pathUpdater).start();

@@ -16,6 +16,7 @@ public class Particle
 	NoiseProvider _noiseProvider;
 	float _slidingFactor;
 	float _weight = 0.5f;
+	static float _occupiedPointWeightMultiplier = 3;
 
 	public Particle(Position position,
 			ProbabilityMap map, BeamModel beamModel, NoiseProvider noise,
@@ -51,9 +52,10 @@ public class Particle
 
 	public synchronized void updatePosition(Position positionChange)
 	{
-		float newX = _position.getX() + positionChange.getX() + _noiseProvider.noiseX();
-		float newY = _position.getY() + positionChange.getY() + _noiseProvider.noiseY();
-		float newAngle = _position.getAngleInRadian() + positionChange.getAngleInRadian() + _noiseProvider.noiseAngle();
+		Position noisyPositionChange = _noiseProvider.makePositionNoisy(positionChange);
+		float newX = _position.getX() + noisyPositionChange.getX();
+		float newY = _position.getY() + noisyPositionChange.getY();
+		float newAngle = Position.normalizeAngle_plusMinusPi(_position.getAngleInRadian() + noisyPositionChange.getAngleInRadian());
 		_position = new Position(newX, newY, newAngle);
 	}
 
@@ -62,15 +64,21 @@ public class Particle
 		LinkedList<SimpleEntry<Point, Occupation>> measuredPoints = _beamModel
 				.calculateBeam(distance_mm, _position);
 		float newWeight = 1;
-
+		Float pointProbability;
+		
 		for (SimpleEntry<Point, Occupation> pointOccupation : measuredPoints)
 		{
+			pointProbability = _map.getProbability(pointOccupation.getKey());
+			
+			if(pointProbability == null)
+				continue;
+			
 			if (pointOccupation.getValue() == Occupation.free)
 				newWeight = newWeight
-						* (1 - _map.getProbability(pointOccupation.getKey()));
+						* (1 - pointProbability);
 			else
 				newWeight = newWeight
-						* _map.getProbability(pointOccupation.getKey());
+						* pointProbability * _occupiedPointWeightMultiplier;
 		}
 
 		_weight = _weight * (1 - _slidingFactor) + newWeight * _slidingFactor;

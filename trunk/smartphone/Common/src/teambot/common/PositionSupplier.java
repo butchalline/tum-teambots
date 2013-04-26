@@ -99,7 +99,7 @@ public class PositionSupplier implements IPositionSupplier, IPositionListener, I
 	public synchronized void callback_PositionChanged(Position newPosition)
 	{	
 		int updateDifferencePosition = Math.round(Position.calculatDistance(_position, newPosition));
-		int updateDifferenceAngle_rad = Math.abs(Math.round(_position.getAngleInRadian() - newPosition.getAngleInRadian()));
+		int updateDifferenceAngle_grad = Math.abs(Math.round(_position.getAngleInDegree() - newPosition.getAngleInDegree()));
 	
 		_position = addOffset(newPosition);
 		
@@ -110,7 +110,7 @@ public class PositionSupplier implements IPositionSupplier, IPositionListener, I
 		
 		for(SimpleEntry<Integer, Integer> minChangeEntry : _listeners_changeDelta.keySet())
 		{
-			if(updateDifferenceAngle_rad >= minChangeEntry.getValue() || updateDifferencePosition >= minChangeEntry.getKey())
+			if(updateDifferenceAngle_grad >= minChangeEntry.getValue() || updateDifferencePosition >= minChangeEntry.getKey())
 			{
 				for(IPositionListener listener : _listeners_changeDelta.get(minChangeEntry))
 				{
@@ -153,9 +153,9 @@ public class PositionSupplier implements IPositionSupplier, IPositionListener, I
 
 	@Override
 	public synchronized void register(IPositionListener listener,
-			int callbackPositionDelta, int callbackAngleDelta_rad)
+			int callbackPositionDelta, int callbackAngleDelta_deg)
 	{
-		SimpleEntry<Integer, Integer> minChangeEntry = new SimpleEntry<Integer, Integer>(callbackPositionDelta, callbackAngleDelta_rad);
+		SimpleEntry<Integer, Integer> minChangeEntry = new SimpleEntry<Integer, Integer>(callbackPositionDelta, callbackAngleDelta_deg);
 		
 		if(_listeners_changeDelta.containsKey(minChangeEntry))
 		{

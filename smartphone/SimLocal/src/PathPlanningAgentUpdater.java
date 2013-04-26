@@ -35,7 +35,7 @@ public class PathPlanningAgentUpdater implements Runnable {
 		this.agent = agent;
 		this.position = position;
 		timeBetweenUpdates = (long) (1000 / updateCycleInHz);
-		this.positionSupplier.register(filter, (int)filter.getBeamModel().getCellSize() * 4, (int)(5 * Constants.DegreeToRadian));
+		this.positionSupplier.register(filter, (int)filter.getBeamModel().getCellSize(), 5);
 		this.filter = filter;
 		this.converter = converter;
 	}

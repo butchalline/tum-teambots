@@ -10,7 +10,7 @@ import android.graphics.PointF;
 public class ParticleFilter implements IPositionListener, IDistanceListener
 {
 	private Random random = new Random();
-	private int _particleAmount = 100;
+	private int _particleAmount = 500;
 	private float nThresh = _particleAmount / 2;
 
 	protected Particle[] _particles;
@@ -20,13 +20,12 @@ public class ParticleFilter implements IPositionListener, IDistanceListener
 	BeamModel _beamModel;
 
 	public ParticleFilter(float cellSize_mm, float maxRange_mm, float p0, float pOccupation, float pFree,
-			float varianceX, float varianceY, float varianceAngle_rad)
+			NoiseProvider noiser)
 	{
 		_particles = new Particle[_particleAmount];
 
 		BeamProbabilities rayProbability = new BeamProbabilities(p0, pOccupation, pFree);
 		_beamModel = new BeamModel(cellSize_mm, maxRange_mm);
-		NoiseProvider noiser = new NoiseProvider(varianceX, varianceY, varianceAngle_rad);
 
 		for (int i = 0; i < _particles.length; ++i)
 		{
@@ -116,7 +115,7 @@ public class ParticleFilter implements IPositionListener, IDistanceListener
 			{
 				actualParticleIndex += 1;
 				actualParticle = _particles[actualParticleIndex];
-				actualParticle.setWeigth(1.0f / _particleAmount);
+				actualParticle.setWeigth(totalWeight/ _particleAmount);
 			}
 		}
 

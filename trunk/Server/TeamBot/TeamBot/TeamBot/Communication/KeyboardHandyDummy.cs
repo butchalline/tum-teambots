@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Microsoft.Xna.Framework.Input;
 
 namespace teambot.communication
 {
@@ -13,7 +14,7 @@ namespace teambot.communication
         int velocityLeft = 0;
         int velocityRight = 0;
 
-        internal void update(IDataServer toUpdate)
+        internal void update(DataHandler toUpdate)
         {
             TBVelocity frame = new TBVelocity();
             frame.Id = Constants.TB_VELOCITY_ID;
@@ -34,7 +35,7 @@ namespace teambot.communication
             frame.speedLeft = (byte) Math.Abs(velocityLeft);
             frame.speedRight = (byte) Math.Abs(velocityRight);
 
-            //toUpdate.receive(frame);
+            toUpdate.update(frame);
         }
 
 
@@ -79,6 +80,21 @@ namespace teambot.communication
         {
             velocityRight = 0;
             velocityLeft = 0;
+        }
+
+        internal void updateInput(Microsoft.Xna.Framework.Input.KeyboardState currentKState, Microsoft.Xna.Framework.Input.KeyboardState previousKState)
+        {
+            if (currentKState.IsKeyDown(Keys.Up) && previousKState.IsKeyUp(Keys.Up))
+                incForward();
+            if (currentKState.IsKeyDown(Keys.Down) && previousKState.IsKeyUp(Keys.Down))
+                incBackward();
+            if (currentKState.IsKeyDown(Keys.Left) && previousKState.IsKeyUp(Keys.Left))
+                incLeft();
+            if (currentKState.IsKeyDown(Keys.Right) && previousKState.IsKeyUp(Keys.Right))
+                incRight();
+
+            if (currentKState.IsKeyDown(Keys.Space) && previousKState.IsKeyUp(Keys.Space))
+                reset();
         }
     }
 }

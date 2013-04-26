@@ -10,6 +10,7 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 
 using teambot.Bot;
+using teambot.communication;
 
 namespace teambot
 {
@@ -26,6 +27,7 @@ namespace teambot
         MouseState previousMState = Mouse.GetState();
         int? _debugIndex = null;
 
+        KeyboardHandyDummy handyDummy = new KeyboardHandyDummy();
         Robot _Bot;
         Map _Map;
         communication.DataHandler _DataHandler;
@@ -171,6 +173,9 @@ namespace teambot
 
             _debugIndex = DebugLayer.addString("Mouse X: " + currentMState.X + " Y: " + currentMState.Y, _debugIndex);
 
+            handyDummy.updateInput(currentKState, previousKState);
+            handyDummy.update(_DataHandler);
+
             if (currentKState.IsKeyDown(Keys.LeftControl) && currentKState.IsKeyDown(Keys.D) && previousKState.IsKeyUp(Keys.D))
                 DebugLayer.DebugActivated = !DebugLayer.DebugActivated;
 
@@ -201,6 +206,7 @@ namespace teambot
 
             // TODO: Add your update logic here
             _Bot.update(gameTime);
+
             _DataHandler.update(gameTime);
 
             base.Update(gameTime);

@@ -32,7 +32,7 @@ namespace teambot.Bot
         public const int hexRPM = 1023;
         public const float scaleFactor = .23f;
         public const float SensorToHalfSizeRelation = 0.7f; //(Texture.Size / 2) * Position relative to middle...
-        private const float _Threshold = 0.01f;
+        private const float _Threshold = 0.05f;
         public readonly object _lockObject = new object();
 
         private RobotStates _RobotState = RobotStates.Idle;
@@ -217,7 +217,7 @@ namespace teambot.Bot
                 _CurrentMiddleSensorDistance = _InfraSensor.checkMiddleSensor(Position, (float)Angle);
                 _CurrentRightSensorDistance = _InfraSensor.checkRightSensor(Position, (float)Angle);
 
-                _DebugIndex = DebugLayer.addString("VLeft: " + this._vLeft.ToString() + "\nVRight: " + this._vRight.ToString() + "\nAngle: " + Math.Round(MathHelper.ToDegrees((float)(-this.Angle + Math.PI * 0.5)), 2).ToString() + "\nRobotPos: \nX: " + Math.Round(this.Position.X * Map.PixelToCm, 2).ToString() + " Y: " + Math.Round(this.Position.Y * Map.PixelToCm, 2).ToString()
+                _DebugIndex = DebugLayer.addString("VLeft: " + this._vLeft.ToString() + "\nVRight: " + this._vRight.ToString() + "\nAngle: " + Math.Round(MathHelper.ToDegrees((float)(this.Angle)), 2).ToString() + "\nRobotPos: \nX: " + Math.Round(this.Position.X * Map.PixelToCm, 2).ToString() + " Y: " + Math.Round(this.Position.Y * Map.PixelToCm, 2).ToString()
                     + "\nSensoren L|M|R:\n| " + _CurrentLeftSensorDistance.ToString() + " | " + _CurrentMiddleSensorDistance + " | " + _CurrentRightSensorDistance.ToString() + " | ", _DebugIndex);
             }
         }

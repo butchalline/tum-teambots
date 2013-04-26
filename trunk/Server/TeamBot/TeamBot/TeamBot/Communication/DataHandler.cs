@@ -153,6 +153,7 @@ namespace teambot.communication
             infraredData.leftDistance = left;
             infraredData.middleDistance = middle;
             infraredData.rightDistance = right;
+            
             updateData(infraredData);
         }
 
@@ -205,6 +206,61 @@ namespace teambot.communication
         {
             Receiver r = new Receiver(ref data, ref _Bot, ref cb__);
             ThreadPool.QueueUserWorkItem(r.ThreadPoolCallback);
+        }
+
+        public void update(TBFrame data)
+        {
+            switch (data.Id)
+            {
+                case Constants.TB_COMMAND_ID:
+                    break;
+                case Constants.TB_VELOCITY_ID:
+                    if (!(data is TBVelocity))
+                        throw new Exception("Frame is not a Velocity Frame");
+                    TBVelocity velocityData = (TBVelocity)data;
+
+                    if (velocityData.SubId == Constants.TB_VELOCITY_FORWARD)
+                    {
+                        _Bot.setVelocity(velocityData.speedLeft * 4, velocityData.speedRight * 4, WheelDirection.Forwards, WheelDirection.Forwards);
+                    }
+                    else if (velocityData.SubId == Constants.TB_VELOCITY_BACKWARD)
+                    {
+                        _Bot.setVelocity(velocityData.speedLeft * 4, velocityData.speedRight * 4, WheelDirection.Backwards, WheelDirection.Backwards);
+                    }
+                    else if (velocityData.SubId == Constants.TB_VELOCITY_TURN_LEFT)
+                    {
+                        _Bot.setVelocity(velocityData.speedLeft * 4, velocityData.speedRight * 4, WheelDirection.Backwards, WheelDirection.Forwards);
+                    }
+                    else if (velocityData.SubId == Constants.TB_VELOCITY_TURN_RIGHT)
+                    {
+                        _Bot.setVelocity(velocityData.speedLeft * 4, velocityData.speedRight * 4, WheelDirection.Forwards, WheelDirection.Backwards);
+                    }
+                    break;
+                case Constants.TB_POSITION_ID:
+                    if (!(data is TBPosition))
+                        throw new Exception("Frame is not a Position Frame");
+                    TBPosition positionData = (TBPosition)data;
+                    _Bot.PositionRequested = true;
+                    if (positionData.SubId == Constants.TB_POSITION_FORWARD)
+                    {
+                        _Bot.setPosition((ushort)positionData.distance);
+                    }
+                    else if (positionData.SubId == Constants.TB_POSITION_BACKWARD)
+                    {
+                        _Bot.setPosition(-(ushort)positionData.distance);
+                    }
+                    else if (positionData.SubId == Constants.TB_POSITION_TURN_LEFT)
+                    {
+                        _Bot.setAngle(-(ushort)positionData.distance);
+                    }
+                    else if (positionData.SubId == Constants.TB_POSITION_TURN_RIGHT)
+                    {
+                        _Bot.setAngle((ushort)positionData.distance);
+                    }
+                    break;
+                case Constants.TB_ERROR_ID:
+                    break;
+            }
         }
 
         public override void addClient(Ice.Identity ident, Ice.Current current__)

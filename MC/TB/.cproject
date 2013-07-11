@@ -66,6 +66,8 @@
 								</option>
 								<option id="it.baeyens.avreclipse.cppcompiler.option.def.479432623" name="Define Syms (-D)" superClass="it.baeyens.avreclipse.cppcompiler.option.def" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="__IN_ECLIPSE__=1"/>
+									<listOptionValue builtIn="false" value="TB_STARTUP_IN_DEBUGMODE=1"/>
+									<listOptionValue builtIn="false" value="TB_DEBUG_MODE_ENABLED=1"/>
 									<listOptionValue builtIn="false" value="USB_VID=${ARDUINO_VID_VALUE}"/>
 									<listOptionValue builtIn="false" value="USB_PID=${ARDUINO_PID_VALUE}"/>
 									<listOptionValue builtIn="false" value="ARDUINO=${ARDUINO_IDE_VERSION}"/>
@@ -129,5 +131,9 @@
 		<project id="TB.null.2003602585" name="TB"/>
 	</storageModule>
 	<storageModule moduleId="org.eclipse.cdt.core.LanguageSettingsProviders"/>
-	<storageModule moduleId="refreshScope"/>
+	<storageModule moduleId="refreshScope" versionNumber="2">
+		<configuration configurationName="Release">
+			<resource resourceType="PROJECT" workspacePath="/TB"/>
+		</configuration>
+	</storageModule>
 </cproject>

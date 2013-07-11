@@ -24,7 +24,7 @@
 //The setup function is called once at startup of the sketch
 void setup() {
 	stateMachine.Init();
-	Serial.begin(9600);
+	Serial.begin(115200);
 	Serial.print("Hello World!");
 	pinMode(LED13, OUTPUT); // Pin setup for Visual indication of running (heart beat) program using onboard LED
 	digitalWrite(LED13, HIGH);

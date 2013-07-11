@@ -21,7 +21,6 @@
 #include "network/Usb.h"
 #include "network/Data.h"
 #include "motion/Motor.h"
-#include "motion/Timer.h"
 #include "motion/Odometry.h"
 
 StateMachine stateMachine; //Global StateMachine Object
@@ -29,6 +28,9 @@ TBFrame* receiveFrame;
 
 void StateMachine::Init() {
 	currentState = Idle;//PhoneDisconnected;
+#if TB_DEBUG_MODE_ENABLED
+	currentDebugState = DebugInit;
+#endif
 	receiveFrame = new TBFrame();
 }
 
@@ -48,12 +50,10 @@ void StateMachine::handleVelocity() {
 	else if(receiveFrame->head.SubId == TB_VELOCITY_TURN_RIGHT) {
 		motors.setVelocity(receiveFrame->data.velocity.speedLeft * 4, receiveFrame->data.velocity.speedRight * 4, motors.Forwards, motors.Backwards);
 	}
-
-	return;
 }
 
 void StateMachine::preHandle() {
-	if (currentState != PhoneDisconnected && usb.sizeData() > 0) {
+	if (currentState != PhoneDisconnected && usb.sizeData() > 0 && currentState != DebugMode) {
 		u_char bytes = sizeof(TBHeader) - sizeof(u_char); //Head - Primary ID
 		char* tmp = (char*)receiveFrame;
 		*tmp = usb.read();
@@ -78,12 +78,12 @@ void StateMachine::preHandle() {
 		}
 	}
 
-	odometry.update(timer.stop()); //Schleife für den Durchlauf eines Mess-Schrittes
-	timer.start();
+	//odometry.update(timer.stop()); //Schleife für den Durchlauf eines Mess-Schrittes
+	//timer.start();
 }
 
 void StateMachine::postHandle() {
-	if (currentState != PhoneDisconnected) {
+	if (currentState != PhoneDisconnected && currentState != DebugMode) {
 		usb.send();
 	}
 }
@@ -95,7 +95,9 @@ void StateMachine::Call() {
 	case Idle:
 		delay(500);
 		Serial.print("Idle\n\r");
-		//requireState(DriveVelocity);
+		#if TB_STARTUP_IN_DEBUGMODE
+		requireState(DebugMode);
+		#endif
 		break;
 	case DrivePosition:
 		break;
@@ -127,6 +129,13 @@ void StateMachine::Call() {
 		break;
 	case Error:
 		break;
+
+
+#if TB_DEBUG_MODE_ENABLED
+	case DebugMode:
+		debugStateLoop();
+	break;
+#endif
 	}
 	this->postHandle();
 }
@@ -138,6 +147,12 @@ TBState StateMachine::requireState(TBState state) {
 		case DriveVelocity:
 			currentState = DriveVelocity;
 			break;
+		#if(TB_DEBUG_MODE_ENABLED)
+		case DebugMode:
+			Serial.print("DebugMode Requested\n\r");
+			currentState = DebugMode;
+			break;
+		#endif
 		default:
 			//TODO: Log Error
 			break;
@@ -184,3 +199,142 @@ TBState StateMachine::requireState(TBState state) {
 	}
 }
 
+
+#if TB_DEBUG_MODE_ENABLED
+unsigned long time;
+unsigned long meassureEnd;
+int cnt;
+TBQueue<int> valueQueue;
+
+	void StateMachine::debugStateLoop() {
+		switch(currentDebugState) {
+		case DebugInit:
+			Serial.print("DebugMode - Init\n\r");
+			//queueList.push(DebugSetID_One);
+			//queueList.push(DebugSetID_Two);
+			//queueList.push(DebugSetID_Three);
+			queueList.push(DebugRunMotor);
+			//queueList.push(DebugReadPoti);
+			currentDebugState = DebugTestEnvironment;
+			break;
+		case DebugDoNothing:
+			Serial.print("I Do Nothing! ^_^");
+			delay(100);
+			break;
+		case DebugRunMotor:
+			Serial.print("Debug Mode run Motor\n\r");
+			motors.setVelocity(50 * 4, 50 * 4, motors.Forwards, motors.Forwards);
+			motors.driveVeloctiy();
+			currentDebugState = DebugTestEnvironment;
+			break;
+		case DebugReadPoti:
+			pinMode(A0, INPUT);
+			cnt = 0;
+			time = millis();
+			meassureEnd = time + 10000; //10 Seconds
+			Serial.print("Time: ");
+			Serial.println(time);
+			Serial.print("Time End: ");
+			Serial.print(meassureEnd);
+			Serial.println("Start Motors");
+			Serial.println(analogRead(A0));
+			motors.setVelocity(50 * 4, 50 * 4, motors.Forwards, motors.Forwards);
+			motors.driveVeloctiy();
+			Serial.println("Start Measurement of Poti");
+			Serial.println("-------------------------------------------------------");
+			while(millis() < meassureEnd) {
+			//	valueQueue.push(cnt);
+			//	valueQueue.push(analogRead(A0));
+				//cnt++;
+				Serial.print(cnt);
+				Serial.print(",");
+				Serial.print(analogRead(A0));
+				Serial.println(";");
+				++cnt;
+			}
+			Serial.println("-------------------------------------------------------");
+			Serial.println("Stop Measurement of Poti");
+			Serial.println("Stop Motors");
+			motors.setVelocity(0, 0, motors.Forwards, motors.Forwards);
+			motors.driveVeloctiy();
+			Serial.println("Print Data:");
+			Serial.println("-------------------------------------------------------");
+			while(valueQueue.hasNext())
+			{
+				int value = 0;
+				valueQueue.pop(value);
+				Serial.print(value);
+				Serial.print(",");
+				valueQueue.pop(value);
+				Serial.print(value);
+				Serial.println(";");
+			}
+			Serial.println("-------------------------------------------------------");
+			currentDebugState = DebugTestEnvironment;
+			break;
+		case DebugTestEnvironment:
+			Serial.print("------------------------------------------------\n\r");
+			if(queueList.hasNext())
+			{
+				Serial.print("Starting next Debug Test\n\r");
+				queueList.pop(currentDebugState);
+			}
+			Serial.print("------------------------------------------------\n\r");
+			break;
+
+		case DebugSetID_One:
+			Serial.print("Debug Mode Set ID 1 : Attach Motor - Delay 5 Seconds\n\r");
+			Serial.print("5..");
+			delay(1000);
+			Serial.print("4..");
+			delay(1000);
+			Serial.print("3..");
+			delay(1000);
+			Serial.print("2..");
+			delay(1000);
+			Serial.print("1..");
+			delay(1000);
+			Serial.print("0!\n\r");
+			motors.setID(1);
+			currentDebugState = DebugTestEnvironment;
+			break;
+		case DebugSetID_Two:
+			Serial.print("Debug Mode Set ID 2 : Attach Motor - Delay 5 Seconds\n\r");
+			Serial.print("5..");
+			delay(1000);
+			Serial.print("4..");
+			delay(1000);
+			Serial.print("3..");
+			delay(1000);
+			Serial.print("2..");
+			delay(1000);
+			Serial.print("1..");
+			delay(1000);
+			Serial.print("0!\n\r");
+			motors.setID(1);
+			currentDebugState = DebugTestEnvironment;
+			break;
+		case DebugSetID_Three:
+			Serial.print("Debug Mode Set ID 3 : Attach Motor - Delay 5 Seconds\n\r");
+			Serial.print("5..");
+			delay(1000);
+			Serial.print("4..");
+			delay(1000);
+			Serial.print("3..");
+			delay(1000);
+			Serial.print("2..");
+			delay(1000);
+			Serial.print("1..");
+			delay(1000);
+			Serial.print("0!\n\r");
+			motors.setID(3);
+			currentDebugState = DebugTestEnvironment;
+			break;
+		case DebugSetID_Four:
+			currentDebugState = DebugTestEnvironment;
+			break;
+		default:
+			break;
+		}
+	}
+#endif

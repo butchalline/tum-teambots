@@ -22,7 +22,7 @@
 
 #include <Dynamixel_Serial.h>
 #include "Config.h"
-#include "Control.h"
+//#include "Control.h"
 
 class Motor {
 public:
@@ -54,8 +54,8 @@ private:
 
 	//-----------------------------------
 	//Regelung:
-	Control velocityControlerLeft;
-	Control velocityControlerRight;
+	//Control velocityControlerLeft;
+	//Control velocityControlerRight;
 	//----------------------------------
 };
 

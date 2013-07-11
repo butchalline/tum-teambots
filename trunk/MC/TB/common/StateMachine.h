@@ -22,11 +22,72 @@
 
 #include "Config.h"
 
+#if TB_DEBUG_MODE_ENABLED
+	template<class T>
+	class TBQueue {
+		class element {
+		public:
+			T data;
+			struct element* next;
+		};
+		element* current;
+		element* addElement;
+	public:
+		void push(T item) {
+			if(current == NULL) {
+				current = new element();
+				current->data = item;
+				addElement = current;
+				return;
+			}
+			addElement->next = new element();
+			addElement = addElement->next;
+			addElement->data = item;
+		}
+
+		void pop(T& out) {
+			if(!hasNext())
+				return;
+			struct element* ptr = current;
+			current = current->next;
+			out = ptr->data;
+			if(ptr == addElement)
+				addElement = NULL;
+			delete ptr;
+			ptr = NULL;
+		}
+
+		bool hasNext() {
+			return current != NULL;
+		}
+	};
+#endif
+
 enum TBState {
-	Idle = 0, DrivePosition = 1, DriveVelocity = 2, PositionReached = 3,
+	Idle = 0,
+	DrivePosition = 1,
+	DriveVelocity = 2,
+	PositionReached = 3,
 	/*...*/
-	Error = 42, PhoneDisconnected = 43, PhoneConnect = 44
+	Error = 42,
+	PhoneDisconnected = 43,
+	PhoneConnect = 44,
+	DebugMode = 999
 };
+
+#if TB_DEBUG_MODE_ENABLED
+enum DebugModeState {
+	DebugDoNothing,
+	DebugInit,
+	DebugRunMotor,
+	DebugReadPoti,
+	DebugTestEnvironment,
+	DebugSetID_One,
+	DebugSetID_Two,
+	DebugSetID_Three,
+	DebugSetID_Four
+};
+#endif
 
 class StateMachine {
 public:
@@ -40,6 +101,12 @@ private:
 	void postHandle();
 
 	void handleVelocity();
+
+#if TB_DEBUG_MODE_ENABLED
+	void debugStateLoop();
+	DebugModeState currentDebugState;
+	TBQueue<DebugModeState> queueList;
+#endif
 
 private:
 	TBState currentState;

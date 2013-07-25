@@ -7,42 +7,37 @@ import teambot.common.utils.Constants;
 
 public class NoiseProvider {
 	Random rand = new Random();
-	float _varianceConstX;
+	float _varianceConstPosition;
 	float _varianceConstY;
 	float _varianceConstAngle_rad;
-	float _variancePropX;
+	float _variancePropPosition;
 	float _variancePropY;
 	float _variancePropAngle_rad;
 	
 	public NoiseProvider(float varianceConstX, float varianceConstY, float varianceConstAngle_deg, 
 			float variancePropX, float variancePropY, float variancePropAngle_deg){	
-		_varianceConstX = varianceConstX;
+		_varianceConstPosition = varianceConstX;
 		_varianceConstY = varianceConstY;
-		_varianceConstAngle_rad = varianceConstAngle_deg * Constants.DegreeToRadian;
-		_variancePropX = variancePropX;
+		_varianceConstAngle_rad = varianceConstAngle_deg;
+		_variancePropPosition = variancePropX;
 		_variancePropY = variancePropY;
-		_variancePropAngle_rad = variancePropAngle_deg * Constants.DegreeToRadian;
+		_variancePropAngle_rad = variancePropAngle_deg;
 	}
 	
 	public NoiseProvider(NoiseProvider noise){	
-		_varianceConstX = noise._varianceConstX;
+		_varianceConstPosition = noise._varianceConstPosition;
 		_varianceConstY = noise._varianceConstY;
 		_varianceConstAngle_rad = noise._varianceConstAngle_rad;
-		_variancePropX = noise._variancePropX;
+		_variancePropPosition = noise._variancePropPosition;
 		_variancePropY = noise._variancePropY;
 		_variancePropAngle_rad = noise._variancePropAngle_rad;
 	}
 	
-	public Position makePositionNoisy(Position positionChange)
+	public Position makePositionChangeNoisy(float positionChange, float angleChange_rad)
 	{
-		float changeDistance = (float) Math.sqrt(positionChange.getX() * positionChange.getX() + positionChange.getY() * positionChange.getY());
-		float changeX_botDirection = (float) Math.cos(positionChange.getAngleInRadian()) * changeDistance;
-		float changeY_botDirection = (float) Math.sin(positionChange.getAngleInRadian()) * changeDistance;
-
-		float noiseX = changeX_botDirection * (float) rand.nextGaussian() * _variancePropX + (float) rand.nextGaussian() * _varianceConstX;
-		float noiseY = changeY_botDirection * (float) rand.nextGaussian() * _variancePropY + (float) rand.nextGaussian() * _varianceConstY; 
-		float noiseAngle_rad = positionChange.getAngleInRadian() * (float) rand.nextGaussian() * _variancePropAngle_rad + (float) rand.nextGaussian() * _varianceConstAngle_rad; 
+		float noisyPositionChange = positionChange * (float) (1 + rand.nextGaussian() * _variancePropPosition) + (float) rand.nextGaussian() * _varianceConstPosition;
+		float noisyAngle_rad = angleChange_rad * (float) (1 + rand.nextGaussian() * _variancePropAngle_rad) + (float) rand.nextGaussian() * _varianceConstAngle_rad; 
 		
-		return new Position(positionChange.getX() + noiseX, positionChange.getY() + noiseY, positionChange.getAngleInRadian() + noiseAngle_rad);
+		return new Position(noisyPositionChange, 0, noisyAngle_rad);
 	}
 }

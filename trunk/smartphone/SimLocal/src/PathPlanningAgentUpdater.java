@@ -24,7 +24,7 @@ public class PathPlanningAgentUpdater implements Runnable {
 	protected Position position;
 	protected long timeBetweenUpdates;
 	private ParticleFilter filter;
-	private PositionSupplier positionSupplier = new PositionSupplier(new PointF(90.0f, 0));
+	private PositionSupplier positionSupplier = new PositionSupplier();
 	private IPositionListener positionListener = positionSupplier;
 	private MapConverter converter;
 	public AtomicBoolean wasUpdated = new AtomicBoolean(false);
@@ -35,7 +35,7 @@ public class PathPlanningAgentUpdater implements Runnable {
 		this.agent = agent;
 		this.position = position;
 		timeBetweenUpdates = (long) (1000 / updateCycleInHz);
-		this.positionSupplier.register(filter, (int)filter.getBeamModel().getCellSize(), 5);
+		this.positionSupplier.register(filter);//, (int)filter.getBeamModel().getCellSize(), 5);
 		this.filter = filter;
 		this.converter = converter;
 	}
@@ -75,8 +75,13 @@ public class PathPlanningAgentUpdater implements Runnable {
 			
 			positionListener.callback_PositionChanged(position);
 			filter.callback_NewMeasurement((infraredMeasurement.middleDistance & 0xFF) * 10);
+			
 			Particle bestParticle = filter.getBestParticle();
-			simulator.sendDebugMap(converter.convertSlamMap(bestParticle.getMap(), bestParticle.getPosition()), (short) converter.getCellSize());
+//			simulator.sendDebugMap(converter.convertSlamMap(bestParticle.getMap(), bestParticle.getPosition()), (short) converter.getCellSize());
+//			simulator.sendDebugMap(converter.particlesToMap(filter.getParticles()), (short) converter.getCellSize());
+			simulator.sendDebugMap(converter.convertSlamMapAndParticlePosition(bestParticle.getMap(), bestParticle.getPosition(), filter.getParticles()), (short) converter.getCellSize());
+//			simulator.sendDebugMap(converter.convertAverageMap(filter.getParticles(), filter), (short) converter.getCellSize());
+			
 			
 			if(wasUpdated.get() == false)
 				wasUpdated.set(true);

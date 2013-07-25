@@ -48,6 +48,17 @@ public class ProbabilityMap
 		}
 	}
 	
+	public void addPoint(Point point, float probability)
+	{
+		_map.put(point, probability);
+	}
+	
+	
+	public void addPoint(Point point)
+	{
+		_map.put(point, _probabilities.getLogOddStart());
+	}
+	
 	public Float getProbability(Point point)
 	{
 		if(_map.containsKey(point))

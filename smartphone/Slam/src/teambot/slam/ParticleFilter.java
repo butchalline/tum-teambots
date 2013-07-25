@@ -19,7 +19,7 @@ public class ParticleFilter implements IPositionListener, IDistanceListener
 	protected Position _latestPosition = null;
 	protected HistogramViewer histogramViewer = new HistogramViewer("Particle Histogram");
 
-	float _slidingFactor = 0.1f;
+	float _slidingFactor = 0.001f;
 	BeamModel _beamModel;
 
 	public ParticleFilter(float cellSize_mm, float maxRange_mm, float p0, float pOccupation, float pFree,
@@ -75,7 +75,7 @@ public class ParticleFilter implements IPositionListener, IDistanceListener
 			totalWeight += particle.updateAndGetWeight(distance_mm);
 		}
 		
-//		updateParticleHistogram();
+		updateParticleHistogram();
 
 		// Abfrage ob Resamplen nötig
 		float invNeff = 0;

@@ -16,8 +16,8 @@ public class Particle
 	BeamModel _beamModel;
 	NoiseProvider _noiseProvider;
 	float _slidingFactor;
-	float _weight = (float) Math.log(0.5f);
-	static float _occupiedPointWeightMultiplier = 5;
+	float _weight = 0.5f;
+	static float _occupiedPointWeightMultiplier = 3;
 	static float _epsilon = Float.MIN_VALUE;
 	
 
@@ -82,33 +82,18 @@ public class Particle
 			
 			
 			if(pointProbability == null)
-			{
-				_map.addPoint(pointOccupation.getKey(), 0.3f);
-				pointProbability = _map.getProbability(pointOccupation.getKey());
 				continue;
-			}
 			
-			if (pointOccupation.getValue() == Occupation.free)
-			{
-				newWeight = (float) (newWeight
-						* (1 - pointProbability));
-			}
+            if (pointOccupation.getValue() == Occupation.free)
+                newWeight = newWeight
+                                * (1 - pointProbability);
 			else
-				newWeight = (float) (newWeight
-						* pointProbability * _occupiedPointWeightMultiplier);
-			int k = 0;
-			if(((Double)Math.log(newWeight + _epsilon)).isInfinite() || ((Double)Math.log(newWeight + _epsilon)).isNaN())
-				k++;
+				newWeight = newWeight * pointProbability * _occupiedPointWeightMultiplier;
 		}
 
-
-		
-		_weight = _weight * (1 - _slidingFactor) + (float) Math.log(newWeight + _epsilon) * _slidingFactor;
-		
-		
-
+		_weight = _weight * (1 - _slidingFactor) + newWeight * _slidingFactor;
 		return _weight;
-		
+
 	}
 	
 	public float getWeight()

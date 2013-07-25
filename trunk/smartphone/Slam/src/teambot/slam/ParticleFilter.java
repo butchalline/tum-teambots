@@ -72,8 +72,7 @@ public class ParticleFilter implements IPositionListener, IDistanceListener
 		
 		for (Particle particle : _particles)
 		{
-			normedWeight = (float) (particle.updateAndGetWeight(distance_mm)/Math.log(Particle._epsilon)+1);
-			totalWeight += normedWeight;
+			totalWeight += particle.updateAndGetWeight(distance_mm);
 		}
 		
 //		updateParticleHistogram();
@@ -82,8 +81,7 @@ public class ParticleFilter implements IPositionListener, IDistanceListener
 		float invNeff = 0;
 		for (Particle particle : _particles)
 		{
-			normedWeight = (float) (particle.getWeight()/Math.log(Particle._epsilon)+1);
-			invNeff += ( normedWeight/totalWeight) * (normedWeight / totalWeight);
+			invNeff += (particle.getWeight() / totalWeight) * (particle.getWeight() / totalWeight);
 		}
 		
 		if (1 / invNeff < nThresh)

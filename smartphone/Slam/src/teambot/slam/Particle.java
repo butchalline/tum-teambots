@@ -3,6 +3,7 @@ package teambot.slam;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.LinkedList;
 
+import teambot.common.PositionSupplier;
 import teambot.common.data.Position;
 import teambot.pathplanning.Occupation;
 import android.graphics.Point;
@@ -15,8 +16,10 @@ public class Particle
 	BeamModel _beamModel;
 	NoiseProvider _noiseProvider;
 	float _slidingFactor;
-	float _weight = 0.5f;
-	static float _occupiedPointWeightMultiplier = 3;
+	float _weight = (float) Math.log(0.5f);
+	static float _occupiedPointWeightMultiplier = 5;
+	static float _epsilon = Float.MIN_VALUE;
+	
 
 	public Particle(Position position,
 			ProbabilityMap map, BeamModel beamModel, NoiseProvider noise,
@@ -50,39 +53,62 @@ public class Particle
 		_weight = particle._weight;
 	}
 
-	public synchronized void updatePosition(Position positionChange)
+	public synchronized void updatePosition(float positionChange, float angleChange_rad)
 	{
-		Position noisyPositionChange = _noiseProvider.makePositionNoisy(positionChange);
-		float newX = _position.getX() + noisyPositionChange.getX();
-		float newY = _position.getY() + noisyPositionChange.getY();
+		Position noisyPositionChange = _noiseProvider.makePositionChangeNoisy(positionChange, angleChange_rad);
+		
+		float newX = (float) (_position.getX() + Math.cos(_position.getAngleInRadian()) * noisyPositionChange.getX());
+		float newY = (float) (_position.getY() + Math.sin(_position.getAngleInRadian()) * noisyPositionChange.getX());
 		float newAngle = Position.normalizeAngle_plusMinusPi(_position.getAngleInRadian() + noisyPositionChange.getAngleInRadian());
 		_position = new Position(newX, newY, newAngle);
+	}
+	
+	public synchronized void setStartPosition(Position startPosition)
+	{
+		_position = new Position(startPosition);
 	}
 
 	public float updateAndGetWeight(float distance_mm)
 	{
 		LinkedList<SimpleEntry<Point, Occupation>> measuredPoints = _beamModel
-				.calculateBeam(distance_mm, _position);
+				.calculateBeam(distance_mm, PositionSupplier.addOffset(_position, new Position(0.0f, 0f, 0f)));
 		float newWeight = 1;
 		Float pointProbability;
+		
 		
 		for (SimpleEntry<Point, Occupation> pointOccupation : measuredPoints)
 		{
 			pointProbability = _map.getProbability(pointOccupation.getKey());
 			
+			
 			if(pointProbability == null)
+			{
+				_map.addPoint(pointOccupation.getKey(), 0.3f);
+				pointProbability = _map.getProbability(pointOccupation.getKey());
 				continue;
+			}
 			
 			if (pointOccupation.getValue() == Occupation.free)
-				newWeight = newWeight
-						* (1 - pointProbability);
+			{
+				newWeight = (float) (newWeight
+						* (1 - pointProbability));
+			}
 			else
-				newWeight = newWeight
-						* pointProbability * _occupiedPointWeightMultiplier;
+				newWeight = (float) (newWeight
+						* pointProbability * _occupiedPointWeightMultiplier);
+			int k = 0;
+			if(((Double)Math.log(newWeight + _epsilon)).isInfinite() || ((Double)Math.log(newWeight + _epsilon)).isNaN())
+				k++;
 		}
 
-		_weight = _weight * (1 - _slidingFactor) + newWeight * _slidingFactor;
+
+		
+		_weight = _weight * (1 - _slidingFactor) + (float) Math.log(newWeight + _epsilon) * _slidingFactor;
+		
+		
+
 		return _weight;
+		
 	}
 	
 	public float getWeight()
@@ -92,8 +118,8 @@ public class Particle
 
 	public void updateMap(float distance_mm) {
 		LinkedList<SimpleEntry<Point, Occupation>> measuredPoints = _beamModel
-				.calculateBeam(distance_mm, _position);
-		_map.update(measuredPoints);		
+				.calculateBeam(distance_mm, PositionSupplier.addOffset(_position, new Position(0.0f, 0f, 0f)));
+		_map.update(measuredPoints);
 	}
 	
 	public Position getPosition()

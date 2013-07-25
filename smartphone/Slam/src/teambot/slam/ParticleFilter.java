@@ -3,6 +3,8 @@ package teambot.slam;
 import teambot.common.data.Position;
 import teambot.common.interfaces.IDistanceListener;
 import teambot.common.interfaces.IPositionListener;
+import teambot.visualizer.HistogramViewer;
+
 import java.util.Random;
 
 import android.graphics.PointF;
@@ -10,11 +12,12 @@ import android.graphics.PointF;
 public class ParticleFilter implements IPositionListener, IDistanceListener
 {
 	private Random random = new Random();
-	private int _particleAmount = 500;
+	private int _particleAmount = 300;
 	private float nThresh = _particleAmount / 2;
 
 	protected Particle[] _particles;
-	protected Position _latestPosition = new Position(0, 0, 0);
+	protected Position _latestPosition = null;
+	protected HistogramViewer histogramViewer = new HistogramViewer("Particle Histogram");
 
 	float _slidingFactor = 0.1f;
 	BeamModel _beamModel;
@@ -38,13 +41,24 @@ public class ParticleFilter implements IPositionListener, IDistanceListener
 	@Override
 	public void callback_PositionChanged(Position newPosition)
 	{
-		Position positionChange = new Position(newPosition.getX() - _latestPosition.getX(), newPosition.getY()
+		if(_latestPosition == null)
+		{
+			_latestPosition = newPosition;
+			for (Particle particle : _particles)
+			{
+				particle.setStartPosition(newPosition);
+			}
+			return;
+		}
+		
+		Position absolutePositionChange = new Position(newPosition.getX() - _latestPosition.getX(), newPosition.getY()
 				- _latestPosition.getY(), newPosition.getAngleInRadian() - _latestPosition.getAngleInRadian());
+		float positionChange = (float) Math.sqrt(absolutePositionChange.getX() * absolutePositionChange.getX() + absolutePositionChange.getY() * absolutePositionChange.getY());
 		_latestPosition = newPosition;
 
 		for (Particle particle : _particles)
 		{
-			particle.updatePosition(positionChange);
+			particle.updatePosition(positionChange, absolutePositionChange.getAngleInRadian());
 		}
 	}
 
@@ -54,20 +68,27 @@ public class ParticleFilter implements IPositionListener, IDistanceListener
 
 		float totalWeight = 0;
 		// Weights ausrechnen
-
+		float normedWeight;
+		
 		for (Particle particle : _particles)
 		{
-			totalWeight += particle.updateAndGetWeight(distance_mm);
+			normedWeight = (float) (particle.updateAndGetWeight(distance_mm)/Math.log(Particle._epsilon)+1);
+			totalWeight += normedWeight;
 		}
+		
+//		updateParticleHistogram();
 
 		// Abfrage ob Resamplen nötig
 		float invNeff = 0;
 		for (Particle particle : _particles)
 		{
-			invNeff += (particle.getWeight() / totalWeight) * (particle.getWeight() / totalWeight);
+			normedWeight = (float) (particle.getWeight()/Math.log(Particle._epsilon)+1);
+			invNeff += ( normedWeight/totalWeight) * (normedWeight / totalWeight);
 		}
+		
 		if (1 / invNeff < nThresh)
 		{
+//			printParticlesInfo();
 			this.resample(totalWeight);
 		}
 
@@ -120,10 +141,19 @@ public class ParticleFilter implements IPositionListener, IDistanceListener
 		}
 
 		// Set Weight
-
 		_particles = newParticles;
 	}
 
+	void updateParticleHistogram()
+	{
+		double[] values = new double[_particles.length];
+		
+		for(int i = 0; i < _particles.length; ++i)
+			values[i] = _particles[i].getWeight();
+		
+		histogramViewer.updateHistogram(values);
+	}
+	
 	void printParticlesInfo()
 	{
 		PointF mean = calculateParticleMeanPosition(_particles);
@@ -161,7 +191,7 @@ public class ParticleFilter implements IPositionListener, IDistanceListener
 		return bestParticle;
 	}
 
-	PointF calculateParticleMeanPosition(Particle[] particles)
+	public PointF calculateParticleMeanPosition(Particle[] particles)
 	{
 		PointF mean = new PointF(0, 0);
 
@@ -199,5 +229,10 @@ public class ParticleFilter implements IPositionListener, IDistanceListener
 	public BeamModel getBeamModel()
 	{
 		return _beamModel;
+	}
+	
+	public Particle[] getParticles()
+	{
+		return _particles;
 	}
 }

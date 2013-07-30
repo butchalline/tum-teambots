@@ -40,4 +40,9 @@ public class NoiseProvider {
 		
 		return new Position(noisyPositionChange, 0, noisyAngle_rad);
 	}
+	
+	public float getRandom()
+	{
+		return rand.nextFloat();
+	}
 }

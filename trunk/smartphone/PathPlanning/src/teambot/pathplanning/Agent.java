@@ -49,10 +49,10 @@ public class Agent {
 			}
 		}
 
-		printMapInConsole(null);
-		if(bestPath != null)
-			printMapInConsole(bestPath);
-		System.out.println("Best Utility: " + bestUtility);
+//		printMapInConsole(null);
+//		if(bestPath != null)
+//			printMapInConsole(bestPath);
+//		System.out.println("Best Utility: " + bestUtility);
 
 		if (bestPath != null && bestPath.length != 0)
 		{
@@ -78,13 +78,13 @@ public class Agent {
 			if(!directionIsVertical && bestPath[i].y == bestPath[i+1].y)
 				continue;
 
-			System.out.println("Path field " + i + ": " + bestPath[i].x + "x" + bestPath[i].y);
+//			System.out.println("Path field " + i + ": " + bestPath[i].x + "x" + bestPath[i].y);
 			bestPathF.add(new PointF((bestPath[i].x + 0.5f) * this.field_size, (bestPath[i].y + 0.5f) * this.field_size));
 			directionIsVertical = !directionIsVertical;
 		}
 
 		bestPathF.add(new PointF((bestPath[bestPath.length - 1].x + 0.5f) * this.field_size, (bestPath[bestPath.length - 1].y + 0.5f) * this.field_size));
-		System.out.println("Path field " + (bestPath.length - 1) + ": " + bestPath[bestPath.length - 1].x + "x" + bestPath[bestPath.length - 1].y);
+//		System.out.println("Path field " + (bestPath.length - 1) + ": " + bestPath[bestPath.length - 1].x + "x" + bestPath[bestPath.length - 1].y);
 
 		return bestPathF;
 	}

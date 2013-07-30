@@ -51,8 +51,9 @@ module teambot
 		};
 		class DebugGridPoint
 		{
-			short x; //Grid Position X
-			short y; //Grid Position Y
+			int x; //Grid Position X
+			int y; //Grid Position Y
+			byte alpha;
 			DebugGridPointStatus status;
 		};
 		sequence<DebugGridPoint> currentMap;

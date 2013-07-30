@@ -10,18 +10,13 @@ import teambot.common.interfaces.IPositionListener;
 import teambot.common.interfaces.IPositionSupplier;
 import android.graphics.PointF;
 
-
 /**
  * 
- * Class which supplies the current position of an sensor or the Bot
- * The orientation is x-axis show forwards from the robot, y-axis to the left 
- *
- *		  	  ^ x-axis     equals:      ^  y-axis
- *		  	  |						    |
- *		<-- |---|					   ---
- *		y-axis						    |  --->
- *									   ---  x-axis
- *
+ * Class which supplies the current position of an sensor or the Bot The
+ * orientation is x-axis show forwards from the robot, y-axis to the left
+ * 
+ * ^ x-axis equals: ^ y-axis | | <-- |---| --- y-axis | ---> --- x-axis
+ * 
  * 
  */
 public class PositionSupplier implements IPositionSupplier, IPositionListener, ICyclicCallback
@@ -29,11 +24,12 @@ public class PositionSupplier implements IPositionSupplier, IPositionListener, I
 	protected Position _position = new Position(0, 0, 0);
 	protected PointF _offsetFromBotCenter = new PointF(0, 0);
 	protected float _offsetAngleFromBotCenter = 0;
-	
+
 	protected LinkedList<IPositionListener> _listeners = new LinkedList<IPositionListener>();
-	protected HashMap<SimpleEntry<Integer, Integer>, LinkedList<IPositionListener>> _listeners_changeDelta
-						= new HashMap<SimpleEntry<Integer,Integer>, LinkedList<IPositionListener>>();
-	protected HashMap<Integer, LinkedList<IPositionListener>> _listeners_cyclic = new HashMap<Integer, LinkedList<IPositionListener>>(5);
+	protected HashMap<SimpleEntry<Integer, Integer>, LinkedList<SimpleEntry<IPositionListener, Position>>> _listeners_changeDelta = 
+			new HashMap<SimpleEntry<Integer, Integer>, LinkedList<SimpleEntry<IPositionListener, Position>>>();
+	protected HashMap<Integer, LinkedList<IPositionListener>> _listeners_cyclic = new HashMap<Integer, LinkedList<IPositionListener>>(
+			5);
 
 	public PositionSupplier()
 	{
@@ -82,51 +78,76 @@ public class PositionSupplier implements IPositionSupplier, IPositionListener, I
 	{
 		return _position.getAngleInDegree();
 	}
-	
+
 	private Position addOffset(Position currentBotPosition)
-	{		
-		float x = currentBotPosition.getX() + (float) Math.cos(currentBotPosition.getAngleInRadian()) * _offsetFromBotCenter.x
-				- (float) Math.sin(currentBotPosition.getAngleInRadian()) * _offsetFromBotCenter.y;
-		float y = currentBotPosition.getY() + (float) Math.sin(currentBotPosition.getAngleInRadian()) * _offsetFromBotCenter.x
-				+ (float) Math.cos(currentBotPosition.getAngleInRadian()) * _offsetFromBotCenter.y;
-		
-		float angle = Position.normalizeAngle_plusMinusPi(currentBotPosition.getAngleInRadian() + _offsetAngleFromBotCenter);
-		
+	{
+		float x = currentBotPosition.getX() + (float) Math.cos(currentBotPosition.getAngleInRadian())
+				* _offsetFromBotCenter.x - (float) Math.sin(currentBotPosition.getAngleInRadian())
+				* _offsetFromBotCenter.y;
+		float y = currentBotPosition.getY() + (float) Math.sin(currentBotPosition.getAngleInRadian())
+				* _offsetFromBotCenter.x + (float) Math.cos(currentBotPosition.getAngleInRadian())
+				* _offsetFromBotCenter.y;
+
+		float angle = Position.normalizeAngle_plusMinusPi(currentBotPosition.getAngleInRadian()
+				+ _offsetAngleFromBotCenter);
+
+		return new Position(x, y, angle);
+	}
+	
+	static public Position addOffset(Position botPosition, Position offset)
+	{
+		float x = botPosition.getX() + (float) Math.cos(botPosition.getAngleInRadian())
+				* offset.getX() - (float) Math.sin(botPosition.getAngleInRadian())
+				* offset.getY();
+		float y = botPosition.getY() + (float) Math.sin(botPosition.getAngleInRadian())
+				* offset.getX() + (float) Math.cos(botPosition.getAngleInRadian())
+				* offset.getY();
+
+		float angle = Position.normalizeAngle_plusMinusPi(botPosition.getAngleInRadian()
+				+ offset.getAngleInRadian());
+
 		return new Position(x, y, angle);
 	}
 
 	@Override
 	public synchronized void callback_PositionChanged(Position newPosition)
-	{	
-		int updateDifferencePosition = Math.round(Position.calculatDistance(_position, newPosition));
-		int updateDifferenceAngle_grad = Math.abs(Math.round(_position.getAngleInDegree() - newPosition.getAngleInDegree()));
-	
-		_position = addOffset(newPosition);
-		
-		for(IPositionListener listener : _listeners)
+	{
+		newPosition = addOffset(newPosition);
+		int updateDifferencePosition;
+		int updateDifferenceAngle_grad;
+
+		for (IPositionListener listener : _listeners)
 		{
-			listener.callback_PositionChanged(_position);
+			listener.callback_PositionChanged(newPosition);
 		}
-		
-		for(SimpleEntry<Integer, Integer> minChangeEntry : _listeners_changeDelta.keySet())
+
+		for (SimpleEntry<Integer, Integer> minChangeEntry : _listeners_changeDelta.keySet())
 		{
-			if(updateDifferenceAngle_grad >= minChangeEntry.getValue() || updateDifferencePosition >= minChangeEntry.getKey())
+			for (SimpleEntry<IPositionListener, Position> listener : _listeners_changeDelta.get(minChangeEntry))
 			{
-				for(IPositionListener listener : _listeners_changeDelta.get(minChangeEntry))
+				updateDifferencePosition = Math.round(Position.calculatDistance(listener.getValue(), newPosition));
+				updateDifferenceAngle_grad = Math.abs(Math.round(listener.getValue().getAngleInDegree()
+						- newPosition.getAngleInDegree()));
+
+				if (updateDifferenceAngle_grad >= minChangeEntry.getValue()
+						|| updateDifferencePosition >= minChangeEntry.getKey())
 				{
-					listener.callback_PositionChanged(_position);
+					listener.getKey().callback_PositionChanged(newPosition);
+					listener.setValue(newPosition);
 				}
 			}
 		}
+
+		_position = newPosition;
 	}
-	
+
 	@Override
 	public synchronized void callback_cyclic(int callbackIntervalInfo_ms)
 	{
 		LinkedList<IPositionListener> listeners = _listeners_cyclic.get(callbackIntervalInfo_ms);
 		Position newPosition = getBotPosition();
-		
-		for(IPositionListener listener : listeners)
+
+		for (IPositionListener listener : listeners)
 		{
 			listener.callback_PositionChanged(newPosition);
 		}
@@ -141,29 +162,41 @@ public class PositionSupplier implements IPositionSupplier, IPositionListener, I
 	@Override
 	public synchronized void register(IPositionListener listener, int callbackInterval_ms)
 	{
-		if(_listeners_cyclic.containsKey(callbackInterval_ms))
+		throw new UnsupportedOperationException("Needs bugfixing -> see TODO");
+		
+		//TODO start a cyclic caller when a new callbackInterval_ms is received 
+		//Instead of waiting for a callback with an certain interval it would also possible to measure the time from the last call see if  > callbackInterval_ms
+		
+	/*
+		if (_listeners_cyclic.containsKey(callbackInterval_ms))
 		{
 			_listeners_cyclic.get(callbackInterval_ms).add(listener);
 			return;
 		}
-		
+
 		_listeners_cyclic.put(callbackInterval_ms, new LinkedList<IPositionListener>());
-		_listeners_cyclic.get(callbackInterval_ms).add(listener);		
+		_listeners_cyclic.get(callbackInterval_ms).add(listener);
+		*/
 	}
 
 	@Override
-	public synchronized void register(IPositionListener listener,
-			int callbackPositionDelta, int callbackAngleDelta_deg)
+	public synchronized void register(IPositionListener listener, int callbackPositionDelta, int callbackAngleDelta_deg)
 	{
-		SimpleEntry<Integer, Integer> minChangeEntry = new SimpleEntry<Integer, Integer>(callbackPositionDelta, callbackAngleDelta_deg);
+		throw new UnsupportedOperationException("Needs bugfixing -> see TODO");
 		
-		if(_listeners_changeDelta.containsKey(minChangeEntry))
+		//TODO Instead of waiting for ONE change > delta sum up the changes over time and wait till that is > delta 
+		/*
+		SimpleEntry<Integer, Integer> minChangeEntry = new SimpleEntry<Integer, Integer>(callbackPositionDelta,
+				callbackAngleDelta_deg);
+
+		if (_listeners_changeDelta.containsKey(minChangeEntry))
 		{
-			_listeners_changeDelta.get(minChangeEntry).add(listener);
+			_listeners_changeDelta.get(minChangeEntry).add(new SimpleEntry<IPositionListener, Position>(listener, _position));
 			return;
 		}
-		
-		_listeners_changeDelta.put(minChangeEntry, new LinkedList<IPositionListener>());
-		_listeners_changeDelta.get(minChangeEntry).add(listener);		
+
+		_listeners_changeDelta.put(minChangeEntry,  new LinkedList<SimpleEntry<IPositionListener, Position>>());
+		_listeners_changeDelta.get(minChangeEntry).add(new SimpleEntry<IPositionListener, Position>(listener, _position));
+		*/
 	}
 }

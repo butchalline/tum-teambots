@@ -96,7 +96,7 @@ public class ParticleFilter implements IPositionListener, IDistanceListener
 			this.resample(1);
 		}
 	}
-
+	
 	protected void resample(float totalWeight)
 	{
 		// Resamplen
@@ -132,6 +132,7 @@ public class ParticleFilter implements IPositionListener, IDistanceListener
 		Particle[] newParticles = new Particle[_particles.length];
 		Particle actualParticle = _particles[0];
 		actualParticle.setWeigth(1.0f / _particleAmount);
+		actualParticle.resetWeightCounter();
 		int newParticleIndex = 0;
 		int actualParticleIndex = 0;
 
@@ -146,6 +147,7 @@ public class ParticleFilter implements IPositionListener, IDistanceListener
 				actualParticleIndex += 1;
 				actualParticle = _particles[actualParticleIndex];
 				actualParticle.setWeigth(totalWeight / _particleAmount);
+				actualParticle.resetWeightCounter();
 			}
 		}
 

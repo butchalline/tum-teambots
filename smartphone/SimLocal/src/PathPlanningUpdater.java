@@ -5,7 +5,7 @@ import teambot.common.data.Position;
 import teambot.common.usb.UsbHeader;
 import teambot.common.utils.Constants;
 import teambot.common.utils.Direction;
-import teambot.common.utils.MathUtil;
+import teambot.common.utils.MathHelper;
 import teambot.common.utils.ThreadUtil;
 import teambot.common.utils.TimestampHelper;
 import teambot.communication.TBFrame;
@@ -26,20 +26,20 @@ public class PathPlanningUpdater implements Runnable {
 	protected int distanceUpdateSpeedInHz;
 	protected Direction direction = Direction.up;
 	protected PointF targetPoint;
-	protected ParticleFilter filter;
+	protected ParticleFilter mParticleFilter;
 	protected MapConverter converter = new MapConverter(cellSize_mm);
 
 	public PathPlanningUpdater(SimulatorProxy proxy, ParticleFilter filter, int distanceUpdateSpeedInHz) {
 		simulator = proxy;
 		this.distanceUpdateSpeedInHz = distanceUpdateSpeedInHz;
-		this.filter = filter;
+		this.mParticleFilter = filter;
 	}
 
 	@Override
 	public void run() {
 		running.set(true);
 
-		PathPlanningAgentUpdater distanceUpdater = new PathPlanningAgentUpdater(simulator, agent, position, filter, converter, distanceUpdateSpeedInHz);
+		PathPlanningAgentUpdater distanceUpdater = new PathPlanningAgentUpdater(simulator, agent, position, mParticleFilter, converter, distanceUpdateSpeedInHz);
 		int walkedFieldsCount = 0;
 		ArrayDeque<PointF> path = new ArrayDeque<PointF>(100);
 		float angleChange;
@@ -84,7 +84,7 @@ public class PathPlanningUpdater implements Runnable {
 			//System.out.println("targetPoint: " + targetPoint.x + " - " + targetPoint.y);
 			angleChange = calcRotation(targetPoint);
 			targetAngle = angleChange + position.getAngleInRadian();
-			distance = MathUtil.calcDistance(targetPoint, position.getPosition());
+			distance = MathHelper.calculateDistance(targetPoint, position.getPosition());
 			//System.out.println("targetAngle: " + Constants.RadianToDegree * targetAngle);
 			//System.out.println("distance: " + distance);
 

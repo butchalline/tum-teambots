@@ -1,3 +1,4 @@
+package teambot.test;
 import teambot.slam.NoiseProvider;
 import teambot.slam.Particle;
 import teambot.slam.ParticleFilter;

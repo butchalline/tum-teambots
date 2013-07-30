@@ -77,7 +77,7 @@ public class ParticleFilter implements IPositionListener, IDistanceListener
 			totalWeight += particle.updateAndGetWeight(distance_mm);
 		}
 
-		// Abfrage ob Resamplen nötig
+		// check if re-sampling is needed
 		float invNeff = 0;
 		for (Particle particle : _particles)
 		{
@@ -99,12 +99,11 @@ public class ParticleFilter implements IPositionListener, IDistanceListener
 	
 	protected void resample(float totalWeight)
 	{
-		// Resamplen
-		// Weights sortieren (quasi Dartscheibe erstellen)
 		float[] weightArray = new float[_particles.length];
 		
 		shuffleArray(_particles);
 		
+		// sort weights, kind of like a dart board
 		weightArray[0] = _particles[0].getWeight() / totalWeight;
 		for (int i = 1; i < _particles.length; i++)
 		{
@@ -112,7 +111,7 @@ public class ParticleFilter implements IPositionListener, IDistanceListener
 		}
 		weightArray[weightArray.length - 1] = 1;
 
-		// Zufallszahlen erstellen (maybe not perfectly working)
+		// Generate random numbers (maybe not perfectly working)
 		float[] randomSortedArray = new float[_particles.length];
 		float randomSum = 0;
 		for (int i = 0; i < _particles.length; i++)
@@ -127,8 +126,7 @@ public class ParticleFilter implements IPositionListener, IDistanceListener
 			randomSortedArray[i] = randomSortedArray[i] / randomSum; 
 		}
 
-		// Resamplen
-
+		// re-sample
 		Particle[] newParticles = new Particle[_particles.length];
 		Particle actualParticle = _particles[0];
 		actualParticle.setWeigth(1.0f / _particleAmount);
@@ -151,7 +149,6 @@ public class ParticleFilter implements IPositionListener, IDistanceListener
 			}
 		}
 
-		// Set Weight
 		_particles = newParticles;
 	}
 

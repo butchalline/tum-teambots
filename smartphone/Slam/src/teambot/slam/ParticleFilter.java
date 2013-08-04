@@ -5,7 +5,9 @@ import teambot.common.interfaces.IDistanceListener;
 import teambot.common.interfaces.IPositionListener;
 import teambot.visualizer.HistogramViewer;
 
+import java.awt.List;
 import java.util.Random;
+import java.util.Vector;
 
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -16,11 +18,11 @@ public class ParticleFilter implements IPositionListener, IDistanceListener
 	private Random random = new Random(System.currentTimeMillis());
 	private int _particleAmount;
 	private float _nThresh;
-	private static float _nThresholdDivider = 1.5f;
+	private static float _nThresholdDivider = 2f;
 
 	protected Particle[] _particles;
 	protected Position _latestPosition = null;
-	protected HistogramViewer histogramViewer = new HistogramViewer("Particle Histogram", 0.02f);
+	protected HistogramViewer histogramViewer;
 
 	float _slidingFactor = 0.01f;
 	BeamModel _beamModel;
@@ -31,6 +33,8 @@ public class ParticleFilter implements IPositionListener, IDistanceListener
 		_particleAmount = particleAmount;
 		_nThresh = _particleAmount / _nThresholdDivider;
 		_particles = new Particle[_particleAmount];
+
+		histogramViewer = new HistogramViewer("Particle Histogram", 3.0f / _particleAmount);
 
 		BeamProbabilities rayProbability = new BeamProbabilities(p0, pOccupation, pFree);
 		_beamModel = new BeamModel(cellSize_mm, maxRange_mm);
@@ -72,10 +76,41 @@ public class ParticleFilter implements IPositionListener, IDistanceListener
 	public void callback_NewMeasurement(float distance_mm)
 	{
 		float totalWeight = 0;
+		float heighestNewWeight = 0;
+		float tempWeight = 0;
+
+		Vector<Particle> outOfRangeParticles = new Vector<Particle>();
+
 		for (Particle particle : _particles)
 		{
-			totalWeight += particle.updateAndGetWeight(distance_mm);
+			tempWeight = particle.updateAndGetNewWeight(distance_mm);
+
+			if (tempWeight < 0)
+			{
+				outOfRangeParticles.add(particle);
+				continue;
+			}
+
+			if (tempWeight > heighestNewWeight)
+				heighestNewWeight = tempWeight;
+
+			totalWeight += particle.getWeight();
 		}
+
+		if (heighestNewWeight == 0)
+			heighestNewWeight = 1;
+
+		for (Particle particle : outOfRangeParticles)
+		{
+			particle.setWeigth(particle.getWeight() * heighestNewWeight);
+			totalWeight += particle.getWeight();
+		}
+
+		Particle bestParticle = getBestParticle();
+
+		float distanceBest = bestParticle.getDistanceOnMap();
+
+//		System.out.println("Distance diff: " + (distance_mm - distanceBest) + "; Map: " + distanceBest);
 
 		// check if re-sampling is needed
 		float invNeff = 0;
@@ -83,26 +118,52 @@ public class ParticleFilter implements IPositionListener, IDistanceListener
 		{
 			particle.setWeigth(particle.getWeight() / totalWeight);
 			invNeff += (particle.getWeight() * particle.getWeight());
+		}
 
+		float meanPositionX = 0;
+		float meanPositionY = 0;
+
+		for (Particle particle : _particles)
+		{
+			meanPositionX += particle.getPosition().getX();
+			meanPositionY += particle.getPosition().getY();
+		}
+
+		meanPositionX = meanPositionX / _particles.length;
+		meanPositionY = meanPositionY / _particles.length;
+
+		float positionDeviationX = 0;
+		float positionDeviationY = 0;
+		for (Particle particle : _particles)
+		{
+			positionDeviationX += (meanPositionX - particle.getPosition().getX())
+					* (meanPositionX - particle.getPosition().getX());
+			positionDeviationY += (meanPositionY - particle.getPosition().getY())
+					* (meanPositionY - particle.getPosition().getY());
 		}
 
 		updateParticleHistogram();
 
-		if (1 / invNeff < _nThresh)
+		float positionDeviation = (float) Math.sqrt((positionDeviationX + positionDeviationY)
+				* (positionDeviationX + positionDeviationY));
+
+		if (1 / invNeff < _nThresh)// || positionDeviation > 10 * 1000 * 1000)
 		{
 			// printParticlesInfo();
-			System.out.println("1/invNeff = " + (1 / invNeff) + "; nThres = " + _nThresh);
-			System.out.println("Resampling");
+			// System.out.println("positionDeviation = " + positionDeviation);
+			// System.out.println("1/invNeff = " + (1 / invNeff) + "; nThres = "
+			// + _nThresh);
+			// System.out.println("Resampling");
 			this.resample(1);
 		}
 	}
-	
+
 	protected void resample(float totalWeight)
 	{
 		float[] weightArray = new float[_particles.length];
-		
+
 		shuffleArray(_particles);
-		
+
 		// sort weights, kind of like a dart board
 		weightArray[0] = _particles[0].getWeight() / totalWeight;
 		for (int i = 1; i < _particles.length; i++)
@@ -116,15 +177,15 @@ public class ParticleFilter implements IPositionListener, IDistanceListener
 		float randomSum = 0;
 		for (int i = 0; i < _particles.length; i++)
 		{
-//			randomSortedArray[i] = (i + random.nextFloat()) / _particles.length;
-			randomSortedArray[i] = random.nextFloat();
-			randomSum += randomSortedArray[i]; 
+			randomSortedArray[i] = (i + random.nextFloat()) / _particles.length;
+			// randomSortedArray[i] = random.nextFloat();
+			// randomSum += randomSortedArray[i];
 		}
-		
-		for (int i = 0; i < _particles.length; i++)
-		{
-			randomSortedArray[i] = randomSortedArray[i] / randomSum; 
-		}
+
+		// for (int i = 0; i < _particles.length; i++)
+		// {
+		// randomSortedArray[i] = randomSortedArray[i] / randomSum;
+		// }
 
 		// re-sample
 		Particle[] newParticles = new Particle[_particles.length];

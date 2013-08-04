@@ -28,7 +28,7 @@ public class Particle
 	protected int _weightUpdateCounter = 1;
 	static float _occupiedPointWeightMultiplier = 3;
 	static float _epsilon = Float.MIN_VALUE;
-	static NormalDistribution normalDistributionZeroMean = new NormalDistribution(0, 20);
+	static NormalDistribution normalDistributionZeroMean = new NormalDistribution(0, 180);
 
 	public Particle(Position position, ProbabilityMap map, BeamModel beamModel, NoiseProvider noise, float slidingFactor)
 	{
@@ -57,7 +57,7 @@ public class Particle
 		_beamModel = new BeamModel(particle._beamModel);
 		_noiseProvider = new NoiseProvider(particle._noiseProvider);
 		_weight = particle._weight;
-		_slidingFactor = particle._slidingFactor;		
+		_slidingFactor = particle._slidingFactor;
 		_weightUpdateCounter = particle._weightUpdateCounter;
 	}
 
@@ -77,7 +77,58 @@ public class Particle
 		_position = new Position(startPosition);
 	}
 
-	public float updateAndGetWeight(float measuredDistance_mm)
+	public float updateAndGetNewWeight(float measuredDistance_mm)
+	{
+		LinkedList<SimpleEntry<Point, Occupation>> measuredPoints = _beamModel.calculateBeamMaxRange(PositionSupplier
+				.addOffset(_position, new Position(0.0f, 0f, 0f)));
+
+		float newWeight = 1;
+		float mapDistance_mm = -1;
+		Float pointProbability;
+
+		for (SimpleEntry<Point, Occupation> pointOccupation : measuredPoints)
+		{
+			pointProbability = _map.getProbability(pointOccupation.getKey());
+
+			if (pointProbability == null)
+				continue;
+
+			if (pointProbability > 0.5f)// _noiseProvider.getRandom())
+			{
+				mapDistance_mm = MathHelper.calculateDistance(_position.getPosition(),
+						new PointF(pointOccupation.getKey().x * _beamModel.getCellSize(), pointOccupation.getKey().y
+								* _beamModel.getCellSize()));
+				break;
+			}
+		}
+
+		if (mapDistance_mm != -1)
+		{
+
+			if (Math.abs(mapDistance_mm - measuredDistance_mm) < _beamModel.getCellSize() * 0.5f)
+				newWeight = (float) normalDistributionZeroMean.density(_beamModel.getCellSize() * 0.5f);
+			else
+				newWeight = (float) normalDistributionZeroMean.density(mapDistance_mm - measuredDistance_mm);
+
+			_weightUpdateCounter++;
+
+			_weight = _weight * newWeight;
+			// _weight = _weight * (1 - _slidingFactor) + newWeight *
+			// _slidingFactor;
+			// _weight = _weight * (1 - (1 / _weightUpdateCounter)) + newWeight
+			// / _weightUpdateCounter;
+		} else
+			newWeight = -1;
+
+		measuredPoints = _beamModel.calculateBeam(measuredDistance_mm,
+				PositionSupplier.addOffset(_position, new Position(0.0f, 0f, 0f)));
+
+		_map.update(measuredPoints);
+		return newWeight;
+
+	}
+
+	public float getDistanceOnMap()
 	{
 		LinkedList<SimpleEntry<Point, Occupation>> measuredPoints = _beamModel.calculateBeamMaxRange(PositionSupplier
 				.addOffset(_position, new Position(0.0f, 0f, 0f)));
@@ -101,23 +152,8 @@ public class Particle
 				break;
 			}
 		}
-//		if (Math.abs(mapDistance_mm - measuredDistance_mm) < 2 * _beamModel.getCellSize() + 1)
-//			newWeight = (float) normalDistributionZeroMean.density(2 * _beamModel.getCellSize() + 1);
-//		else
-			newWeight = (float) normalDistributionZeroMean.density(mapDistance_mm - measuredDistance_mm);
 
-		_weightUpdateCounter++;
-		
-		// _weight = _weight * newWeight;
-//		_weight = _weight * (1 - _slidingFactor) + newWeight * _slidingFactor;
-		_weight = _weight * (1 - (1 / _weightUpdateCounter)) + newWeight / _weightUpdateCounter;
-
-		measuredPoints = _beamModel.calculateBeam(measuredDistance_mm,
-				PositionSupplier.addOffset(_position, new Position(0.0f, 0f, 0f)));
-
-		_map.update(measuredPoints);
-		return _weight;
-
+		return mapDistance_mm;
 	}
 
 	public float getWeight()
@@ -137,9 +173,12 @@ public class Particle
 
 	public void setWeigth(float weight)
 	{
+		int k = 0;
+		if (new Float(weight).isNaN() || new Float(weight).isInfinite())
+			k++;
 		_weight = weight;
 	}
-	
+
 	public void resetWeightCounter()
 	{
 		_weightUpdateCounter = 1;

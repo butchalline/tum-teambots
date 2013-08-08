@@ -1,26 +1,33 @@
 package teambot.common;
 
 import teambot.common.interfaces.ICyclicCallback;
+import teambot.common.interfaces.IBotKeeper;
 
 public class BotNetworkLookUp implements ICyclicCallback
 {
-	protected CyclicCaller cyclicCaller;
+	protected CyclicCaller _cyclicCaller;
 	protected String _constIpPart = "0.0.0.";
 	protected int _lastByeOfLocalBotIp = 0;
+	
+	protected NetworkHub _networkHub;
+	protected IBotKeeper _callbackListener;
 
-	public BotNetworkLookUp()
+	public BotNetworkLookUp(NetworkHub networkHub, IBotKeeper objectForCallback)
 	{
 		String[] ipParts = Bot.id().split("\\.");
 		_constIpPart = ipParts[0] + "." + ipParts[1] + "." + ipParts[2] + ".";
 		_lastByeOfLocalBotIp = Integer.parseInt(ipParts[3]);
 
-		cyclicCaller = new CyclicCaller(this, Settings.sleepTimeBetweenBotLookUps_ms);
-		new Thread(cyclicCaller).start();
+		_networkHub = networkHub;
+		_callbackListener = objectForCallback;
+		
+		_cyclicCaller = new CyclicCaller(this, Settings.sleepTimeBetweenBotLookUps_ms);
+		new Thread(_cyclicCaller).start();
 	}
 
 	public void stop()
 	{
-		cyclicCaller.running.set(false);
+		_cyclicCaller.running.set(false);
 	}
 
 	@Override
@@ -37,15 +44,15 @@ public class BotNetworkLookUp implements ICyclicCallback
 
 			ip = _constIpPart + Integer.toString(i);
 
-			if (Bot.isRegistered(ip))
+			if (_callbackListener.isRegistered(ip))
 				continue;
 
-			proxy = Bot.networkHub().connectionPossible(ip);
+			proxy = _networkHub.connectionPossible(ip);
 			if (proxy != null)
 			{
 				try
 				{
-					Bot.registerBot(proxy.getIdRemote(), proxy);
+					_callbackListener.registerBot(proxy.getIdRemote(), proxy);
 				} catch (Ice.TimeoutException timoutEx)
 				{
 					Settings.timoutOnSingleBotLookUp_ms += 50;

@@ -2,5 +2,5 @@ package teambot.remote;
 
 public interface IVelocityListener
 {
-	public void onVelocityChange(VelocitySupplier.Direction direction, byte rightSpeed, byte leftSpeed);
+	public void onVelocityChange(float leftVelocity, float rightVelocity);
 }

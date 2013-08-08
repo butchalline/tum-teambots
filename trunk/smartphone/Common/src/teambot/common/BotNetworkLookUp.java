@@ -51,7 +51,10 @@ public class BotNetworkLookUp implements ICyclicCallback
 					Settings.timoutOnSingleBotLookUp_ms += 50;
 					i--;
 					System.out.println("Timeout is too low, increased to " + Settings.timoutOnSingleBotLookUp_ms);
+					continue;
 				}
+				if(Settings.timoutOnSingleBotLookUp_ms >= 30)
+					Settings.timoutOnSingleBotLookUp_ms -= 10;
 			}
 
 		}

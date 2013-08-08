@@ -3,6 +3,8 @@ package teambot.common;
 import java.util.Vector;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import teambot.common.interfaces.IBotKeeper;
+
 import Ice.Application;
 import Ice.ConnectFailedException;
 import Ice.NoEndpointException;
@@ -18,13 +20,17 @@ public class NetworkHub extends Application implements Runnable
 	private Ice.Communicator _communicator = null;
 	Vector<Ice.ObjectAdapter> _objectAdapters = new Vector<Ice.ObjectAdapter>();
 
-	public NetworkHub()
+	protected IBotKeeper _bot;
+
+	public NetworkHub(IBotKeeper bot)
 	{
+		_bot = bot;
 	}
 
-	public NetworkHub(boolean verbose)
+	public NetworkHub(IBotKeeper bot, boolean verbose)
 	{
-		this._verbose = verbose;
+		_bot = bot;
+		_verbose = verbose;
 	}
 
 	public synchronized void start()
@@ -62,22 +68,13 @@ public class NetworkHub extends Application implements Runnable
 
 		Ice.StringSeqHolder argsH = new Ice.StringSeqHolder(args);
 		Ice.Properties properties = Ice.Util.createProperties(argsH);
-		properties.setProperty("Ice.RetryIntervals", "-1"); // -1 => don't
-															// retry, which is
-															// better for bot
-															// discovery on the
-															// network
-		properties.setProperty("Ice.Default.CollocationOptimized", "0"); // always
-																			// use
-																			// network
-																			// connections,
-																			// even
-																			// if
-																			// the
-																			// loopback
-																			// interface
-																			// is
-																			// used
+
+		// -1 => don't retry, which is better for bot discovery in the network
+		properties.setProperty("Ice.RetryIntervals", "-1");
+
+		// always use network connections,
+		// even if the loopback interface is used
+		properties.setProperty("Ice.Default.CollocationOptimized", "0");
 
 		if (this._verbose)
 		{
@@ -107,7 +104,7 @@ public class NetworkHub extends Application implements Runnable
 
 	public ITeambotPrx connectToRemoteProxy_Blocking(String proxyName, String ip, String port, boolean useTcp)
 	{
-		while (!Bot.isRegistered(ip))
+		while (!_bot.isRegistered(ip))
 		{
 			try
 			{
@@ -123,7 +120,7 @@ public class NetworkHub extends Application implements Runnable
 	protected synchronized ITeambotPrx connectToRemoteProxy(String proxyName, String ip, String port, boolean useTcp)
 	{
 
-		if (!Bot.isRegistered(ip))
+		if (!_bot.isRegistered(ip))
 			return null;
 
 		ITeambotPrx proxy;

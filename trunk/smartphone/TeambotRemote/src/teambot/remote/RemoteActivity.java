@@ -4,6 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import teambot.DisplayInformation;
+import teambot.common.Bot;
+import teambot.common.BotNetworkLookUp;
+import teambot.common.ITeambotPrx;
+import teambot.common.NetworkHub;
+import teambot.common.interfaces.IBotKeeper;
 import teambot.common.interfaces.IInformationDisplayer;
 import teambot.remote.VelocityToPacketValues.Direction;
 import android.hardware.Sensor;
@@ -12,6 +17,8 @@ import android.os.Bundle;
 import android.app.Activity;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -21,7 +28,8 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 
-public class RemoteActivity extends Activity implements IVelocityListener, IPitchRollListener, IInformationDisplayer
+public class RemoteActivity extends Activity implements IVelocityListener, IPitchRollListener, IInformationDisplayer,
+		IBotKeeper
 {
 
 	protected TextView _textView_status;
@@ -47,6 +55,12 @@ public class RemoteActivity extends Activity implements IVelocityListener, IPitc
 	protected PitchRollSupplier _pitchRollSupplier;
 	protected VelocitySupplier _velocitySupplier;
 	protected Sensor _accelerometer;
+
+	protected NetworkHub _networkHub;
+	protected BotNetworkLookUp _botlookUp;
+
+	protected String _botId = null;
+	protected ITeambotPrx _bot = null;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -74,6 +88,7 @@ public class RemoteActivity extends Activity implements IVelocityListener, IPitc
 		_spinnerAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, _spinnerEntries);
 		_spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		_spinner_botSelection.setAdapter(_spinnerAdapter);
+		_spinner_botSelection.setOnItemSelectedListener(_listener_botSelection);
 
 		_pitchRollSupplier = new PitchRollSupplier();
 		_velocitySupplier = new VelocitySupplier(this);
@@ -83,18 +98,21 @@ public class RemoteActivity extends Activity implements IVelocityListener, IPitc
 		SensorManager sensorManager = ((SensorManager) getSystemService(SENSOR_SERVICE));
 		_accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
 		sensorManager.registerListener(_pitchRollSupplier, _accelerometer, SensorManager.SENSOR_DELAY_GAME);
+
+		_networkHub = new NetworkHub(this);
+		_botlookUp = new BotNetworkLookUp(_networkHub, this);
+		// _botlookUp.
 	}
 
 	private OnCheckedChangeListener _listener_onOffSwitch = new OnCheckedChangeListener()
 	{
-
 		@Override
 		public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
 		{
 			_on = isChecked;
 
 			if (!_on)
-				; // TODO send zero velocity to bot
+				_button_stop.performClick();
 		}
 	};
 
@@ -103,8 +121,25 @@ public class RemoteActivity extends Activity implements IVelocityListener, IPitc
 		@Override
 		public void onClick(View v)
 		{
-
 			_timestampStop = System.currentTimeMillis();
+		}
+	};
+
+	private OnItemSelectedListener _listener_botSelection = new OnItemSelectedListener()
+	{
+		@Override
+		public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
+		{
+			System.out.println("Bot selected: " + position);
+			_botId = _spinnerAdapter.getItem(position);
+			_bot = _networkHub.connectToRemoteUdpProxy(Bot.idToProxyName(_botId), _botId,
+					teambot.common.Settings.remoteControlPort);
+		}
+
+		@Override
+		public void onNothingSelected(AdapterView<?> arg0)
+		{
+
 		}
 	};
 
@@ -113,20 +148,17 @@ public class RemoteActivity extends Activity implements IVelocityListener, IPitc
 	{
 		_textView_pitch.setText(Float.toString(newPitch));
 		_textView_roll.setText(Float.toString(newRoll));
-
 	}
 
 	@Override
 	public void onVelocityChange(float leftVelocity, float rightVelocity)
 	{
-		if (!_on)
-			return;
-
 		if (System.currentTimeMillis() < _timestampStop + waitTimeAfterStop_ms)
 		{
 			leftVelocity = 0;
 			rightVelocity = 0;
-		}
+		} else if (!_on)
+			return;
 
 		if (_checkBox_disableRotation.isChecked())
 		{
@@ -138,23 +170,22 @@ public class RemoteActivity extends Activity implements IVelocityListener, IPitc
 
 		if (_checkBox_onlyRotation.isChecked())
 		{
-			if(packet[0] == Direction.FORWARD.ordinal() || packet[0] == Direction.BACKWARDS.ordinal())
+			if (packet[0] == Direction.FORWARD.ordinal() || packet[0] == Direction.BACKWARDS.ordinal())
 			{
 				leftVelocity = 0;
 				rightVelocity = 0;
 				packet[0] = (byte) Direction.FORWARD.ordinal();
 				packet[1] = 0;
 				packet[2] = 0;
-			}
-			else
+			} else
 			{
-				if(packet[0] == Direction.TURN_LEFT.ordinal())
+				if (packet[0] == Direction.TURN_LEFT.ordinal())
 					leftVelocity = -rightVelocity;
 				else
 					rightVelocity = -leftVelocity;
 			}
 		}
-		
+
 		if (packet[0] == Direction.FORWARD.ordinal())
 			_textView_direction.setText("forward");
 		else if (packet[0] == Direction.BACKWARDS.ordinal())
@@ -163,11 +194,12 @@ public class RemoteActivity extends Activity implements IVelocityListener, IPitc
 			_textView_direction.setText("left");
 		else if (packet[0] == Direction.TURN_RIGHT.ordinal())
 			_textView_direction.setText("right");
-		
+
 		_textView_velocityLeft.setText(Float.toString(leftVelocity));
 		_textView_velocityRight.setText(Float.toString(rightVelocity));
-		
-		// TODO send to Bot
+
+		if(_bot != null)
+			_bot.setVelocity(packet);
 	}
 
 	@Override
@@ -181,6 +213,21 @@ public class RemoteActivity extends Activity implements IVelocityListener, IPitc
 				continue;
 			_spinnerAdapter.add(id);
 		}
+	}
+
+	@Override
+	public synchronized boolean isRegistered(String botId)
+	{
+		int position = _spinnerAdapter.getPosition(botId);
+		if (position < 0)
+			return false;
+		return true;
+	}
+
+	@Override
+	public synchronized void registerBot(String botId, ITeambotPrx proxy)
+	{
+		_spinnerAdapter.add(botId);
 	}
 
 }

@@ -1,5 +1,6 @@
 package teambot.common;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -7,9 +8,11 @@ import teambot.DisplayInformation;
 import teambot.common.data.Pose;
 import teambot.common.interfaces.ICyclicCallback;
 import teambot.common.interfaces.IInformationDisplayer;
+import teambot.common.interfaces.IBotKeeper;
+import teambot.common.interfaces.IUsbIO;
 import Ice.Current;
 
-public class Bot extends _ITeambotDisp implements ICyclicCallback
+public class Bot extends _ITeambotDisp implements ICyclicCallback, IBotKeeper
 {
 	private static final long serialVersionUID = 1L;
 	static protected String _botId = null;
@@ -20,15 +23,17 @@ public class Bot extends _ITeambotDisp implements ICyclicCallback
 	static protected BotNetworkLookUp _lookUp;
 	static protected CyclicCaller _displayUpdater;
 
+	protected IUsbIO _usbIO;
 	protected IInformationDisplayer _display;
 
-	public Bot(String ip, IInformationDisplayer display)
+	public Bot(String ip, IUsbIO usbIO, IInformationDisplayer display)
 	{
 		_botId = ip;
-		_networkHub = new NetworkHub(Settings.debugIceConnections);
+		_networkHub = new NetworkHub(this, Settings.debugIceConnections);
 		_networkHub.start();
 		_networkHub.addLocalTcpProxy(this, botProxyName(), Settings.registerPort);
-		_lookUp = new BotNetworkLookUp();
+		_lookUp = new BotNetworkLookUp(_networkHub, this);
+		_usbIO = usbIO;
 		_display = display;
 	}
 
@@ -73,7 +78,7 @@ public class Bot extends _ITeambotDisp implements ICyclicCallback
 		return _pose;
 	}
 
-	static public synchronized boolean isRegistered(String botId)
+	public synchronized boolean isRegistered(String botId)
 	{
 		if (_registeredBots.containsKey(botId))
 			return true;
@@ -81,7 +86,7 @@ public class Bot extends _ITeambotDisp implements ICyclicCallback
 		return false;
 	}
 
-	static public synchronized void registerBot(String botId, ITeambotPrx proxy)
+	public synchronized void registerBot(String botId, ITeambotPrx proxy)
 	{
 		_registeredBots.put(botId, proxy);
 		System.out.println("New bot registered, id: " + botId);
@@ -127,5 +132,20 @@ public class Bot extends _ITeambotDisp implements ICyclicCallback
 
 		_display.display(new DisplayInformation());
 		// TODO
+	}
+
+	@Override
+	public void setVelocity(byte[] velocityPacket, Current __current)
+	{
+		if(_usbIO == null)
+			return;
+		
+		try
+		{
+			_usbIO.write(velocityPacket);
+		} catch (IOException e)
+		{
+			e.printStackTrace();
+		}
 	}
 }

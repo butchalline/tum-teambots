@@ -4,7 +4,7 @@ import java.util.AbstractMap.SimpleEntry;
 import java.util.HashMap;
 import java.util.LinkedList;
 
-import teambot.common.data.Position;
+import teambot.common.data.Pose;
 import teambot.common.interfaces.ICyclicCallback;
 import teambot.common.interfaces.IPositionListener;
 import teambot.common.interfaces.IPositionSupplier;
@@ -21,13 +21,13 @@ import android.graphics.PointF;
  */
 public class PositionSupplier implements IPositionSupplier, IPositionListener, ICyclicCallback
 {
-	protected Position _position = new Position(0, 0, 0);
+	protected Pose _position = new Pose(0, 0, 0);
 	protected PointF _offsetFromBotCenter = new PointF(0, 0);
 	protected float _offsetAngleFromBotCenter = 0;
 
 	protected LinkedList<IPositionListener> _listeners = new LinkedList<IPositionListener>();
-	protected HashMap<SimpleEntry<Integer, Integer>, LinkedList<SimpleEntry<IPositionListener, Position>>> _listeners_changeDelta = 
-			new HashMap<SimpleEntry<Integer, Integer>, LinkedList<SimpleEntry<IPositionListener, Position>>>();
+	protected HashMap<SimpleEntry<Integer, Integer>, LinkedList<SimpleEntry<IPositionListener, Pose>>> _listeners_changeDelta = 
+			new HashMap<SimpleEntry<Integer, Integer>, LinkedList<SimpleEntry<IPositionListener, Pose>>>();
 	protected HashMap<Integer, LinkedList<IPositionListener>> _listeners_cyclic = new HashMap<Integer, LinkedList<IPositionListener>>(
 			5);
 
@@ -49,7 +49,7 @@ public class PositionSupplier implements IPositionSupplier, IPositionListener, I
 		_position = addOffset(_position);
 	}
 
-	public synchronized Position getBotPosition()
+	public synchronized Pose getBotPosition()
 	{
 		return _position;
 	}
@@ -79,7 +79,7 @@ public class PositionSupplier implements IPositionSupplier, IPositionListener, I
 		return _position.getAngleInDegree();
 	}
 
-	private Position addOffset(Position currentBotPosition)
+	private Pose addOffset(Pose currentBotPosition)
 	{
 		float x = currentBotPosition.getX() + (float) Math.cos(currentBotPosition.getAngleInRadian())
 				* _offsetFromBotCenter.x - (float) Math.sin(currentBotPosition.getAngleInRadian())
@@ -88,13 +88,13 @@ public class PositionSupplier implements IPositionSupplier, IPositionListener, I
 				* _offsetFromBotCenter.x + (float) Math.cos(currentBotPosition.getAngleInRadian())
 				* _offsetFromBotCenter.y;
 
-		float angle = Position.normalizeAngle_plusMinusPi(currentBotPosition.getAngleInRadian()
+		float angle = Pose.normalizeAngle_plusMinusPi(currentBotPosition.getAngleInRadian()
 				+ _offsetAngleFromBotCenter);
 
-		return new Position(x, y, angle);
+		return new Pose(x, y, angle);
 	}
 	
-	static public Position addOffset(Position botPosition, Position offset)
+	static public Pose addOffset(Pose botPosition, Pose offset)
 	{
 		float x = botPosition.getX() + (float) Math.cos(botPosition.getAngleInRadian())
 				* offset.getX() - (float) Math.sin(botPosition.getAngleInRadian())
@@ -103,14 +103,14 @@ public class PositionSupplier implements IPositionSupplier, IPositionListener, I
 				* offset.getX() + (float) Math.cos(botPosition.getAngleInRadian())
 				* offset.getY();
 
-		float angle = Position.normalizeAngle_plusMinusPi(botPosition.getAngleInRadian()
+		float angle = Pose.normalizeAngle_plusMinusPi(botPosition.getAngleInRadian()
 				+ offset.getAngleInRadian());
 
-		return new Position(x, y, angle);
+		return new Pose(x, y, angle);
 	}
 
 	@Override
-	public synchronized void callback_PositionChanged(Position newPosition)
+	public synchronized void callback_PositionChanged(Pose newPosition)
 	{
 		newPosition = addOffset(newPosition);
 		int updateDifferencePosition;
@@ -123,9 +123,9 @@ public class PositionSupplier implements IPositionSupplier, IPositionListener, I
 
 		for (SimpleEntry<Integer, Integer> minChangeEntry : _listeners_changeDelta.keySet())
 		{
-			for (SimpleEntry<IPositionListener, Position> listener : _listeners_changeDelta.get(minChangeEntry))
+			for (SimpleEntry<IPositionListener, Pose> listener : _listeners_changeDelta.get(minChangeEntry))
 			{
-				updateDifferencePosition = Math.round(Position.calculatDistance(listener.getValue(), newPosition));
+				updateDifferencePosition = Math.round(Pose.calculatDistance(listener.getValue(), newPosition));
 				updateDifferenceAngle_grad = Math.abs(Math.round(listener.getValue().getAngleInDegree()
 						- newPosition.getAngleInDegree()));
 
@@ -145,7 +145,7 @@ public class PositionSupplier implements IPositionSupplier, IPositionListener, I
 	public synchronized void callback_cyclic(int callbackIntervalInfo_ms)
 	{
 		LinkedList<IPositionListener> listeners = _listeners_cyclic.get(callbackIntervalInfo_ms);
-		Position newPosition = getBotPosition();
+		Pose newPosition = getBotPosition();
 
 		for (IPositionListener listener : listeners)
 		{

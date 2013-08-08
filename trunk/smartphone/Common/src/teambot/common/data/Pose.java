@@ -3,22 +3,22 @@ package teambot.common.data;
 import teambot.common.utils.Constants;
 import android.graphics.PointF;
 
-public class Position {
+public class Pose {
 
 	protected PointF position;
 	protected float angleInRadian;
 
-	public Position(PointF position, float anlgeInRadian) {
+	public Pose(PointF position, float anlgeInRadian) {
 		this.position = position;
 		this.angleInRadian = anlgeInRadian;
 	}
 
-	public Position(float x, float y, float anlgeInRadian) {
+	public Pose(float x, float y, float anlgeInRadian) {
 		position = new PointF(x, y);
 		this.angleInRadian = anlgeInRadian;
 	}
 	
-	public Position(Position position) {
+	public Pose(Pose position) {
 		this.position = new PointF(position.getPosition());
 		this.angleInRadian = position.getAngleInRadian();
 	}
@@ -133,7 +133,7 @@ public class Position {
 		return angle;
 	}
 	
-	static public float calculatDistance(Position position1, Position position2) {
+	static public float calculatDistance(Pose position1, Pose position2) {
 		float x = (position1.getX() - position2.getX()) * (position1.getX() - position2.getX());
 		float y = (position1.getY() - position2.getY()) * (position1.getY() - position2.getY());
 		return (float) Math.sqrt(x + y);

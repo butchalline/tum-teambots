@@ -5,7 +5,7 @@ import teambot.common.Bot;
 public abstract class Data {
 
 	protected long timestamp;
-	protected String botId = Bot.getId();
+	protected String botId = Bot.id();
 	protected DataType type = DataType.UNSPECIFIED;
 
 	public Data() {

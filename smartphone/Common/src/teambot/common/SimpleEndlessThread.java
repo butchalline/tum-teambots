@@ -2,7 +2,7 @@ package teambot.common;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public abstract class SimpleThread implements Runnable
+public abstract class SimpleEndlessThread implements Runnable
 {
 	protected AtomicBoolean running = new AtomicBoolean(true);
 	
@@ -11,7 +11,7 @@ public abstract class SimpleThread implements Runnable
 	{
 		while(running.get())
 		{
-			doInThread();
+			doInThreadLoop();
 		}
 	}
 	
@@ -27,5 +27,5 @@ public abstract class SimpleThread implements Runnable
 		running.set(false);
 	}
 	
-	abstract protected void doInThread();
+	abstract protected void doInThreadLoop();
 }

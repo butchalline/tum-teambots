@@ -2,7 +2,7 @@ package teambot.common.interfaces;
 
 import java.io.IOException;
 
-import teambot.common.usb.UsbPacketClass;
+import teambot.common.usb.UsbPacket;
 
 public interface IUsbIO {
 	

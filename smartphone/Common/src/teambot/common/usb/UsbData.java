@@ -5,20 +5,24 @@ import teambot.common.utils.IllegalByteValueException;
 
 public class UsbData {
 
-	protected byte[] data;
+	protected byte[] _data;
 	
 	public UsbData(int[] data) throws IllegalByteValueException {
 		setData(data);
 	}
 	
+	public UsbData(byte[] data) {
+		_data = data;
+	}
+	
 	protected void setData(int[] data) throws IllegalByteValueException {
-		this.data = new byte[data.length];
+		_data = new byte[data.length];
 		for(int i = 0; i < data.length; i++) {
-			this.data[i] = ByteHelper.checkedByteConversion(data[i]);
+			_data[i] = ByteHelper.checkedByteConversion(data[i]);
 		}		
 	}
 	
 	public byte[] asByteArray() {
-		return data;
+		return _data;
 	}
 }

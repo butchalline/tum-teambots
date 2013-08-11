@@ -9,4 +9,12 @@ public class ThreadUtil {
 			e.printStackTrace();
 		}
 	}
+	
+	static public void sleepMSecs(float ms) {
+		try {
+			Thread.sleep((long)(ms));
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
 }

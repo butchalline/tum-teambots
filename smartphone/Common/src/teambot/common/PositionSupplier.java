@@ -6,7 +6,7 @@ import java.util.LinkedList;
 
 import teambot.common.data.Pose;
 import teambot.common.interfaces.ICyclicCallback;
-import teambot.common.interfaces.IPositionListener;
+import teambot.common.interfaces.IPoseListener;
 import teambot.common.interfaces.IPositionSupplier;
 import android.graphics.PointF;
 
@@ -19,16 +19,16 @@ import android.graphics.PointF;
  * 
  * 
  */
-public class PositionSupplier implements IPositionSupplier, IPositionListener, ICyclicCallback
+public class PositionSupplier implements IPositionSupplier, IPoseListener, ICyclicCallback
 {
 	protected Pose _position = new Pose(0, 0, 0);
 	protected PointF _offsetFromBotCenter = new PointF(0, 0);
 	protected float _offsetAngleFromBotCenter = 0;
 
-	protected LinkedList<IPositionListener> _listeners = new LinkedList<IPositionListener>();
-	protected HashMap<SimpleEntry<Integer, Integer>, LinkedList<SimpleEntry<IPositionListener, Pose>>> _listeners_changeDelta = 
-			new HashMap<SimpleEntry<Integer, Integer>, LinkedList<SimpleEntry<IPositionListener, Pose>>>();
-	protected HashMap<Integer, LinkedList<IPositionListener>> _listeners_cyclic = new HashMap<Integer, LinkedList<IPositionListener>>(
+	protected LinkedList<IPoseListener> _listeners = new LinkedList<IPoseListener>();
+	protected HashMap<SimpleEntry<Integer, Integer>, LinkedList<SimpleEntry<IPoseListener, Pose>>> _listeners_changeDelta = 
+			new HashMap<SimpleEntry<Integer, Integer>, LinkedList<SimpleEntry<IPoseListener, Pose>>>();
+	protected HashMap<Integer, LinkedList<IPoseListener>> _listeners_cyclic = new HashMap<Integer, LinkedList<IPoseListener>>(
 			5);
 
 	public PositionSupplier()
@@ -110,57 +110,57 @@ public class PositionSupplier implements IPositionSupplier, IPositionListener, I
 	}
 
 	@Override
-	public synchronized void callback_PositionChanged(Pose newPosition)
+	public synchronized void callback_PoseChanged(Pose newPose)
 	{
-		newPosition = addOffset(newPosition);
+		newPose = addOffset(newPose);
 		int updateDifferencePosition;
 		int updateDifferenceAngle_grad;
 
-		for (IPositionListener listener : _listeners)
+		for (IPoseListener listener : _listeners)
 		{
-			listener.callback_PositionChanged(newPosition);
+			listener.callback_PoseChanged(newPose);
 		}
 
 		for (SimpleEntry<Integer, Integer> minChangeEntry : _listeners_changeDelta.keySet())
 		{
-			for (SimpleEntry<IPositionListener, Pose> listener : _listeners_changeDelta.get(minChangeEntry))
+			for (SimpleEntry<IPoseListener, Pose> listener : _listeners_changeDelta.get(minChangeEntry))
 			{
-				updateDifferencePosition = Math.round(Pose.calculatDistance(listener.getValue(), newPosition));
+				updateDifferencePosition = Math.round(Pose.calculatDistance(listener.getValue(), newPose));
 				updateDifferenceAngle_grad = Math.abs(Math.round(listener.getValue().getAngleInDegree()
-						- newPosition.getAngleInDegree()));
+						- newPose.getAngleInDegree()));
 
 				if (updateDifferenceAngle_grad >= minChangeEntry.getValue()
 						|| updateDifferencePosition >= minChangeEntry.getKey())
 				{
-					listener.getKey().callback_PositionChanged(newPosition);
-					listener.setValue(newPosition);
+					listener.getKey().callback_PoseChanged(newPose);
+					listener.setValue(newPose);
 				}
 			}
 		}
 
-		_position = newPosition;
+		_position = newPose;
 	}
 
 	@Override
 	public synchronized void callback_cyclic(int callbackIntervalInfo_ms)
 	{
-		LinkedList<IPositionListener> listeners = _listeners_cyclic.get(callbackIntervalInfo_ms);
+		LinkedList<IPoseListener> listeners = _listeners_cyclic.get(callbackIntervalInfo_ms);
 		Pose newPosition = getBotPosition();
 
-		for (IPositionListener listener : listeners)
+		for (IPoseListener listener : listeners)
 		{
-			listener.callback_PositionChanged(newPosition);
+			listener.callback_PoseChanged(newPosition);
 		}
 	}
 
 	@Override
-	public synchronized void register(IPositionListener listener)
+	public synchronized void register(IPoseListener listener)
 	{
 		_listeners.add(listener);
 	}
 
 	@Override
-	public synchronized void register(IPositionListener listener, int callbackInterval_ms)
+	public synchronized void register(IPoseListener listener, int callbackInterval_ms)
 	{
 		throw new UnsupportedOperationException("Needs bugfixing -> see TODO");
 		
@@ -180,7 +180,7 @@ public class PositionSupplier implements IPositionSupplier, IPositionListener, I
 	}
 
 	@Override
-	public synchronized void register(IPositionListener listener, int callbackPositionDelta, int callbackAngleDelta_deg)
+	public synchronized void register(IPoseListener listener, int callbackPositionDelta, int callbackAngleDelta_deg)
 	{
 		throw new UnsupportedOperationException("Needs bugfixing -> see TODO");
 		

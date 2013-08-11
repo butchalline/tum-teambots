@@ -31,16 +31,17 @@ public:
 		Backwards
 	};
 
-	Motor(u_char idMotor1 = MOTOR_ID_2, u_char idMotor2 = MOTOR_ID_1); // if id != 0 then Motor
+	Motor(u_char idMotor1 = MOTOR_ID_LEFT, u_char idMotor2 = MOTOR_ID_RIGHT, u_char idTabletMotor = MOTOR_ID_TABLET); // if id != 0 then Motor
 	void Init();
 	void setVelocity(u_short velocityRight, u_short velocityLeft, Direction directionRight = Forwards, Direction direchtionLeft = Forwards);
+	void setTabletVelocity(u_short velocityTablet, Direction tabletDirection);
 	void driveVeloctiy();
-	void readPosition();
 	void setID(int newMotorID);
 private:
 	DynamixelClass control;
 	u_char motorIdLeft;
 	u_char motorIdRight;
+	u_char motorIdTablet;
 
 	u_short targetVelocityLeft;
 	u_short currentVelocityLeft;
@@ -51,6 +52,11 @@ private:
 	u_short currentVelocityRight;
 	Direction targetDirectionRight;
 	Direction currentDirectionRight;
+
+	u_short targetVelocityTablet;
+	u_short currentVelocityTablet;
+	Direction targetDirectionTablet;
+	Direction currentDirectionTablet;
 
 	//-----------------------------------
 	//Regelung:

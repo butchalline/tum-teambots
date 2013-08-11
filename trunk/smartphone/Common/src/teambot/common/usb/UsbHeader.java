@@ -1,92 +1,129 @@
 package teambot.common.usb;
 
+import java.util.HashMap;
+import java.util.AbstractMap.SimpleEntry;
+
 import teambot.common.utils.ByteHelper;
 import teambot.common.utils.IllegalByteValueException;
 
 public enum UsbHeader {
 	
 	//TB_COMMAND_ID		
-	TB_COMMAND_REQUESTSTATE_VELOCITYDRIVE	(0x00, 0x00),
-	TB_COMMAND_REQUESTSTATE_POSITIONDRIVE	(0x00, 0x01),
-	TB_COMMAND_REQUESTSTATE_TURN			(0x00, 0x02),
-	TB_COMMAND_REQUESTSTATE_STOP			(0x00, 0x03),
-	TB_COMMAND_RESET						(0x00, 0x04),
+	TB_COMMAND_REQUESTSTATE_VELOCITYDRIVE	(0x00, 0x00, 0),
+	TB_COMMAND_REQUESTSTATE_POSITIONDRIVE	(0x00, 0x01, 0),
+	TB_COMMAND_REQUESTSTATE_TURN			(0x00, 0x02, 0),
+	TB_COMMAND_REQUESTSTATE_STOP			(0x00, 0x03, 0),
+	TB_COMMAND_RESET						(0x00, 0x04, 0),
 	
 	//TB_VELOCITY_ID
-	TB_VELOCITY_FORWARD		(0x01, 0x00),
-	TB_VELOCITY_BACKWARD	(0x01, 0x01),
+	TB_VELOCITY_FORWARD		(0x01, 0x00, 2),
+	TB_VELOCITY_BACKWARD	(0x01, 0x01, 2),
 	/**
 	 * Right wheel goes forwards, left goes backwards
 	 */
-	TB_VELOCITY_TURN_LEFT	(0x01, 0x02),
+	TB_VELOCITY_TURN_LEFT	(0x01, 0x02, 2),
 	/**
 	 * Left wheel goes forwards, right goes backwards
 	 */
-	TB_VELOCITY_TURN_RIGHT	(0x01, 0x03),
+	TB_VELOCITY_TURN_RIGHT	(0x01, 0x03, 2),
 		
 	//TB_POSITION_ID
 	/**
 	 * In millimeters
 	 */
-	TB_POSITION_FORWARD		(0x02, 0x00),
+	TB_POSITION_FORWARD		(0x02, 0x00, 2),
 	/**
 	 * In millimeters
 	 */
-	TB_POSITION_BACKWARD	(0x02, 0x01),
+	TB_POSITION_BACKWARD	(0x02, 0x01, 2),
 	/**
 	 * Distance as degrees * 100
 	 */
-	TB_POSITION_TURN_RIGHT	(0x02, 0x02),
+	TB_POSITION_TURN_RIGHT	(0x02, 0x02, 2),
 	/**
 	 * Distance as degrees * 100
 	 */
-	TB_POSITION_TURN_LEFT	(0x02, 0x03),
+	TB_POSITION_TURN_LEFT	(0x02, 0x03, 2),
 
 	
 	//TB_DATA_ID
 	/**
 	 * Distance left | distance middle | distance right
 	 */
-	TB_DATA_INFRARED	(0x03, 0x00),
+	TB_DATA_INFRARED	(0x03, 0x00, 3),
 	
 	
 	//TB_ERROR_ID
-	TB_ERROR_TRACE		(0x42, 0x00),
-	TB_ERROR_DEBUG		(0x42, 0x01),
-	TB_ERROR_LOG		(0x42, 0x02),
-	TB_ERROR_INFO		(0x42, 0x03),
-	TB_ERROR_ERROR		(0x42, 0x04);
+	TB_ERROR_TRACE		(0x42, 0x00, 0),
+	TB_ERROR_DEBUG		(0x42, 0x01, 0),
+	TB_ERROR_LOG		(0x42, 0x02, 0),
+	TB_ERROR_INFO		(0x42, 0x03, 0),
+	TB_ERROR_ERROR		(0x42, 0x04, 0);
 	
 	
-	protected byte id = (byte) 0xFF;
-	protected byte subId = (byte) 0xFF;
-	protected byte[] timestamp = new byte[2];
+	public static final int timeStampSize = 2;
 	
-	UsbHeader(int id, int subId) {
-		this.id = (byte)id;
-		this.subId = (byte)subId;
+	protected byte _id = (byte) 0xFF;
+	protected byte _subId = (byte) 0xFF;
+	protected byte[] _timestamp = new byte[timeStampSize];
+	protected int _dataByteCount;
+	
+	UsbHeader(int id, int subId, int dataByteCount) {
+		_id = (byte)id;
+		_subId = (byte)subId;
+		_dataByteCount = dataByteCount;
+	}
+	
+	@SuppressWarnings("serial")
+	private static final HashMap<SimpleEntry<Byte, Byte>, UsbHeader> headerMap = new HashMap<SimpleEntry<Byte, Byte>, UsbHeader>()
+	{
+		{
+			for (UsbHeader headerEnum : UsbHeader.values())
+			{
+				put(new SimpleEntry<Byte, Byte>(headerEnum._id, headerEnum._subId), headerEnum);
+			}
+		}
+	}; 
+	
+	public static UsbHeader getHeader(byte id, byte subId)
+	{
+		return headerMap.get(new SimpleEntry<Byte, Byte>(id, subId));
+	}
+	
+	static public int getHeaderLength()
+	{
+		return TB_COMMAND_REQUESTSTATE_VELOCITYDRIVE.asByteArray().length;
 	}
 	
 	public void setTimestamp(int timestamp) throws IllegalByteValueException {
-		this.timestamp[0] = ByteHelper.checkedByteConversion(timestamp & 0xFF00 >> 8);
-		this.timestamp[1] = ByteHelper.checkedByteConversion(timestamp & 0x00FF);
+		_timestamp[0] = ByteHelper.checkedByteConversion(timestamp & 0xFF00 >> 8);
+		_timestamp[1] = ByteHelper.checkedByteConversion(timestamp & 0x00FF);
 	}
 	
 	public void setTimestamp(long timestamp) throws IllegalByteValueException {
-		this.timestamp[0] = ByteHelper.checkedByteConversion(timestamp & 0xFF00 >> 8);
-		this.timestamp[1] = ByteHelper.checkedByteConversion(timestamp & 0x00FF);
+		_timestamp[0] = ByteHelper.checkedByteConversion(timestamp & 0xFF00 >> 8);
+		_timestamp[1] = ByteHelper.checkedByteConversion(timestamp & 0x00FF);
+	}
+	
+	public void setTimestamp(byte timestamp_part1, byte timestamp_part2) {
+		_timestamp[0] = timestamp_part1;
+		_timestamp[1] = timestamp_part2;
 	}
 	
 	public byte getId() {
-		return id;
+		return _id;
 	}
 	
 	public byte getSubId() {
-		return subId;
+		return _subId;
+	}
+	
+	public int getDataByteCount() {
+		return _dataByteCount;
 	}
 	
 	public byte[] asByteArray() {
-		byte[] header = { id, subId, timestamp[0], timestamp[1]};
+		byte[] header = { _id, _subId, _timestamp[0], _timestamp[1]};
 		return header;
 	}
 }

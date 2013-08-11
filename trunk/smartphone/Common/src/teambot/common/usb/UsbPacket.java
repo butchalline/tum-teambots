@@ -2,12 +2,12 @@ package teambot.common.usb;
 
 import org.apache.commons.lang3.ArrayUtils;
 
-public class UsbPacketClass {
+public class UsbPacket {
 
 	UsbHeader header;
 	UsbData data;
 	
-	public UsbPacketClass(UsbHeader header, UsbData data) {
+	public UsbPacket(UsbHeader header, UsbData data) {
 		this.header = header;
 		this.data = data;
 	}

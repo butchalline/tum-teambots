@@ -79,13 +79,15 @@ enum TBState {
 enum DebugModeState {
 	DebugDoNothing,
 	DebugInit,
-	DebugRunMotor,
+	DebugRunMotorLeft,
+	DebugRunMotorRight,
+	DebugRunMotorTablet,
+	DebugRunMotorAll,
 	DebugReadPoti,
 	DebugTestEnvironment,
-	DebugSetID_One,
-	DebugSetID_Two,
-	DebugSetID_Three,
-	DebugSetID_Four
+	DebugSetID_Left,
+	DebugSetID_Right,
+	DebugSetID_Tablet
 };
 #endif
 

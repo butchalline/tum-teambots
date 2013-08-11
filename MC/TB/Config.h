@@ -31,8 +31,9 @@
 
 #define MAX_USER_VELOCITY 800 //can't be more then 1023 (0x3ff)
 
-#define MOTOR_ID_1 1  //right
-#define MOTOR_ID_2 2 //0 = deactivated
+#define MOTOR_ID_LEFT 2
+#define MOTOR_ID_RIGHT 1
+#define MOTOR_ID_TABLET 4
 
 #define INKR_SENSOR_LEFT_1	0x1E	//Pin 30 Definition of the incremental Sensors Inputs
 #define INKR_SENSOR_LEFT_2	0x20	//Pin 32

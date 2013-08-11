@@ -85,6 +85,7 @@ namespace teambot.Bot
         public Robot(Map map)
         {
             this._Map = map;
+            this.DrawBot = true;
             Angle = 0;
             Position = new Vector2(400, 450);
             _TargetPosition = new Vector2(400, 450);

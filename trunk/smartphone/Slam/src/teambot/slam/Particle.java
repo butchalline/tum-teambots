@@ -10,7 +10,7 @@ import org.apache.commons.math3.distribution.NormalDistribution;
 import org.apache.commons.math3.linear.MatrixUtils;
 
 import teambot.common.PositionSupplier;
-import teambot.common.data.Position;
+import teambot.common.data.Pose;
 import teambot.common.utils.MathHelper;
 import teambot.pathplanning.Occupation;
 import android.graphics.Point;
@@ -19,7 +19,7 @@ import android.graphics.PointF;
 public class Particle
 {
 
-	protected Position _position;
+	protected Pose _pose;
 	protected ProbabilityMap _map;
 	protected BeamModel _beamModel;
 	protected NoiseProvider _noiseProvider;
@@ -30,19 +30,19 @@ public class Particle
 	static float _epsilon = Float.MIN_VALUE;
 	static NormalDistribution normalDistributionZeroMean = new NormalDistribution(0, 180);
 
-	public Particle(Position position, ProbabilityMap map, BeamModel beamModel, NoiseProvider noise, float slidingFactor)
+	public Particle(Pose pose, ProbabilityMap map, BeamModel beamModel, NoiseProvider noise, float slidingFactor)
 	{
-		_position = position;
+		_pose = pose;
 		_map = map;
 		_beamModel = beamModel;
 		_noiseProvider = noise;
 		_slidingFactor = slidingFactor;
 	}
 
-	public Particle(Position position, ProbabilityMap map, BeamModel beamModel, NoiseProvider noise,
+	public Particle(Pose pose, ProbabilityMap map, BeamModel beamModel, NoiseProvider noise,
 			float slidingFactor, float weight)
 	{
-		_position = position;
+		_pose = pose;
 		_map = map;
 		_beamModel = beamModel;
 		_noiseProvider = noise;
@@ -52,7 +52,7 @@ public class Particle
 
 	public Particle(Particle particle)
 	{
-		_position = new Position(particle._position);
+		_pose = new Pose(particle._pose);
 		_map = new ProbabilityMap(particle._map);
 		_beamModel = new BeamModel(particle._beamModel);
 		_noiseProvider = new NoiseProvider(particle._noiseProvider);
@@ -61,26 +61,26 @@ public class Particle
 		_weightUpdateCounter = particle._weightUpdateCounter;
 	}
 
-	public synchronized void updatePosition(float positionChange, float angleChange_rad)
+	public synchronized void updatePose(float poseChange, float angleChange_rad)
 	{
-		Position noisyPositionChange = _noiseProvider.makePositionChangeNoisy(positionChange, angleChange_rad);
+		Pose noisyPoseChange = _noiseProvider.makePositionChangeNoisy(poseChange, angleChange_rad);
 
-		float newX = (float) (_position.getX() + Math.cos(_position.getAngleInRadian()) * noisyPositionChange.getX());
-		float newY = (float) (_position.getY() + Math.sin(_position.getAngleInRadian()) * noisyPositionChange.getX());
-		float newAngle = Position.normalizeAngle_plusMinusPi(_position.getAngleInRadian()
-				+ noisyPositionChange.getAngleInRadian());
-		_position = new Position(newX, newY, newAngle);
+		float newX = (float) (_pose.getX() + Math.cos(_pose.getAngleInRadian()) * noisyPoseChange.getX());
+		float newY = (float) (_pose.getY() + Math.sin(_pose.getAngleInRadian()) * noisyPoseChange.getX());
+		float newAngle = Pose.normalizeAngle_plusMinusPi(_pose.getAngleInRadian()
+				+ noisyPoseChange.getAngleInRadian());
+		_pose = new Pose(newX, newY, newAngle);
 	}
 
-	public synchronized void setStartPosition(Position startPosition)
+	public synchronized void setStartPose(Pose startPose)
 	{
-		_position = new Position(startPosition);
+		_pose = new Pose(startPose);
 	}
 
 	public float updateAndGetNewWeight(float measuredDistance_mm)
 	{
 		LinkedList<SimpleEntry<Point, Occupation>> measuredPoints = _beamModel.calculateBeamMaxRange(PositionSupplier
-				.addOffset(_position, new Position(0.0f, 0f, 0f)));
+				.addOffset(_pose, new Pose(0.0f, 0f, 0f)));
 
 		float newWeight = 1;
 		float mapDistance_mm = -1;
@@ -95,7 +95,7 @@ public class Particle
 
 			if (pointProbability > 0.5f)// _noiseProvider.getRandom())
 			{
-				mapDistance_mm = MathHelper.calculateDistance(_position.getPosition(),
+				mapDistance_mm = MathHelper.calculateDistance(_pose.getPosition(),
 						new PointF(pointOccupation.getKey().x * _beamModel.getCellSize(), pointOccupation.getKey().y
 								* _beamModel.getCellSize()));
 				break;
@@ -121,7 +121,7 @@ public class Particle
 			newWeight = -1;
 
 		measuredPoints = _beamModel.calculateBeam(measuredDistance_mm,
-				PositionSupplier.addOffset(_position, new Position(0.0f, 0f, 0f)));
+				PositionSupplier.addOffset(_pose, new Pose(0.0f, 0f, 0f)));
 
 		_map.update(measuredPoints);
 		return newWeight;
@@ -131,7 +131,7 @@ public class Particle
 	public float getDistanceOnMap()
 	{
 		LinkedList<SimpleEntry<Point, Occupation>> measuredPoints = _beamModel.calculateBeamMaxRange(PositionSupplier
-				.addOffset(_position, new Position(0.0f, 0f, 0f)));
+				.addOffset(_pose, new Pose(0.0f, 0f, 0f)));
 
 		float newWeight = 1;
 		float mapDistance_mm = _beamModel.getMaxRange();
@@ -146,7 +146,7 @@ public class Particle
 
 			if (pointProbability > 0.5f)// _noiseProvider.getRandom())
 			{
-				mapDistance_mm = MathHelper.calculateDistance(_position.getPosition(),
+				mapDistance_mm = MathHelper.calculateDistance(_pose.getPosition(),
 						new PointF(pointOccupation.getKey().x * _beamModel.getCellSize(), pointOccupation.getKey().y
 								* _beamModel.getCellSize()));
 				break;
@@ -161,9 +161,9 @@ public class Particle
 		return _weight;
 	}
 
-	public Position getPosition()
+	public Pose getPose()
 	{
-		return _position;
+		return _pose;
 	}
 
 	public ProbabilityMap getMap()

@@ -1,19 +1,15 @@
 package teambot.slam;
 
-import teambot.common.data.Position;
-import teambot.common.interfaces.IDistanceListener;
-import teambot.common.interfaces.IPositionListener;
-import teambot.visualizer.HistogramViewer;
-
-import java.awt.List;
 import java.util.Random;
 import java.util.Vector;
 
-import org.apache.commons.lang3.ArrayUtils;
-
+import teambot.common.data.Pose;
+import teambot.common.interfaces.IDistanceListener;
+import teambot.common.interfaces.IPoseListener;
+import teambot.visualizer.HistogramViewer;
 import android.graphics.PointF;
 
-public class ParticleFilter implements IPositionListener, IDistanceListener
+public class ParticleFilter implements IPoseListener, IDistanceListener
 {
 	private Random random = new Random(System.currentTimeMillis());
 	private int _particleAmount;
@@ -21,7 +17,7 @@ public class ParticleFilter implements IPositionListener, IDistanceListener
 	private static float _nThresholdDivider = 2f;
 
 	protected Particle[] _particles;
-	protected Position _latestPosition = null;
+	protected Pose _latestPose = null;
 	protected HistogramViewer histogramViewer;
 
 	float _slidingFactor = 0.01f;
@@ -41,34 +37,34 @@ public class ParticleFilter implements IPositionListener, IDistanceListener
 
 		for (int i = 0; i < _particles.length; ++i)
 		{
-			Position posOr = new Position(0, 0, 0);
+			Pose posOr = new Pose(0, 0, 0);
 			ProbabilityMap probMap = new ProbabilityMap(rayProbability);
 			_particles[i] = new Particle(posOr, probMap, _beamModel, noiser, _slidingFactor);
 		}
 	}
 
 	@Override
-	public void callback_PositionChanged(Position newPosition)
+	public void callback_PoseChanged(Pose newPose)
 	{
-		if (_latestPosition == null)
+		if (_latestPose == null)
 		{
-			_latestPosition = newPosition;
+			_latestPose = newPose;
 			for (Particle particle : _particles)
 			{
-				particle.setStartPosition(newPosition);
+				particle.setStartPose(newPose);
 			}
 			return;
 		}
 
-		Position absolutePositionChange = new Position(newPosition.getX() - _latestPosition.getX(), newPosition.getY()
-				- _latestPosition.getY(), newPosition.getAngleInRadian() - _latestPosition.getAngleInRadian());
-		float positionChange = (float) Math.sqrt(absolutePositionChange.getX() * absolutePositionChange.getX()
-				+ absolutePositionChange.getY() * absolutePositionChange.getY());
-		_latestPosition = newPosition;
+		Pose absolutePoseChange = new Pose(newPose.getX() - _latestPose.getX(), newPose.getY()
+				- _latestPose.getY(), newPose.getAngleInRadian() - _latestPose.getAngleInRadian());
+		float positionChange = (float) Math.sqrt(absolutePoseChange.getX() * absolutePoseChange.getX()
+				+ absolutePoseChange.getY() * absolutePoseChange.getY());
+		_latestPose = newPose;
 
 		for (Particle particle : _particles)
 		{
-			particle.updatePosition(positionChange, absolutePositionChange.getAngleInRadian());
+			particle.updatePose(positionChange, absolutePoseChange.getAngleInRadian());
 		}
 	}
 
@@ -125,8 +121,8 @@ public class ParticleFilter implements IPositionListener, IDistanceListener
 
 		for (Particle particle : _particles)
 		{
-			meanPositionX += particle.getPosition().getX();
-			meanPositionY += particle.getPosition().getY();
+			meanPositionX += particle.getPose().getX();
+			meanPositionY += particle.getPose().getY();
 		}
 
 		meanPositionX = meanPositionX / _particles.length;
@@ -136,10 +132,10 @@ public class ParticleFilter implements IPositionListener, IDistanceListener
 		float positionDeviationY = 0;
 		for (Particle particle : _particles)
 		{
-			positionDeviationX += (meanPositionX - particle.getPosition().getX())
-					* (meanPositionX - particle.getPosition().getX());
-			positionDeviationY += (meanPositionY - particle.getPosition().getY())
-					* (meanPositionY - particle.getPosition().getY());
+			positionDeviationX += (meanPositionX - particle.getPose().getX())
+					* (meanPositionX - particle.getPose().getX());
+			positionDeviationY += (meanPositionY - particle.getPose().getY())
+					* (meanPositionY - particle.getPose().getY());
 		}
 
 		updateParticleHistogram();
@@ -240,9 +236,9 @@ public class ParticleFilter implements IPositionListener, IDistanceListener
 	{
 		PointF mean = calculateParticleMeanPosition(_particles);
 		PointF deviation = calculateParticleSDeviationPosition(_particles, mean);
-		PointF deviationToRealValue = calculateParticleSDeviationPosition(_particles, _latestPosition.getPosition());
+		PointF deviationToRealValue = calculateParticleSDeviationPosition(_particles, _latestPose.getPosition());
 
-		System.out.println("Actual position: " + _latestPosition.getX() + " - " + _latestPosition.getY());
+		System.out.println("Actual position: " + _latestPose.getX() + " - " + _latestPose.getY());
 		System.out.println("Particle mean: " + mean.x + " - " + mean.y);
 		System.out.println("Particle std: " + deviation.x + " - " + deviation.y);
 		System.out.println("Std to actual position: " + deviationToRealValue.x + " - " + deviationToRealValue.y);
@@ -253,12 +249,12 @@ public class ParticleFilter implements IPositionListener, IDistanceListener
 	{
 		Particle bestParticle = getBestParticle();
 
-		System.out.println("Actual position: " + _latestPosition.getX() + " - " + _latestPosition.getY());
-		System.out.println("Best Particle: " + bestParticle.getPosition().getX() + " - "
-				+ bestParticle.getPosition().getY());
+		System.out.println("Actual position: " + _latestPose.getX() + " - " + _latestPose.getY());
+		System.out.println("Best Particle: " + bestParticle.getPose().getX() + " - "
+				+ bestParticle.getPose().getY());
 		System.out.println("Difference Best Particle: "
-				+ Math.abs(bestParticle.getPosition().getX() - _latestPosition.getX()) + " - "
-				+ Math.abs(bestParticle.getPosition().getY() - _latestPosition.getY()));
+				+ Math.abs(bestParticle.getPose().getX() - _latestPose.getX()) + " - "
+				+ Math.abs(bestParticle.getPose().getY() - _latestPose.getY()));
 		System.out.println();
 	}
 
@@ -279,8 +275,8 @@ public class ParticleFilter implements IPositionListener, IDistanceListener
 
 		for (Particle particle : particles)
 		{
-			mean.x += particle.getPosition().getX();
-			mean.y += particle.getPosition().getY();
+			mean.x += particle.getPose().getX();
+			mean.y += particle.getPose().getY();
 		}
 
 		return new PointF(mean.x / particles.length, mean.y / particles.length);
@@ -298,8 +294,8 @@ public class ParticleFilter implements IPositionListener, IDistanceListener
 
 		for (Particle particle : particles)
 		{
-			deviation.x += (particle.getPosition().getX() - mean.x) * (particle.getPosition().getX() - mean.x);
-			deviation.y += (particle.getPosition().getY() - mean.y) * (particle.getPosition().getY() - mean.y);
+			deviation.x += (particle.getPose().getX() - mean.x) * (particle.getPose().getX() - mean.x);
+			deviation.y += (particle.getPose().getY() - mean.y) * (particle.getPose().getY() - mean.y);
 		}
 
 		deviation.x = (float) Math.sqrt(deviation.x / particles.length);

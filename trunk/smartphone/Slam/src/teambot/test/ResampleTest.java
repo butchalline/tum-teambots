@@ -1,20 +1,15 @@
 package teambot.test;
-import static org.junit.Assert.*;
-
 import org.junit.Before;
 import org.junit.Test;
-import org.omg.PortableInterceptor.SUCCESSFUL;
 
-import android.graphics.PointF;
-
-import teambot.common.data.Position;
+import teambot.common.data.Pose;
 import teambot.slam.BeamModel;
 import teambot.slam.BeamProbabilities;
 import teambot.slam.NoiseProvider;
 import teambot.slam.Particle;
-import teambot.slam.ParticleFilter;
 import teambot.slam.ProbabilityMap;
 import teambot.visualizer.HistogramViewer;
+import android.graphics.PointF;
 
 public class ResampleTest
 {
@@ -39,7 +34,7 @@ public class ResampleTest
 		float totalWeight = 0;
 		for (int i = 0; i < particleAmount; i++)
 		{
-			particles[i] = new Particle(new Position(new PointF(i + 1, 0), 0), new ProbabilityMap(new BeamProbabilities(
+			particles[i] = new Particle(new Pose(new PointF(i + 1, 0), 0), new ProbabilityMap(new BeamProbabilities(
 					0, 0, 0)), new BeamModel(50, 150), new NoiseProvider(0, 0, 0, 0, 0, 0), 0, i + 1);
 			totalWeight += particles[i].getWeight();
 		}
@@ -50,7 +45,7 @@ public class ResampleTest
 
 		for (int i = 0; i < particles.length; ++i)
 		{
-			values[i] = particles[i].getPosition().getX();
+			values[i] = particles[i].getPose().getX();
 		}
 
 		histogramViewer.updateHistogram(values);
@@ -69,7 +64,7 @@ public class ResampleTest
 		values = new double[particles.length];
 
 		for (int i = 0; i < particles.length; ++i)
-			values[i] = particles[i].getPosition().getX();
+			values[i] = particles[i].getPose().getX();
 
 		histogramViewerAfter.updateHistogram(values);
 
@@ -98,7 +93,7 @@ public class ResampleTest
 		for (int i = 0; i < particleAmount; i++)
 		{
 			rand = (float) Math.random();
-			particles[i] = new Particle(new Position(new PointF(i, rand), 0), new ProbabilityMap(new BeamProbabilities(
+			particles[i] = new Particle(new Pose(new PointF(i, rand), 0), new ProbabilityMap(new BeamProbabilities(
 					0, 0, 0)), new BeamModel(50, 150), new NoiseProvider(0, 0, 0, 0, 0, 0), 0, rand);
 			totalWeight += particles[i].getWeight();
 		}
@@ -115,8 +110,8 @@ public class ResampleTest
 		for (Particle particle : resampledParticles)
 		{
 			newTotalWeight += particle.getWeight();
-			oldParticle = particles[(int) particle.getPosition().getX()];
-			oldParticle.getPosition().setAngleInRadian(oldParticle.getPosition().getAngleInRadian() + 1);
+			oldParticle = particles[(int) particle.getPose().getX()];
+			oldParticle.getPose().setAngleInRadian(oldParticle.getPose().getAngleInRadian() + 1);
 		}
 
 		double expectedNumber = 0;
@@ -125,7 +120,7 @@ public class ResampleTest
 		for (Particle particle : particles)
 		{
 			expectedNumber = (particle.getWeight() / totalWeight) * particleAmount;
-			difference += Math.abs(expectedNumber - particle.getPosition().getAngleInRadian());
+			difference += Math.abs(expectedNumber - particle.getPose().getAngleInRadian());
 		}
 
 		System.out.println("Diff totalWeights: " + (newTotalWeight - totalWeight) + "; Count of particles: "

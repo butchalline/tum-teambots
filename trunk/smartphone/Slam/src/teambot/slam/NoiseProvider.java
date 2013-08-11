@@ -2,8 +2,7 @@ package teambot.slam;
 
 import java.util.Random;
 
-import teambot.common.data.Position;
-import teambot.common.utils.Constants;
+import teambot.common.data.Pose;
 
 public class NoiseProvider {
 	Random rand = new Random();
@@ -33,12 +32,12 @@ public class NoiseProvider {
 		_variancePropAngle_rad = noise._variancePropAngle_rad;
 	}
 	
-	public Position makePositionChangeNoisy(float positionChange, float angleChange_rad)
+	public Pose makePositionChangeNoisy(float positionChange, float angleChange_rad)
 	{
 		float noisyPositionChange = positionChange * (float) (1 + rand.nextGaussian() * _variancePropPosition) + (float) rand.nextGaussian() * _varianceConstPosition;
 		float noisyAngle_rad = angleChange_rad * (float) (1 + rand.nextGaussian() * _variancePropAngle_rad) + (float) rand.nextGaussian() * _varianceConstAngle_rad; 
 		
-		return new Position(noisyPositionChange, 0, noisyAngle_rad);
+		return new Pose(noisyPositionChange, 0, noisyAngle_rad);
 	}
 	
 	public float getRandom()

@@ -64,16 +64,19 @@ public class UsbConnectionManager extends SimpleEndlessThread implements IUsbCom
 
 	protected void doInThreadLoop()
 	{
-		if (_accessory != null)
+		if (_accessory != null || _ioConnected.get())
 		{
-			ThreadUtil.sleepSecs(0.5f);
+			ThreadUtil.sleepSecs(1f);
 			return;
 		}
 
 		UsbAccessory[] accessoryList = _usbManager.getAccessoryList();
 
 		if (accessoryList == null || accessoryList.length == 0 || accessoryList[0] == null)
+		{
+			ThreadUtil.sleepSecs(1f);
 			return;
+		}
 
 		setAccessory(accessoryList[0]);
 		setupPermissionRequest();
@@ -117,6 +120,8 @@ public class UsbConnectionManager extends SimpleEndlessThread implements IUsbCom
 	@Override
 	public synchronized void closeCommunication()
 	{
+		if(!_ioConnected.get())
+			return;
 		_ioConnected.set(false);
 		ThreadUtil.sleepSecs(1f);
 
@@ -130,6 +135,7 @@ public class UsbConnectionManager extends SimpleEndlessThread implements IUsbCom
 				e.printStackTrace();
 			}
 		}
+		_accessory = null;
 	}
 
 	@Override
@@ -138,7 +144,15 @@ public class UsbConnectionManager extends SimpleEndlessThread implements IUsbCom
 		if (!_ioConnected.get())
 			throw new IOException("No accessory connected");
 
+		try
+		{
 		return _usbInput.read(buffer);
+		}
+		catch (IOException ioException)
+		{
+			closeCommunication();
+		}
+		throw new IOException();
 	}
 
 	@Override
@@ -147,6 +161,14 @@ public class UsbConnectionManager extends SimpleEndlessThread implements IUsbCom
 		if (!_ioConnected.get())
 			throw new IOException("No accessory connected");
 
-		_usbOutput.write(buffer);
+		
+		try
+		{
+			_usbOutput.write(buffer);
+		}
+		catch (IOException ioException)
+		{
+			closeCommunication();
+		}
 	}
 }

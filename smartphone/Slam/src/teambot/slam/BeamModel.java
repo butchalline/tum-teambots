@@ -6,7 +6,7 @@ import java.util.Vector;
 
 import org.apache.commons.lang3.ArrayUtils;
 
-import teambot.common.data.Position;
+import teambot.common.data.Pose;
 import teambot.pathplanning.Occupation;
 import android.graphics.Point;
 import android.graphics.PointF;
@@ -29,16 +29,16 @@ public class BeamModel
 		_maxRange_mm = model._maxRange_mm;
 	}
 
-	public synchronized LinkedList<SimpleEntry<Point, Occupation>> calculateBeam(float distance_mm, Position position)
+	public synchronized LinkedList<SimpleEntry<Point, Occupation>> calculateBeam(float distance_mm, Pose pose)
 	{
 
 		PointF rayEnd = new PointF();
 
-		rayEnd.x = (float) (position.getX() + Math.cos(position.getAngleInRadian()) * distance_mm);
-		rayEnd.y = (float) (position.getY() + Math.sin(position.getAngleInRadian()) * distance_mm);
+		rayEnd.x = (float) (pose.getX() + Math.cos(pose.getAngleInRadian()) * distance_mm);
+		rayEnd.y = (float) (pose.getY() + Math.sin(pose.getAngleInRadian()) * distance_mm);
 
 		rayEnd = realToGridCoordinates(rayEnd);
-		PointF rayStart = realToGridCoordinates(position.getPosition());
+		PointF rayStart = realToGridCoordinates(pose.getPosition());
 
 		LinkedList<SimpleEntry<Point, Occupation>> pointsOnBeam = new LinkedList<SimpleEntry<Point, Occupation>>();
 
@@ -72,9 +72,9 @@ public class BeamModel
 		return pointsOnBeam;
 	}
 
-	public synchronized LinkedList<SimpleEntry<Point, Occupation>> calculateBeamMaxRange(Position position)
+	public synchronized LinkedList<SimpleEntry<Point, Occupation>> calculateBeamMaxRange(Pose pose)
 	{
-		return calculateBeam(_maxRange_mm, position);
+		return calculateBeam(_maxRange_mm, pose);
 	}
 
 	public PointF realToGridCoordinates(PointF point)

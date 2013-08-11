@@ -6,6 +6,7 @@ import teambot.usb.UsbConnectionManager;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
+import android.view.WindowManager;
 
 public class TeambotActivity extends Activity
 {
@@ -17,6 +18,7 @@ public class TeambotActivity extends Activity
 	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_teambot);
+		getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
 		_usbConnectionManager = new UsbConnectionManager(this);
 		

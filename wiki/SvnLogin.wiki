@@ -21,10 +21,3 @@
 8. immer wieder Svn Update (holt aktuelle Version... es können Konflikte auftreten wenn zwei leute an der gleichen Datei gearbeitet haben... dann Mergen und wieder Comitten)
 
 
-
-= Details =
-
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages

@@ -26,22 +26,23 @@ Motor::Motor(u_char idMotorLeft, u_char idMotorRight, u_char idTablet) :
 				idTablet), targetVelocityLeft(0), currentVelocityLeft(0), targetDirectionLeft(
 				Forwards), currentDirectionLeft(Forwards), targetVelocityRight(
 				0), currentVelocityRight(0), targetDirectionRight(Forwards), currentDirectionRight(
-				Forwards), targetVelocityTablet(0), currentVelocityTablet(0), targetDirectionTablet(
-				Forwards), currentDirectionTablet(Forwards) {
+				Forwards), targetPositionTablet(0), currentPositionTablet(0), targetVelocityTablet(0),
+				currentVelocityTablet(0)
+{
 }
 
 void Motor::Init() {
 	pinMode(MOTOR_POWER, OUTPUT);
 	digitalWrite(MOTOR_POWER, HIGH);
 	delay(1500);
-	control.begin(SERVO_SET_Baudrate, SERVO_ControlPin); // Set Ardiuno Serial speed to factory default speed of 57600
+	control.begin(MOTOR_Baudrate, MOTOR_ControlPin); // Set Ardiuno Serial speed to factory default speed of 57600
 	// Now that the Dynamixel is reset to factory setting we will program its Baudrate and ID
 	Serial.print("\n\rmotorLeft init\n\r ID: ");
 	Serial.print(motorIdLeft);
 	Serial.print("\n\r");
 	control.ledState(motorIdLeft, HIGH);                // Turn Dynamixel LED on
 	control.endlessEnable(motorIdLeft, HIGH); // Turn Wheel mode OFF, must be on if using wheel mode
-	control.torqueMax(motorIdLeft, 0x2FF); // Set Dynamixel to max torque limit
+	control.torqueMax(motorIdLeft, MOTOR_TORGUE_CONTROL_MAX); // Set Dynamixel to max torque limit
 
 	// Now that the Dynamixel is reset to factory setting we will program its Baudrate and ID
 	Serial.print("motorIdRight init\n\r ID: ");
@@ -49,22 +50,22 @@ void Motor::Init() {
 	Serial.print("\n\r");
 	control.ledState(motorIdRight, HIGH);               // Turn Dynamixel LED on
 	control.endlessEnable(motorIdRight, HIGH); // Turn Wheel mode OFF, must be on if using wheel mode
-	control.torqueMax(motorIdRight, 0x2FF); // Set Dynamixel to max torque limit
+	control.torqueMax(motorIdRight, MOTOR_TORGUE_CONTROL_MAX); // Set Dynamixel to max torque limit
 
 	Serial.print("motorIdTablet init\n\r ID: ");
 	Serial.print(motorIdTablet);
 	Serial.print("\n\r");
 	control.ledState(motorIdTablet, HIGH);              // Turn Dynamixel LED on
-	control.endlessEnable(motorIdTablet, HIGH); // Turn Wheel mode OFF, must be on if using wheel mode
-	control.torqueMax(motorIdTablet, 0x2FF); // Set Dynamixel to max torque limit
+	control.endlessEnable(motorIdTablet, LOW);
+	control.torqueMax(motorIdTablet, MOTOR_TORGUE_CONTROL_MAX); // Set Dynamixel to max torque limit
 }
 
 void Motor::setVelocity(u_short velocityLeft, u_short velocityRight, Direction directionLeft, Direction directionRight) {
-	if (velocityLeft > MAX_USER_VELOCITY)
-		velocityLeft = MAX_USER_VELOCITY;
+	if (velocityLeft > MOTOR_TORGUE_USER_MAX)
+		velocityLeft = MOTOR_TORGUE_USER_MAX;
 
-	if (velocityRight > MAX_USER_VELOCITY)
-		velocityRight = MAX_USER_VELOCITY;
+	if (velocityRight > MOTOR_TORGUE_USER_MAX)
+		velocityRight = MOTOR_TORGUE_USER_MAX;
 
 	targetVelocityLeft = velocityLeft;
 	targetDirectionLeft = directionLeft;
@@ -72,12 +73,14 @@ void Motor::setVelocity(u_short velocityLeft, u_short velocityRight, Direction d
 	targetDirectionRight = directionRight;
 }
 
-void Motor::setTabletVelocity(u_short velocityTablet, Direction tabletDirection) {
-	if (velocityTablet > MAX_USER_VELOCITY)
-		velocityTablet = MAX_USER_VELOCITY;
-
-	targetVelocityTablet = velocityTablet;
-	targetDirectionTablet = tabletDirection;
+void Motor::setTabletPosition(u_short position, u_short velocity) {
+	if(position > TABLET_Max_Back)
+		position = TABLET_Max_Back;
+	else if(position < TABLET_Max_Front)
+		position = TABLET_Max_Front;
+	if(velocity )
+	targetPositionTablet = position;
+	targetVelocityTablet = velocity;
 }
 
 void Motor::driveVeloctiy() {
@@ -97,44 +100,42 @@ void Motor::driveVeloctiy() {
 		else
 			control.turn(motorIdRight, LEFT, currentVelocityRight);
 	}
-	if (currentVelocityTablet != targetVelocityTablet || currentDirectionTablet != targetDirectionTablet) {
+	if (currentPositionTablet != targetPositionTablet) {
+		currentPositionTablet = targetPositionTablet;
 		currentVelocityTablet = targetVelocityTablet;
-		currentDirectionTablet = targetDirectionTablet;
-		if (currentDirectionTablet == Forwards)
-			control.turn(motorIdTablet, LEFT, currentVelocityTablet);
-		else
-			control.turn(motorIdTablet, RIGHT, currentVelocityTablet);
+		control.moveSpeed(motorIdTablet, currentPositionTablet, currentVelocityTablet);
 	}
 }
 
+#if TB_DEBUG_MODE_ENABLED
 void Motor::setID(int newMotorID) {
 	Serial.print("Reset every possible baut rate => takes about 10 Seconds \n\r");
 	delay(1000);
-	control.begin(9600, SERVO_ControlPin);
+	control.begin(9600, MOTOR_ControlPin);
 	control.reset(0xFE);
 	delay(1000);
-	control.begin(19200, SERVO_ControlPin);
+	control.begin(19200, MOTOR_ControlPin);
 	control.reset(0xFE);
 	delay(1000);
-	control.begin(57600, SERVO_ControlPin);
+	control.begin(57600, MOTOR_ControlPin);
 	control.reset(0xFE);
 	delay(1000);
-	control.begin(115200, SERVO_ControlPin);
+	control.begin(115200, MOTOR_ControlPin);
 	control.reset(0xFE);
 	delay(1000);
-	control.begin(200000, SERVO_ControlPin);
+	control.begin(200000, MOTOR_ControlPin);
 	control.reset(0xFE);
 	delay(1000);
-	control.begin(250000, SERVO_ControlPin);
+	control.begin(250000, MOTOR_ControlPin);
 	control.reset(0xFE);
 	delay(1000);
-	control.begin(400000, SERVO_ControlPin);
+	control.begin(400000, MOTOR_ControlPin);
 	control.reset(0xFE);
 	delay(1000);
-	control.begin(500000, SERVO_ControlPin);
+	control.begin(500000, MOTOR_ControlPin);
 	control.reset(0xFE);
 	delay(1000);
-	control.begin(1000000, SERVO_ControlPin); // Set Ardiuno Serial speed and control pin
+	control.begin(1000000, MOTOR_ControlPin); // Set Ardiuno Serial speed and control pin
 	control.reset(0xFE);
 	delay(1000);
 	Serial.print("\n\r finished Resetting - Set New ID\n\r");
@@ -144,3 +145,4 @@ void Motor::setID(int newMotorID) {
 	control.torqueMax(newMotorID, 0x2FF);   // Set Dynamixel to max torque limit
 	Serial.print("Motor-ID wurde gesetzt\n\r");
 }
+#endif

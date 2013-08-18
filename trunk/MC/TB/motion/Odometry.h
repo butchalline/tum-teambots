@@ -25,7 +25,7 @@
 
 class Odometry {
 public:
-
+Odometry();
 void Init();
 void getInkr();
 void calcPosition();

@@ -23,36 +23,35 @@
 #include "Arduino.h"
 #include "common/Types.h"
 
-#define SERVO_ControlPin 0x02       // Control pin of buffer chip, NOTE: this does not matter becasue we are not using a half to full contorl buffer.
-#define SERVO_SET_Baudrate 1000000  // Baud rate speed which the Dynamixel will be set too (1Mbps)
-#define LED13 0x0D                  // Pin of Visual indication for runing "heart beat" using onboard LED
-#define MOTOR_POWER 0x06
 
-#define MAX_USER_VELOCITY 800 //can't be more then 1023 (0x3ff)
+/**
+ * Motor
+ */
+#define MOTOR_ControlPin 0x02       // Control pin of buffer chip, NOTE: this does not matter becasue we are not using a half to full contorl buffer.
+#define MOTOR_Baudrate 1000000  // Baud rate speed which the Dynamixel will be set too (1Mbps)
+#define MOTOR_POWER 0x06
 
 #define MOTOR_ID_LEFT 2
 #define MOTOR_ID_RIGHT 1
 #define MOTOR_ID_TABLET 4
+#define MOTOR_TORGUE_USER_MAX 0x330 //Maximum torgue for user (can't be more then 0x3ff)
+#define MOTOR_TORGUE_CONTROL_MAX 0x3FF //Maximum  for control (can't be more then 0x3ff)
 
-#define INKR_SENSOR_LEFT_1	0x1E	//Pin 30 Definition of the incremental Sensors Inputs
-#define INKR_SENSOR_LEFT_2	0x20	//Pin 32
-#define INKR_SENSOR_LEFT_3	0x22	//Pin 34
-#define INKR_SENSOR_LEFT_4	0x24	//Pin 36
-#define INKR_SENSOR_LEFT_5	0x26	//Pin 38
-#define INKR_SENSOR_LEFT_6	0x28	//Pin 40
-#define INKR_SENSOR_LEFT_7	0x2A	//Pin 42
-#define INKR_SENSOR_LEFT_8	0x2C	//Pin 44
+/**
+ * Tablet Positions
+ */
+#define TABLET_Horizontal 200
+#define TABLET_Vertical 511
+#define TABLET_Max_Back 810
+#define TABLET_Max_Front 100
 
-#define INKR_SENSOR_RIGHT_1	0x1F	//Pin 31
-#define INKR_SENSOR_RIGHT_2	0x21	//Pin 33
-#define INKR_SENSOR_RIGHT_3	0x23	//Pin 35
-#define INKR_SENSOR_RIGHT_4	0x25	//Pin 37
-#define INKR_SENSOR_RIGHT_5	0x27	//Pin 39
-#define INKR_SENSOR_RIGHT_6	0x29	//Pin 41
-#define INKR_SENSOR_RIGHT_7	0x2B	//Pin 43
-#define INKR_SENSOR_RIGHT_8	0x2D	//Pin 45
-
-
-
+/**
+ * Sensor
+ */
+#define SENSOR_BUMBER_REAR_RIGHT 3
+#define SENSOR_BUMBER_FRONT_RIGHT 4
+#define SENSOR_BUMBER_FRONT_MIDDLE 5
+#define SENSOR_BUMBER_FRONT_LEFT 6
+#define SENSOR_BUBMER_REAR_LEFT 7
 
 #endif /* CONFIG_H_ */

@@ -208,6 +208,8 @@ unsigned long time;
 unsigned long meassureEnd;
 int cnt;
 TBQueue<int> valueQueue;
+bool banging;
+bool forwardBang;
 
 void StateMachine::debugStateLoop() {
 	switch (currentDebugState) {
@@ -216,14 +218,16 @@ void StateMachine::debugStateLoop() {
 		//queueList.push(DebugSetID_Right);
 		//queueList.push(DebugSetID_Left);
 		//queueList.push(DebugSetID_Tablet);
-		for(int i = 0; i < 10; i++)
+		/*for(int i = 0; i < 10; i++)
 		{
 		queueList.push(DebugRunMotorTablet);
 		queueList.push(DebugRunMotorLeft);
 		queueList.push(DebugRunMotorRight);
 		queueList.push(DebugRunMotorAll);
-		}
-
+		}*/
+		queueList.push(DebugTabletPositions);
+		queueList.push(DebugTabletBanging);
+		queueList.push(DebugDoNothing);
 		//queueList.push(DebugReadPoti);
 		currentDebugState = DebugTestEnvironment;
 		break;
@@ -235,7 +239,6 @@ void StateMachine::debugStateLoop() {
 		Serial.print("Debug Mode run LeftMotor\n\r");
 		Serial.print("left Start Forwards\n\r");
 		motors.setVelocity(50 * 4, 0, motors.Forwards, motors.Forwards);
-		motors.setTabletVelocity(0, motors.Forwards);
 		motors.driveVeloctiy();
 		delay(2000);
 		Serial.print("left Start Backwards\n\r");
@@ -265,15 +268,11 @@ void StateMachine::debugStateLoop() {
 	case DebugRunMotorTablet:
 		Serial.print("Debug Mode run tabletMotor\n\r");
 		Serial.print("Tablet Start Forwards\n\r");
-		motors.setTabletVelocity(150, motors.Forwards);
+		motors.setTabletPosition(0, 150);
 		motors.driveVeloctiy();
 		delay(2000);
 		Serial.print("Tablet Start Backwards\n\r");
-		motors.setTabletVelocity(150, motors.Backwards);
-		motors.driveVeloctiy();
-		delay(2000);
-		Serial.print("Stop\n\r");
-		motors.setTabletVelocity(0, motors.Forwards);
+		motors.setTabletPosition(200, 150);
 		motors.driveVeloctiy();
 		currentDebugState = DebugTestEnvironment;
 		break;
@@ -281,18 +280,48 @@ void StateMachine::debugStateLoop() {
 		Serial.print("Debug Mode run all\n\r");
 		Serial.print("all Forwards\n\r");
 		motors.setVelocity(50 * 4, 50 * 4, motors.Forwards, motors.Forwards);
-		motors.setTabletVelocity(150, motors.Forwards);
+		motors.setTabletPosition(0, 150);
 		motors.driveVeloctiy();
 		delay(2000);
 		Serial.print("all Backwards\n\r");
 		motors.setVelocity(50 * 4, 50 * 4, motors.Backwards, motors.Backwards);
-		motors.setTabletVelocity(150, motors.Backwards);
+		motors.setTabletPosition(200, 150);
 		motors.driveVeloctiy();
 		delay(2000);
-		Serial.print("Stop\n\r");
-		motors.setVelocity(0, 0, motors.Forwards, motors.Forwards);
-		motors.setTabletVelocity(0, motors.Forwards);
+		currentDebugState = DebugTestEnvironment;
+		break;
+	case DebugTabletPositions:
+		Serial.print("Debug Mode Tablet Positions\n\r");
+		motors.setTabletPosition(200, 200);
 		motors.driveVeloctiy();
+		delay(5000);
+		for(int i = TABLET_Max_Front; i < TABLET_Max_Back; i += 10)
+		{
+		Serial.print("Set Position to ");
+		Serial.println(i);
+		motors.setTabletPosition(i, 200);
+		motors.driveVeloctiy();
+		delay(500);
+		}
+
+		currentDebugState = DebugTestEnvironment;
+		break;
+	case DebugTabletBanging:
+		banging = true; // WE BANG 4Ever
+		forwardBang = true;
+		motors.setTabletPosition(TABLET_Horizontal, 200);
+		motors.driveVeloctiy();
+		while(banging)
+		{
+			delay(700);
+			forwardBang == true ? motors.setTabletPosition(TABLET_Horizontal, 400) : motors.setTabletPosition(TABLET_Vertical, 200);
+			forwardBang = !forwardBang;
+			motors.driveVeloctiy();
+			delay(300);
+			forwardBang == true ? motors.setTabletPosition(TABLET_Horizontal, 400) : motors.setTabletPosition(TABLET_Vertical, 200);
+			forwardBang = !forwardBang;
+			motors.driveVeloctiy();
+		}
 		currentDebugState = DebugTestEnvironment;
 		break;
 	case DebugReadPoti:

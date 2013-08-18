@@ -81,32 +81,30 @@ void Motor::setTabletVelocity(u_short velocityTablet, Direction tabletDirection)
 }
 
 void Motor::driveVeloctiy() {
-//	if (currentVelocityLeft != targetVelocityLeft || currentDirectionLeft != targetDirectionLeft) {
+	if (currentVelocityLeft != targetVelocityLeft || currentDirectionLeft != targetDirectionLeft) {
 		currentVelocityLeft = targetVelocityLeft;
 		currentDirectionLeft = targetDirectionLeft;
 		if (currentDirectionLeft == Forwards)
 			control.turn(motorIdLeft, LEFT, currentVelocityLeft);
 		else
 			control.turn(motorIdLeft, RIGHT, currentVelocityLeft);
-//	}
-delay(20);
-//	if (currentVelocityRight != targetVelocityRight || currentDirectionRight != targetDirectionRight) {
+	}
+	if (currentVelocityRight != targetVelocityRight || currentDirectionRight != targetDirectionRight) {
 		currentVelocityRight = targetVelocityRight;
 		currentDirectionRight = targetDirectionRight;
 		if (currentDirectionRight == Forwards)
 			control.turn(motorIdRight, RIGHT, currentVelocityRight);
 		else
 			control.turn(motorIdRight, LEFT, currentVelocityRight);
-//	}
-		delay(20);
-//	if (currentVelocityTablet != targetVelocityTablet || currentDirectionTablet != targetDirectionTablet) {
+	}
+	if (currentVelocityTablet != targetVelocityTablet || currentDirectionTablet != targetDirectionTablet) {
 		currentVelocityTablet = targetVelocityTablet;
 		currentDirectionTablet = targetDirectionTablet;
 		if (currentDirectionTablet == Forwards)
-			control.turn(motorIdTablet, LEFT, currentVelocityRight);
+			control.turn(motorIdTablet, LEFT, currentVelocityTablet);
 		else
-			control.turn(motorIdTablet, RIGHT, currentVelocityRight);
-//	}
+			control.turn(motorIdTablet, RIGHT, currentVelocityTablet);
+	}
 }
 
 void Motor::setID(int newMotorID) {

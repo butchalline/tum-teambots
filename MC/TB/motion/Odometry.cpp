@@ -19,7 +19,6 @@
 
 #include "Odometry.h"
 #include <math.h>
-#include "IncSensor.h"
 
 Odometry odometry;
 
@@ -29,6 +28,11 @@ const unsigned short axialDistance = 275; // Roboterbreite in [mm]
 const unsigned char numberOfInkr = 128;
 const float pi = 3.1415926434;
 const float inkrlength = wheelDiameter * pi / numberOfInkr;
+
+Odometry::Odometry()
+{
+
+}
 
 void Odometry::Init()
 {
@@ -54,8 +58,6 @@ void Odometry::getInkr()
 
 	prevInkrLeft = inkrLeft;
 	prevInkrRight = inkrRight;
-	inkrRight = incSensor.getPositionLeft();
-	inkrLeft = incSensor.getPositionRight();
 	//delta der Inkremente berechnen
 
 

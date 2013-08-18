@@ -203,6 +203,7 @@ TBState StateMachine::requireState(TBState state) {
 }
 
 #if TB_DEBUG_MODE_ENABLED
+
 unsigned long time;
 unsigned long meassureEnd;
 int cnt;
@@ -215,12 +216,15 @@ void StateMachine::debugStateLoop() {
 		//queueList.push(DebugSetID_Right);
 		//queueList.push(DebugSetID_Left);
 		//queueList.push(DebugSetID_Tablet);
-		//queueList.push(DebugRunMotorTablet);
-		//queueList.push(DebugRunMotorLeft);
-		//queueList.push(DebugRunMotorRight);
-		//queueList.push(DebugRunMotorAll);
+		for(int i = 0; i < 10; i++)
+		{
+		queueList.push(DebugRunMotorTablet);
+		queueList.push(DebugRunMotorLeft);
+		queueList.push(DebugRunMotorRight);
+		queueList.push(DebugRunMotorAll);
+		}
 
-		queueList.push(DebugReadPoti);
+		//queueList.push(DebugReadPoti);
 		currentDebugState = DebugTestEnvironment;
 		break;
 	case DebugDoNothing:
@@ -261,11 +265,11 @@ void StateMachine::debugStateLoop() {
 	case DebugRunMotorTablet:
 		Serial.print("Debug Mode run tabletMotor\n\r");
 		Serial.print("Tablet Start Forwards\n\r");
-		motors.setTabletVelocity(50 * 4, motors.Forwards);
+		motors.setTabletVelocity(150, motors.Forwards);
 		motors.driveVeloctiy();
 		delay(2000);
 		Serial.print("Tablet Start Backwards\n\r");
-		motors.setTabletVelocity(50 * 4, motors.Backwards);
+		motors.setTabletVelocity(150, motors.Backwards);
 		motors.driveVeloctiy();
 		delay(2000);
 		Serial.print("Stop\n\r");
@@ -277,12 +281,12 @@ void StateMachine::debugStateLoop() {
 		Serial.print("Debug Mode run all\n\r");
 		Serial.print("all Forwards\n\r");
 		motors.setVelocity(50 * 4, 50 * 4, motors.Forwards, motors.Forwards);
-		motors.setTabletVelocity(25 * 4, motors.Forwards);
+		motors.setTabletVelocity(150, motors.Forwards);
 		motors.driveVeloctiy();
 		delay(2000);
 		Serial.print("all Backwards\n\r");
 		motors.setVelocity(50 * 4, 50 * 4, motors.Backwards, motors.Backwards);
-		motors.setTabletVelocity(25 * 4, motors.Backwards);
+		motors.setTabletVelocity(150, motors.Backwards);
 		motors.driveVeloctiy();
 		delay(2000);
 		Serial.print("Stop\n\r");

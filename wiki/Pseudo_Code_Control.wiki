@@ -1,0 +1,13 @@
+#How we control our dynamixel AX-12 motors in endless mode via Arduino.
+
+= Motor Control=
+
+Code to 
+
+
+= Pseudo code=
+
+Add your content here.  Format your content with:
+  * Text in *bold* or _italic_
+  * Headings, paragraphs, and lists
+  * Automatic links to other wiki pages

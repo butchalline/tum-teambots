@@ -21,9 +21,10 @@
 #include "sensor/Sensor.h"
 #include "network/DataHandler.h"
 #include "Config.h"
+
 Sensor sensors;
 
-Sensor::Sensor() : currentBumperState(0)
+Sensor::Sensor() : currentBumperState(0), currentDistance(0)
 {
 }
 
@@ -52,6 +53,12 @@ void Sensor::checkAllBumpers()
 		dataHandler.sendBumperNotify(currentBumperState);
 }
 
+void Sensor::checkDistance()
+{
+	currentDistance = analogRead(SENSOR_INFRARED_RIGHT);
+	dataHandler.sendDistance(currentDistance);
+}
+
 int Sensor::readPoti(u_char motor_ID)
 {
 	return 0;
@@ -63,5 +70,5 @@ void Sensor::Init(){
 	pinMode(SENSOR_BUMPER_FRONT_MIDDLE, INPUT);
 	pinMode(SENSOR_BUMPER_FRONT_RIGHT, INPUT);
 	pinMode(SENSOR_BUMPER_REAR_RIGHT, INPUT);
-	pinMode(SENSOR_INFRARET_SHARP, INPUT);
+	pinMode(SENSOR_INFRARED_RIGHT, INPUT);
 }

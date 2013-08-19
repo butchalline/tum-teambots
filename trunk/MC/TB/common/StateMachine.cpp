@@ -85,6 +85,7 @@ void StateMachine::preHandle() {
 		}
 	}
 	sensors.checkAllBumpers();
+	sensors.checkDistance();
 
 	//odometry.update(timer.stop()); //Schleife für den Durchlauf eines Mess-Schrittes
 	//timer.start();
@@ -453,7 +454,7 @@ void StateMachine::debugStateLoop() {
 				Serial.println();
 				Serial.print("Ignore values!."); Serial.println();
 			}
-		tmp_sensor_value = analogRead(SENSOR_INFRARET_SHARP);
+		tmp_sensor_value = analogRead(SENSOR_INFRARED_RIGHT);
 		Serial.println(tmp_sensor_value);
 		delay(500);
 		}

@@ -17,27 +17,24 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef __DATAHANDLER_H__
-#define __DATAHANDLER_H__
+#include "motion/Control.h"
 
-#include "network/Usb.h"
-#include "network/Data.h"
+Control motorControl;
 
-class DataHandler {
+Control::Control(){
 
-public:
-	DataHandler() {}
-	void sendPosition(short x, short y, short angle);
-	void sendBumperNotify(u_char id);
-	void sendDistance(u_short currentDistanceRight);
-	void sendPotiMedian(u_short median_left, u_short median_right);
+}
 
-private:
-	void setTimeStamp(TBFrame& frame);
+void Control::Init(){
+	omega_left = 0;
+	omega_right = 0;
+	k = 1.0;
+}
 
-};
+short Control::motor_velocity_control(short omega_soll, short omega_ist){
 
-extern DataHandler dataHandler;
+	return (omega_soll + k * omega_ist);
+}
 
 
-#endif /* DATAHANDLER_H_ */
+

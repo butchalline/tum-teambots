@@ -17,27 +17,34 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef __DATAHANDLER_H__
-#define __DATAHANDLER_H__
+#ifndef __CONTROL_H_
+#define __CONTROL_H_
 
-#include "network/Usb.h"
-#include "network/Data.h"
+#include "Config.h"
+#include "common/Types.h"
 
-class DataHandler {
+/**
+ * @param delta_phi 	the given value from the tablet
+ * @param phi
+ */
+
+class Control {
 
 public:
-	DataHandler() {}
-	void sendPosition(short x, short y, short angle);
-	void sendBumperNotify(u_char id);
-	void sendDistance(u_short currentDistanceRight);
-	void sendPotiMedian(u_short median_left, u_short median_right);
+	Control();
+	void Init();
+	//void motor_omega(u_short omega_soll, u_short omega_ist);
+	u_short omega_observer_left(u_short phi);
+	u_short omega_observer_right(u_short phi);
+	short motor_velocity_control(short omega_soll, short omega_ist);
+
 
 private:
-	void setTimeStamp(TBFrame& frame);
-
+	u_short omega_left;
+	u_short omega_right;
+	double k;
 };
 
-extern DataHandler dataHandler;
+extern Control motorControl;
 
-
-#endif /* DATAHANDLER_H_ */
+#endif /* __CONTROL_H_ */

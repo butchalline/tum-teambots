@@ -31,12 +31,30 @@ public:
 	void checkAllBumpers();
 	void checkDistance();
 	u_char getCurrentBumperState();
+	short observer_left();
+	short observer_right();
+	u_short get_poti_media_left();
+	u_short get_poti_media_right();
+	void write_poti_data_left(u_short potivalue);
+	void write_poti_data_right(u_short potivalue);
+	void checkPotiMedian();
 
 private:
 	u_char currentBumperState;
 	u_short currentDistance;
 	bool bumperBumbs(u_char bumper);
 	int readPoti(u_char motor_ID);
+
+	//poti_buffer
+	u_short writePointer_left;
+	u_short writePointer_right;
+	u_short poti_Buf_left[5];
+	u_short poti_Buf_right[5];
+
+
+	u_char tmp_poti_Buf_left[3];
+	u_char tmp_poti_Buf_right[3];
+
 
 };
 

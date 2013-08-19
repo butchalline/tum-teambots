@@ -86,6 +86,8 @@ void StateMachine::preHandle() {
 	}
 	sensors.checkAllBumpers();
 	sensors.checkDistance();
+	sensors.checkPotiMedian();
+
 
 	//odometry.update(timer.stop()); //Schleife für den Durchlauf eines Mess-Schrittes
 	//timer.start();

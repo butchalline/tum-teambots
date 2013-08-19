@@ -210,6 +210,8 @@ int cnt;
 TBQueue<int> valueQueue;
 bool banging;
 bool forwardBang;
+int tmp_sensor_value;
+int sharp_distance;
 
 void StateMachine::debugStateLoop() {
 	switch (currentDebugState) {
@@ -225,9 +227,10 @@ void StateMachine::debugStateLoop() {
 		queueList.push(DebugRunMotorRight);
 		queueList.push(DebugRunMotorAll);
 		}*/
-		queueList.push(DebugTabletPositions);
-		queueList.push(DebugTabletBanging);
-		queueList.push(DebugDoNothing);
+//		queueList.push(DebugTabletPositions);
+//		queueList.push(DebugTabletBanging);
+//		queueList.push(DebugDoNothing);
+		queueList.push(DebugGetSharpSensorValues);
 		//queueList.push(DebugReadPoti);
 		currentDebugState = DebugTestEnvironment;
 		break;
@@ -431,6 +434,27 @@ void StateMachine::debugStateLoop() {
 		delay(1000);
 		Serial.print("0!\n\r");
 		motors.setID(MOTOR_ID_TABLET);
+		currentDebugState = DebugTestEnvironment;
+		break;
+	case DebugGetSharpSensorValues:
+		tmp_sensor_value = 0;
+		sharp_distance = 0;
+		Serial.print("Debug Mode output the Infrared values. ");
+		while(true){
+			if(digitalRead(SENSOR_BUMBER_FRONT_RIGHT) == LOW){
+				sharp_distance = sharp_distance + 25;
+				Serial.println();
+				Serial.print("neuer Abstand [in mm]: ");
+				Serial.print(sharp_distance); Serial.println();
+			}
+			if(digitalRead(SENSOR_BUMBER_FRONT_LEFT) == LOW ){
+				Serial.println();
+				Serial.print("Ignore values!."); Serial.println();
+			}
+		tmp_sensor_value = analogRead(SENSOR_INFRARET_SHARP);
+		Serial.println(tmp_sensor_value);
+		delay(500);
+		}
 		currentDebugState = DebugTestEnvironment;
 		break;
 	default:

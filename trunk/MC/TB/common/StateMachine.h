@@ -89,7 +89,8 @@ enum DebugModeState {
 	DebugTestEnvironment,
 	DebugSetID_Left,
 	DebugSetID_Right,
-	DebugSetID_Tablet
+	DebugSetID_Tablet,
+	DebugGetSharpSensorValues
 };
 #endif
 

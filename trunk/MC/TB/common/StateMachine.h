@@ -85,6 +85,7 @@ enum DebugModeState {
 	DebugRunMotorAll,
 	DebugTabletPositions,
 	DebugTabletBanging,
+	DebugDriveAlone,
 	DebugReadPoti,
 	DebugTestEnvironment,
 	DebugSetID_Left,

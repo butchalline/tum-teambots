@@ -30,6 +30,7 @@ public:
 	void Init();
 	void checkAllBumpers();
 	void checkDistance();
+	u_char getCurrentBumperState();
 
 private:
 	u_char currentBumperState;

@@ -232,9 +232,11 @@ void StateMachine::debugStateLoop() {
 		}*/
 //		queueList.push(DebugTabletPositions);
 //		queueList.push(DebugTabletBanging);
-//		queueList.push(DebugDoNothing);
-		queueList.push(DebugGetSharpSensorValues);
+//
+		//queueList.push(DebugGetSharpSensorValues);
 		//queueList.push(DebugReadPoti);
+		queueList.push(DebugDriveAlone);
+		queueList.push(DebugDoNothing);
 		currentDebugState = DebugTestEnvironment;
 		break;
 	case DebugDoNothing:
@@ -327,6 +329,52 @@ void StateMachine::debugStateLoop() {
 			forwardBang == true ? motors.setTabletPosition(TABLET_Horizontal, 400) : motors.setTabletPosition(TABLET_Vertical, 200);
 			forwardBang = !forwardBang;
 			motors.driveVeloctiy();
+		}
+		currentDebugState = DebugTestEnvironment;
+		break;
+	case DebugDriveAlone:
+		Serial.println("Debug Mode Drive Alone");
+		motors.setTabletPosition(TABLET_Max_Back, 200);
+		motors.driveVeloctiy();
+		for(int i = TABLET_Max_Back; i > TABLET_Max_Front; i -= 10)
+		{
+			motors.setTabletPosition(i, 200);
+			motors.driveVeloctiy();
+			delay(300);
+		}
+		delay(750);
+		motors.setVelocity(0x200,0x200, Motor::Forwards, Motor::Forwards);
+		motors.setTabletPosition(TABLET_Vertical, 200);
+		motors.driveVeloctiy();
+		delay(500);
+		motors.setVelocity(0, 0);
+		motors.driveVeloctiy();
+
+		while(true)
+		{
+			sensors.checkAllBumpers();
+			u_char bumpers = sensors.getCurrentBumperState();
+			if((bumpers & SENSOR_BUMPER_FRONT_LEFT_DATAFLAG) || (bumpers & SENSOR_BUMPER_FRONT_MIDDLE_DATAFLAG) || (bumpers & SENSOR_BUMPER_REAR_RIGHT_DATAFLAG))
+			{
+				motors.setVelocity(0, 0);
+				motors.driveVeloctiy();
+				delay(400);
+				motors.setVelocity(0x100, 0x100, Motor::Backwards, Motor::Backwards);
+				motors.driveVeloctiy();
+				delay(2000);
+				motors.setVelocity(0x200, 0x200, Motor::Forwards, Motor::Backwards);
+				motors.driveVeloctiy();
+				delay(2000);
+				motors.setVelocity(0,0);
+				motors.driveVeloctiy();
+				delay(500);
+			}
+			else
+			{
+				motors.setVelocity(0x300, 0x300, Motor::Forwards, Motor::Forwards);
+				motors.driveVeloctiy();
+			}
+			delay(10);
 		}
 		currentDebugState = DebugTestEnvironment;
 		break;

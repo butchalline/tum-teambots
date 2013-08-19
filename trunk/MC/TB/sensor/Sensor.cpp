@@ -64,6 +64,11 @@ int Sensor::readPoti(u_char motor_ID)
 	return 0;
 }
 
+u_char Sensor::getCurrentBumperState()
+{
+	return currentBumperState;
+}
+
 void Sensor::Init(){
 	pinMode(SENSOR_BUMPER_REAR_LEFT,INPUT);
 	pinMode(SENSOR_BUMPER_FRONT_LEFT, INPUT);

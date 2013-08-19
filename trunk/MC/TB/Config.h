@@ -23,7 +23,6 @@
 #include "Arduino.h"
 #include "common/Types.h"
 
-
 /**
  * Motor
  */
@@ -61,5 +60,9 @@
 #define SENSOR_BUMPER_REAR_LEFT_DATAFLAG 	0x10
 
 #define SENSOR_INFRARED_RIGHT 				A8
+
+#define SENSOR_POTI_RIGHT					A0
+#define SENSOR_POTI_LEFT					A1
+#define SENSOR_POTI_TABLET					A2
 
 #endif /* CONFIG_H_ */

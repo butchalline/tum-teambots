@@ -54,6 +54,7 @@
 #define TB_DATA_POSITION							0x01  //short X | short Y | short Angle * 100
 #define TB_DATA_BUMPERS								0x02
 #define TB_DATA_DISTANCE							0x03
+#define TB_DATA_MEDIAN								0x04
 //======================================================
 
 #define TB_STATUS_ID								0x04
@@ -111,6 +112,12 @@ struct TBTabletPosition
 	u_char tabletPosition; //Vertical = 0; max back = 90
 };
 
+struct TBPotiMedian
+{
+	u_short medianLeft;
+	u_short medianRight;
+};
+
 union TBData {
 	TBVelocity velocity;
 	TBInfrared infraredData;
@@ -118,6 +125,7 @@ union TBData {
 	TBBumpers bumperData;
 	TBDistance distanceData;
 	TBTabletPosition tabletPosition;
+	TBPotiMedian potiMedian;
 };
 
 struct TBHeader {

@@ -59,3 +59,13 @@ void DataHandler::sendDistance(u_short currentDistanceRight)
 	frame.head.SubId = TB_DATA_DISTANCE;
 	frame.data.distanceData.distanceRight = currentDistanceRight;
 }
+
+void DataHandler::sendPotiMedian(u_short median_left, u_short median_right){
+	TBFrame frame;
+	setTimeStamp(frame);
+	frame.head.Id = TB_DATA_ID;
+	frame.head.SubId = TB_DATA_MEDIAN;
+	frame.data.potiMedian.medianLeft = median_left;
+	frame.data.potiMedian.medianRight = median_right;
+
+}

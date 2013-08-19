@@ -18,8 +18,10 @@
  */
 
 #include "Motor.h"
+#include "Control.h"
 
 Motor motors;
+
 
 Motor::Motor(u_char idMotorLeft, u_char idMotorRight, u_char idTablet) :
 		motorIdLeft(idMotorLeft), motorIdRight(idMotorRight), motorIdTablet(
@@ -84,21 +86,36 @@ void Motor::setTabletPosition(u_short position, u_short velocity) {
 }
 
 void Motor::driveVeloctiy() {
+
+	//TODO: Controller einfügen, Funktion umbenennen
+	/**
+	 * omega soll == targetvelocity
+	 */
 	if (currentVelocityLeft != targetVelocityLeft || currentDirectionLeft != targetDirectionLeft) {
 		currentVelocityLeft = targetVelocityLeft;
 		currentDirectionLeft = targetDirectionLeft;
 		if (currentDirectionLeft == Forwards)
+		{
+			//regeln positiv
+			//
+			//motorControl.motor_velocity_control(short(sensor.observer_Left),short(currentVelocityLeft));
 			control.turn(motorIdLeft, LEFT, currentVelocityLeft);
+		}
 		else
+		{
+			//regeln negativ
 			control.turn(motorIdLeft, RIGHT, currentVelocityLeft);
+		}
 	}
 	if (currentVelocityRight != targetVelocityRight || currentDirectionRight != targetDirectionRight) {
 		currentVelocityRight = targetVelocityRight;
 		currentDirectionRight = targetDirectionRight;
-		if (currentDirectionRight == Forwards)
+		if (currentDirectionRight == Forwards){
 			control.turn(motorIdRight, RIGHT, currentVelocityRight);
-		else
+		}
+		else{
 			control.turn(motorIdRight, LEFT, currentVelocityRight);
+		}
 	}
 	if (currentPositionTablet != targetPositionTablet) {
 		currentPositionTablet = targetPositionTablet;

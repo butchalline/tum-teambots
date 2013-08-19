@@ -26,6 +26,19 @@ Sensor sensors;
 
 Sensor::Sensor() : currentBumperState(0), currentDistance(0)
 {
+	 writePointer_left = 0;
+	 writePointer_right = 0;
+	 for( int i =0; i<3;i++){
+	 poti_Buf_left[i] = 0;
+	 poti_Buf_right[i] = 0;
+	 tmp_poti_Buf_left[i] = 0;
+	 tmp_poti_Buf_right[i] = 0;
+	 }
+	 poti_Buf_left[3] = 0;
+	 poti_Buf_right[3] = 0;
+	 poti_Buf_left[4] = 0;
+	 poti_Buf_right[4] = 0;
+
 }
 
 bool Sensor::bumperBumbs(u_char bumper)
@@ -76,4 +89,63 @@ void Sensor::Init(){
 	pinMode(SENSOR_BUMPER_FRONT_RIGHT, INPUT);
 	pinMode(SENSOR_BUMPER_REAR_RIGHT, INPUT);
 	pinMode(SENSOR_INFRARED_RIGHT, INPUT);
+}
+
+void Sensor::write_poti_data_left(u_short potivalue){
+
+	if (writePointer_left == 5)
+		writePointer_left = 0;
+	poti_Buf_left[writePointer_left++] = potivalue;
+}
+
+void Sensor::write_poti_data_right(u_short potivalue){
+
+	if (writePointer_right == 5)
+		writePointer_right = 0;
+	poti_Buf_right[writePointer_right++] = potivalue;
+}
+
+u_short Sensor::get_poti_media_left(){
+	tmp_poti_Buf_left[0] = 0;
+	tmp_poti_Buf_left[1] = 0;
+	tmp_poti_Buf_left[2] = 0;
+	for(u_char i = 0;i<5;i++){
+		if(poti_Buf_left[i]> poti_Buf_left[tmp_poti_Buf_left[0]])
+			tmp_poti_Buf_left[0] = i;
+	}
+	for(u_char k = 0;k<5;k++){
+		if(k != tmp_poti_Buf_left[0] && poti_Buf_left[k]> poti_Buf_left[tmp_poti_Buf_left[1]])
+			tmp_poti_Buf_left[1] = k;
+	}
+	for(u_char l = 0;l<5;l++){
+		if(l != tmp_poti_Buf_left[0] && l != tmp_poti_Buf_left[1] && poti_Buf_left[l]> poti_Buf_left[tmp_poti_Buf_left[2]])
+			tmp_poti_Buf_left[2] = l;
+	}
+	return poti_Buf_left[tmp_poti_Buf_left[2]];
+}
+
+u_short Sensor::get_poti_media_right(){
+	tmp_poti_Buf_right[0] = 0;
+	tmp_poti_Buf_right[1] = 0;
+	tmp_poti_Buf_right[2] = 0;
+	for(u_char i = 0;i<5;i++){
+		if(poti_Buf_right[i]> poti_Buf_right[tmp_poti_Buf_right[0]])
+			tmp_poti_Buf_right[0] = i;
+	}
+	for(u_char k = 0;k<5;k++){
+		if(k != tmp_poti_Buf_right[0] && poti_Buf_right[k]> poti_Buf_right[tmp_poti_Buf_right[1]])
+			tmp_poti_Buf_right[1] = k;
+	}
+	for(u_char l = 0;l<5;l++){
+		if(l != tmp_poti_Buf_right[0] && l != tmp_poti_Buf_right[1] && poti_Buf_right[l]> poti_Buf_right[tmp_poti_Buf_right[2]])
+			tmp_poti_Buf_right[2] = l;
+	}
+	return poti_Buf_right[tmp_poti_Buf_right[2]];
+}
+
+void Sensor::checkPotiMedian(){
+
+	write_poti_data_left(analogRead(SENSOR_POTI_LEFT));
+	write_poti_data_right(analogRead(SENSOR_POTI_RIGHT));
+	dataHandler.sendPotiMedian(get_poti_media_left(),get_poti_media_right());
 }

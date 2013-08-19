@@ -106,12 +106,18 @@ struct TBDistance
 	u_short distanceRight;
 };
 
+struct TBTabletPosition
+{
+	u_char tabletPosition; //Vertical = 0; max back = 90
+};
+
 union TBData {
 	TBVelocity velocity;
 	TBInfrared infraredData;
 	TBPosition positionData;
 	TBBumpers bumperData;
 	TBDistance distanceData;
+	TBTabletPosition tabletPosition;
 };
 
 struct TBHeader {

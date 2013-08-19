@@ -29,9 +29,11 @@ public:
 	Sensor();
 	void Init();
 	void checkAllBumpers();
+	void checkDistance();
 
 private:
 	u_char currentBumperState;
+	u_short currentDistance;
 	bool bumperBumbs(u_char bumper);
 	int readPoti(u_char motor_ID);
 

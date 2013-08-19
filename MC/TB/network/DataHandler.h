@@ -26,8 +26,10 @@
 class DataHandler {
 
 public:
+	DataHandler() {}
 	void sendPosition(short x, short y, short angle);
 	void sendBumperNotify(u_char id);
+	void sendDistance(u_short currentDistanceRight);
 
 private:
 	void setTimeStamp(TBFrame& frame);

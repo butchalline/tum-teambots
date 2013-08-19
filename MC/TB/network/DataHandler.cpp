@@ -19,7 +19,7 @@
 
 #include "network/DataHandler.h"
 
-DataHandler handler;
+DataHandler dataHandler;
 
 void DataHandler::setTimeStamp(TBFrame& frame)
 {
@@ -49,4 +49,13 @@ void DataHandler::sendBumperNotify(u_char bumpers)
 	frame.data.bumperData.bumpers = bumpers;
 
 	usb.putData((unsigned char*)&frame, sizeof(TBHeader) + sizeof(TBBumpers));
+}
+
+void DataHandler::sendDistance(u_short currentDistanceRight)
+{
+	TBFrame frame;
+	setTimeStamp(frame);
+	frame.head.Id = TB_DATA_ID;
+	frame.head.SubId = TB_DATA_DISTANCE;
+	frame.data.distanceData.distanceRight = currentDistanceRight;
 }

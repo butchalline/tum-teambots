@@ -28,10 +28,12 @@ class Sensor {
 public:
 	Sensor();
 	void Init();
-	int readPoti(u_char motor_ID);
-
+	void checkAllBumpers();
 
 private:
+	u_char currentBumperState;
+	bool bumperBumbs(u_char bumper);
+	int readPoti(u_char motor_ID);
 
 };
 

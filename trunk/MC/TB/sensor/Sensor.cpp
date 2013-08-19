@@ -19,19 +19,49 @@
 
 
 #include "sensor/Sensor.h"
-
+#include "network/DataHandler.h"
+#include "Config.h"
 Sensor sensors;
 
-Sensor::Sensor()
+Sensor::Sensor() : currentBumperState(0)
 {
+}
 
+bool Sensor::bumperBumbs(u_char bumper)
+{
+	return digitalRead(bumper) == LOW;
+}
+
+
+void Sensor::checkAllBumpers()
+{
+	u_char bumpers = 0;
+	if(bumperBumbs(SENSOR_BUMPER_FRONT_LEFT))
+		bumpers |= SENSOR_BUMPER_FRONT_LEFT_DATAFLAG;
+	if(bumperBumbs(SENSOR_BUMPER_FRONT_MIDDLE))
+		bumpers |= SENSOR_BUMPER_FRONT_MIDDLE_DATAFLAG;
+	if(bumperBumbs(SENSOR_BUMPER_FRONT_RIGHT))
+		bumpers |= SENSOR_BUMPER_FRONT_RIGHT_DATAFLAG;
+	if(bumperBumbs(SENSOR_BUMPER_REAR_RIGHT))
+		bumpers |= SENSOR_BUMPER_REAR_RIGHT_DATAFLAG;
+	if(bumperBumbs(SENSOR_BUMPER_REAR_LEFT))
+		bumpers |= SENSOR_BUMPER_REAR_LEFT_DATAFLAG;
+
+	currentBumperState = bumpers;
+	if(currentBumperState > 0)
+		dataHandler.sendBumperNotify(currentBumperState);
+}
+
+int Sensor::readPoti(u_char motor_ID)
+{
+	return 0;
 }
 
 void Sensor::Init(){
-	pinMode(SENSOR_BUBMER_REAR_LEFT,INPUT);
-	pinMode(SENSOR_BUMBER_FRONT_LEFT, INPUT);
-	pinMode(SENSOR_BUMBER_FRONT_MIDDLE, INPUT);
-	pinMode(SENSOR_BUMBER_FRONT_RIGHT, INPUT);
-	pinMode(SENSOR_BUMBER_REAR_RIGHT, INPUT);
+	pinMode(SENSOR_BUMPER_REAR_LEFT,INPUT);
+	pinMode(SENSOR_BUMPER_FRONT_LEFT, INPUT);
+	pinMode(SENSOR_BUMPER_FRONT_MIDDLE, INPUT);
+	pinMode(SENSOR_BUMPER_FRONT_RIGHT, INPUT);
+	pinMode(SENSOR_BUMPER_REAR_RIGHT, INPUT);
 	pinMode(SENSOR_INFRARET_SHARP, INPUT);
 }

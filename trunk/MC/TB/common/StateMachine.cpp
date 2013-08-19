@@ -22,6 +22,7 @@
 #include "network/Data.h"
 #include "motion/Motor.h"
 #include "motion/Odometry.h"
+#include "sensor/sensor.h"
 
 StateMachine stateMachine; //Global StateMachine Object
 TBFrame* receiveFrame;
@@ -83,6 +84,7 @@ void StateMachine::preHandle() {
 			break;
 		}
 	}
+	sensors.checkAllBumpers();
 
 	//odometry.update(timer.stop()); //Schleife für den Durchlauf eines Mess-Schrittes
 	//timer.start();
@@ -441,13 +443,13 @@ void StateMachine::debugStateLoop() {
 		sharp_distance = 0;
 		Serial.print("Debug Mode output the Infrared values. ");
 		while(true){
-			if(digitalRead(SENSOR_BUMBER_FRONT_RIGHT) == LOW){
+			if(digitalRead(SENSOR_BUMPER_FRONT_RIGHT) == LOW){
 				sharp_distance = sharp_distance + 25;
 				Serial.println();
 				Serial.print("neuer Abstand [in mm]: ");
 				Serial.print(sharp_distance); Serial.println();
 			}
-			if(digitalRead(SENSOR_BUMBER_FRONT_LEFT) == LOW ){
+			if(digitalRead(SENSOR_BUMPER_FRONT_LEFT) == LOW ){
 				Serial.println();
 				Serial.print("Ignore values!."); Serial.println();
 			}

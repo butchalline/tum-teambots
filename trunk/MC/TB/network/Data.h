@@ -52,6 +52,7 @@
 //------------------------------------------------------
 #define TB_DATA_INFRARED							0x00  //char distance left | char distance middle | char distance right
 #define TB_DATA_POSITION							0x01  //short X | short Y | short Angle * 100
+#define TB_DATA_BUMPERS								0x02
 //======================================================
 
 #define TB_STATUS_ID								0x04
@@ -93,10 +94,17 @@ struct TBPosition {
 	short angle;
 };
 
+
+struct TBBumpers
+{
+	u_char bumpers;
+};
+
 union TBData {
 	TBVelocity velocity;
 	TBInfrared infraredData;
 	TBPosition positionData;
+	TBBumpers bumperData;
 };
 
 struct TBHeader {

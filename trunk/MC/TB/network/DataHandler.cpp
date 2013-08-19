@@ -21,15 +21,32 @@
 
 DataHandler handler;
 
+void DataHandler::setTimeStamp(TBFrame& frame)
+{
+	frame.head.TimeStamp = millis() / 10;
+}
+
+
 void DataHandler::sendPosition(short x, short y, short angle)
 {
 	TBFrame frame;
+	setTimeStamp(frame);
 	frame.head.Id = TB_DATA_ID;
 	frame.head.SubId = TB_DATA_POSITION;
-	frame.head.TimeStamp = 0; //TODO
 	frame.data.positionData.x = x;
 	frame.data.positionData.y = y;
 	frame.data.positionData.angle = angle;
 
 	usb.putData((unsigned char*)&frame, sizeof(TBHeader) + sizeof(TBPosition));
+}
+
+void DataHandler::sendBumperNotify(u_char bumpers)
+{
+	TBFrame frame;
+	setTimeStamp(frame);
+	frame.head.Id = TB_DATA_ID;
+	frame.head.SubId = TB_DATA_BUMPERS;
+	frame.data.bumperData.bumpers = bumpers;
+
+	usb.putData((unsigned char*)&frame, sizeof(TBHeader) + sizeof(TBBumpers));
 }

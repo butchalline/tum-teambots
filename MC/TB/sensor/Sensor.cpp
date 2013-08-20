@@ -144,7 +144,6 @@ u_short Sensor::get_poti_media_right(){
 }
 
 void Sensor::checkPotiMedian(){
-
 	write_poti_data_left(analogRead(SENSOR_POTI_LEFT));
 	write_poti_data_right(analogRead(SENSOR_POTI_RIGHT));
 	dataHandler.sendPotiMedian(get_poti_media_left(),get_poti_media_right());

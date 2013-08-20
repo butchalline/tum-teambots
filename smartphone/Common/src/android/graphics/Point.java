@@ -15,8 +15,11 @@ public class Point {
 
 	public Point(Point point)
 	{
-		x = point.x;
-		y = point.y;
+		synchronized (point)
+		{
+			x = point.x;
+			y = point.y;	
+		}
 	}
 
 	@Override
@@ -59,7 +62,6 @@ public class Point {
 	
 	@Override
 	public String toString() {
-		// TODO Auto-generated method stub
 		return this.x + ";" + this.y;
 	}
 }

@@ -1,7 +1,11 @@
-package teambot.common;
+package teambot.common.communication;
 
+import teambot.common.Bot;
+import teambot.common.ITeambotPrx;
+import teambot.common.Settings;
 import teambot.common.interfaces.ICyclicCallback;
 import teambot.common.interfaces.IBotKeeper;
+import teambot.common.utils.CyclicCaller;
 
 public class BotNetworkLookUp implements ICyclicCallback
 {

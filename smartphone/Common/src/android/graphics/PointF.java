@@ -10,8 +10,11 @@ public class PointF {
 	}
 	
 	public PointF(PointF point) {
-		this.x = new Float(point.x);
-		this.y = new Float(point.y);
+		synchronized (point)
+		{
+			this.x = new Float(point.x);
+			this.y = new Float(point.y);	
+		}
 	}
 	
 	public PointF(float x, float y) {

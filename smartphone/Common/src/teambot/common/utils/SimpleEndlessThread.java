@@ -1,4 +1,4 @@
-package teambot.common;
+package teambot.common.utils;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 

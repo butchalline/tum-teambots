@@ -1,0 +1,18 @@
+#size of the second prototype for calculations.
+
+= General=
+
+Physical size of the sensors: 
+*Distance Sensor Sharp* (20-150 cm): 
+ sensor direction: directly in the relative y-axis of the robot 
+ x-offset: -115 mm 
+ y-offset: -130 mm 
+
+*Bumpers*
+
+= Details =
+
+Add your content here.  Format your content with:
+  * Text in *bold* or _italic_
+  * Headings, paragraphs, and lists
+  * Automatic links to other wiki pages

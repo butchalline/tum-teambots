@@ -4,8 +4,8 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 
-import teambot.common.SimpleEndlessThread;
 import teambot.common.interfaces.IPacketListener;
+import teambot.common.utils.SimpleEndlessThread;
 
 /**
  * 
@@ -28,6 +28,7 @@ public class PacketDistribution extends SimpleEndlessThread implements IPacketLi
 
 	public PacketDistribution(UsbConnectionParser packetSupplier)
 	{
+		super();
 		initializeListenerMap();
 		_packetSupplier = packetSupplier;
 	}
@@ -55,15 +56,19 @@ public class PacketDistribution extends SimpleEndlessThread implements IPacketLi
 		{
 			try
 			{
-				_thread.wait();
+				synchronized (_thread)
+				{
+					_thread.wait();
+				}				
 			} catch (InterruptedException e)
 			{
 			}
 		}
 		
-		for(UsbPacket packet :_packetSupplier._packets)
+		while(!_packetSupplier._packets.isEmpty())
 		{
-			for(IPacketListener listener : _listeners.get(packet.header))
+			UsbPacket packet = _packetSupplier._packets.poll();
+			for(IPacketListener listener : _listeners.get(packet._header))
 				listener.newPacketCallback(packet);
 		}
 	}
@@ -71,6 +76,9 @@ public class PacketDistribution extends SimpleEndlessThread implements IPacketLi
 	@Override
 	public synchronized void newPacketCallback(UsbPacket packet)
 	{
-		_thread.notify();
+		synchronized (_thread)
+		{
+			_thread.notify();
+		}			
 	}
 }

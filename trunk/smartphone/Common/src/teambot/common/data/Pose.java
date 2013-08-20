@@ -15,12 +15,15 @@ public class Pose {
 
 	public Pose(float x, float y, float anlgeInRadian) {
 		position = new PointF(x, y);
-		this.angleInRadian = anlgeInRadian;
+		this.angleInRadian = normalizeAngle_plusMinusPi(anlgeInRadian);
 	}
 	
-	public Pose(Pose position) {
-		this.position = new PointF(position.getPosition());
-		this.angleInRadian = position.getAngleInRadian();
+	public Pose(Pose pose) {
+		synchronized (pose)
+		{
+			this.position = new PointF(pose.getPosition());
+			this.angleInRadian = pose.getAngleInRadian();	
+		}
 	}
 
 	public synchronized void setPosition(PointF position) {
@@ -79,7 +82,7 @@ public class Pose {
 		position.y++;
 	}
 	
-	public synchronized void decreasey() {
+	public synchronized void decreaseY() {
 		position.y--;
 	}
 	
@@ -91,8 +94,40 @@ public class Pose {
 		angleInRadian += addition;
 	}
 	
+	/**
+	 * Normalizes around +- PI
+	 * 
+	 * @param additionInDegree
+	 */
+	public synchronized void addToAngleInRadian_normalized(float addition) {
+		angleInRadian += addition;
+		angleInRadian = normalizeAngle_plusMinusPi(angleInRadian);
+	}
+	
 	public synchronized void addToAngleInDegree(float additionInDegree) {
 		angleInRadian += additionInDegree * Constants.DegreeToRadian;
+	}
+	
+	/**
+	 * Normalizes around +- 180°
+	 * 
+	 * @param additionInDegree
+	 */
+	public synchronized void addToAngleInDegree_normalized(float additionInDegree) {
+		angleInRadian += additionInDegree * Constants.DegreeToRadian;
+		angleInRadian = normalizeAngle_plusMinusPi(angleInRadian);
+	}
+	
+	public synchronized void addToAll(Pose pose) {
+		position.x += pose.getX();
+		position.y += pose.getY();
+		angleInRadian += pose.getAngleInRadian();
+	}
+	
+	public synchronized void subtractFromAll(Pose pose) {
+		position.x -= pose.getX();
+		position.y -= pose.getY();
+		angleInRadian -= pose.getAngleInRadian();
 	}
 	
 	public synchronized void addToAll(float xAddition, float yAddition, float angleAdditionInRadian) {

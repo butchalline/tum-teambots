@@ -5,9 +5,9 @@ import java.util.ArrayDeque;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import teambot.common.SimpleEndlessThread;
 import teambot.common.interfaces.IPacketListener;
 import teambot.common.interfaces.IUsbIO;
+import teambot.common.utils.SimpleEndlessThread;
 import teambot.common.utils.ThreadUtil;
 
 /**
@@ -19,23 +19,28 @@ public class UsbConnectionParser extends SimpleEndlessThread
 	public Queue<UsbPacket> _packets = new ConcurrentLinkedQueue<UsbPacket>();
 	
 	protected IUsbIO _usbIo;
-	protected IPacketListener _newPacketsListener;
+	protected IPacketListener _newPacketListener;
 	protected byte[] _readBuffer;
 	protected int _readBytes;
 	protected ArrayDeque<Byte> _buffer = new ArrayDeque<Byte>(512);
 	protected int _headerSize = UsbHeader.getHeaderLength();
 	 
 	
-	public UsbConnectionParser(IUsbIO usbIo, IPacketListener newPacketsListener)
+	public UsbConnectionParser(IUsbIO usbIo)
 	{
+		super();
 		_usbIo = usbIo;
-		_readBuffer = new byte[255];
-		_newPacketsListener = newPacketsListener;
+		_readBuffer = new byte[255];	
+	}
+	
+	public void registerPacketListener(IPacketListener newPacketListener)
+	{
+		_newPacketListener = newPacketListener;
 	}
 
 	@Override
 	protected void doInThreadLoop()
-	{
+	{		
 		try
 		{
 			_readBytes = _usbIo.read(_readBuffer);
@@ -86,7 +91,9 @@ public class UsbConnectionParser extends SimpleEndlessThread
 				tempData[d] = _buffer.pollFirst();
 				
 			_packets.add(new UsbPacket(tempHeader, new UsbData(tempData)));
+//			System.out.println("New packet: " + tempHeader.name());
 		}
-		_newPacketsListener.newPacketCallback(null);
+		if(_newPacketListener != null)
+			_newPacketListener.newPacketCallback(null);
 	}
 }

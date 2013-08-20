@@ -1,10 +1,13 @@
-package teambot.common;
+package teambot.common.communication;
 
 import java.util.Vector;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import teambot.common.Bot;
+import teambot.common.ITeambotPrx;
+import teambot.common.ITeambotPrxHelper;
+import teambot.common.Settings;
 import teambot.common.interfaces.IBotKeeper;
-
 import Ice.Application;
 import Ice.ConnectFailedException;
 import Ice.NoEndpointException;
@@ -13,9 +16,9 @@ import Ice.SocketException;
 public class NetworkHub extends Application implements Runnable
 {
 	protected Object _serverProxy = null;
-	protected ConcurrentLinkedQueue<ITeambotPrx> _remoteBotProxies = new ConcurrentLinkedQueue<ITeambotPrx>();
+	protected ConcurrentLinkedQueue<Ice.ObjectPrxHelperBase> _remoteBotProxies = new ConcurrentLinkedQueue<Ice.ObjectPrxHelperBase>();
 	protected ConcurrentLinkedQueue<Ice.ObjectAdapter> _localProxies = new ConcurrentLinkedQueue<Ice.ObjectAdapter>();
-
+	
 	private boolean _verbose = false;
 	private Ice.Communicator _communicator = null;
 	Vector<Ice.ObjectAdapter> _objectAdapters = new Vector<Ice.ObjectAdapter>();
@@ -92,17 +95,18 @@ public class NetworkHub extends Application implements Runnable
 		return 0;
 	}
 
-	public ITeambotPrx connectToRemoteUdpProxy(String proxyName, String ip, String port)
+	public <T extends Ice.ObjectPrxHelperBase> void connectToRemoteUdpProxy(String proxyName, String ip, String port, T proxyHelper)
 	{
-		return connectToRemoteProxy(proxyName, ip, port, false);
+		connectToRemoteProxy(proxyName, ip, port, false, proxyHelper);
 	}
 
-	public ITeambotPrx connectToRemoteTcpProxy(String proxyName, String ip, String port)
+	public <T extends Ice.ObjectPrxHelperBase> void connectToRemoteTcpProxy(String proxyName, String ip, String port, T proxyHelper)
 	{
-		return connectToRemoteProxy(proxyName, ip, port, true);
+		connectToRemoteProxy(proxyName, ip, port, true, proxyHelper);
 	}
 
-	public ITeambotPrx connectToRemoteProxy_Blocking(String proxyName, String ip, String port, boolean useTcp)
+	public <T extends Ice.ObjectPrxHelperBase> void connectToRemoteProxy_Blocking(String proxyName, String ip,
+			String port, boolean useTcp, T proxyHelper)
 	{
 		while (!_bot.isRegistered(ip))
 		{
@@ -114,27 +118,27 @@ public class NetworkHub extends Application implements Runnable
 				e.printStackTrace();
 			}
 		}
-		return connectToRemoteProxy(proxyName, ip, port, useTcp);
+		connectToRemoteProxy(proxyName, ip, port, useTcp, proxyHelper);
 	}
 
-	protected synchronized ITeambotPrx connectToRemoteProxy(String proxyName, String ip, String port, boolean useTcp)
+	@SuppressWarnings("unchecked")
+	protected synchronized <T extends Ice.ObjectPrxHelperBase> void connectToRemoteProxy(String proxyName, String ip,
+			String port, boolean useTcp, T proxyHelper)
 	{
 
-		if (!_bot.isRegistered(ip))
-			return null;
+		// TODO registered or simulator or server
+		// if (!_bot.isRegistered(ip))
+		// return null;
 
-		ITeambotPrx proxy;
-		Ice.ObjectPrx prx;
+		Ice.ObjectPrx proxy;
 
 		if (useTcp)
 		{
-			prx = _communicator.stringToProxy(proxyName + ":tcp -h " + ip + " -p " + port);
+			proxy = _communicator.stringToProxy(proxyName + ":tcp -h " + ip + " -p " + port);
 		} else
 		{
-			prx = _communicator.stringToProxy(proxyName + ":udp -h " + ip + " -p " + port);
+			proxy = _communicator.stringToProxy(proxyName + ":udp -h " + ip + " -p " + port);
 		}
-
-		proxy = ITeambotPrxHelper.uncheckedCast(prx);
 
 		try
 		{
@@ -142,52 +146,50 @@ public class NetworkHub extends Application implements Runnable
 		} catch (ConnectFailedException ex)
 		{
 			Bot.unregisterBot(ip);
-			return null;
 		} catch (NoEndpointException ex)
 		{
 			Bot.unregisterBot(ip);
-			return null;
 		}
+		
+		proxyHelper.__copyFrom(proxy);
 
-		_remoteBotProxies.add(proxy);
-
-		return _remoteBotProxies.peek();
+		_remoteBotProxies.add(proxyHelper);
 	}
 
-	public void addLocalUdpProxy(Ice.ObjectImpl localObject, String proxyName, String localPort)
+	public <T extends Ice.ObjectImpl> Ice.ObjectAdapter addLocalUdpProxy(T localObject, String proxyName, String localPort)
 	{
-		addLocalProxy(localObject, proxyName, localPort, false);
+		return addLocalProxy(localObject, proxyName, localPort, false);
 	}
 
-	public void addLocalTcpProxy(Ice.ObjectImpl localObject, String proxyName, String localPort)
+	public <T extends Ice.ObjectImpl> Ice.ObjectAdapter addLocalTcpProxy(T localObject, String proxyName, String localPort)
 	{
-		addLocalProxy(localObject, proxyName, localPort, true);
+		return addLocalProxy(localObject, proxyName, localPort, true);
 	}
 
-	protected synchronized void addLocalProxy(Ice.ObjectImpl localObject, String proxyName, String localPort,
+	protected synchronized <T extends Ice.ObjectImpl> Ice.ObjectAdapter addLocalProxy(T localObject, String adapterName, String localPort,
 			boolean useTcp)
 	{
 
 		Ice.ObjectAdapter objectAdapter = null;
-		String adapterName = "Bot_" + Bot.id();
 		String endpoint = "";
 
 		if (useTcp)
 		{
 			endpoint = "tcp -h " + Bot.id() + " -p " + localPort;
 			objectAdapter = _communicator.createObjectAdapterWithEndpoints(adapterName, endpoint);
-			objectAdapter.add(localObject, _communicator.stringToIdentity(proxyName));
+			objectAdapter.add(localObject, getIdentity());
 		} else
 		{
 			endpoint = "udp -h " + Bot.id() + " -p " + localPort;
 			objectAdapter = _communicator.createObjectAdapterWithEndpoints(adapterName, endpoint);
-			objectAdapter.add(localObject, _communicator.stringToIdentity(proxyName));
+			objectAdapter.add(localObject, getIdentity());
 		}
 
 		objectAdapter.activate();
 		System.out.println("Local endpoint published, adapter: " + objectAdapter.getName() + "; endpoint: " + endpoint);
 
 		_objectAdapters.add(objectAdapter);
+		return objectAdapter;
 	}
 
 	public ITeambotPrx connectionPossible(String ip)
@@ -222,5 +224,10 @@ public class NetworkHub extends Application implements Runnable
 		}
 
 		return proxy;
+	}
+	
+	public Ice.Identity getIdentity()
+	{
+		return _communicator.stringToIdentity("Bot_" + Bot.id());
 	}
 }

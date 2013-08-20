@@ -37,21 +37,35 @@ public enum UsbHeader {
 	 */
 	TB_POSITION_BACKWARD	(0x02, 0x01, 2),
 	/**
-	 * Distance as degrees * 100
+	 * Distance as 1/100 degrees 
 	 */
 	TB_POSITION_TURN_RIGHT	(0x02, 0x02, 2),
 	/**
-	 * Distance as degrees * 100
+	 * Distance as 1/100 degrees
 	 */
 	TB_POSITION_TURN_LEFT	(0x02, 0x03, 2),
 
 	
 	//TB_DATA_ID
 	/**
-	 * Distance left | distance middle | distance right
+	 * The associated data is the distance in cm
 	 */
-	TB_DATA_INFRARED	(0x03, 0x00, 3),
+	TB_DATA_INFRARED	(0x03, 0x00, 1),
 	
+	/**
+	 *  2 bytes left change in ??? TODO
+	 *  2 bytes right change in ???
+	 */
+	TB_DATA_WHEEL_CHANGES	(0x03, 0x01, 4),
+	
+	/**
+	 * Mock headers only used for testing without the micro controller 
+	 */
+	//TB_MOCK
+	/**
+	 * [xPos_mm][xPos_mm][yPos_mm][yPos_mm][angle_centiDeg][angle_centiDeg]
+	 */
+	TB_MOCK_POSITION_CHANGE (0x04, 0x00, 6),
 	
 	//TB_ERROR_ID
 	TB_ERROR_TRACE		(0x42, 0x00, 0),
@@ -116,6 +130,10 @@ public enum UsbHeader {
 	
 	public byte getSubId() {
 		return _subId;
+	}
+	
+	public int getTimestamp() {		
+		return (_timestamp[0] << 8) | _timestamp[1];
 	}
 	
 	public int getDataByteCount() {

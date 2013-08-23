@@ -65,7 +65,7 @@ public enum UsbHeader {
 	/**
 	 * [xPos_mm][xPos_mm][yPos_mm][yPos_mm][angle_centiDeg][angle_centiDeg]
 	 */
-	TB_MOCK_POSITION_CHANGE (0x04, 0x00, 6),
+	TB_MOCK_POSITION_CHANGE (0x04, 0x00, 6), //deprecated
 	
 	//TB_ERROR_ID
 	TB_ERROR_TRACE		(0x42, 0x00, 0),

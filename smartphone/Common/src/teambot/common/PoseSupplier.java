@@ -14,10 +14,7 @@ import android.graphics.PointF;
 /**
  * 
  * Class which supplies the current position of an sensor or the Bot The
- * orientation is x-axis show forwards from the robot, y-axis to the left
- * 
- * ^ x-axis equals: ^ y-axis | | <-- |---| --- y-axis | ---> --- x-axis
- * 
+ * orientation is x-axis show forwards from the robot, y-axis to the left 
  * 
  */
 public class PoseSupplier implements IPoseChangeSupplier, IPoseChangeListener, ICyclicCallback
@@ -111,18 +108,18 @@ public class PoseSupplier implements IPoseChangeSupplier, IPoseChangeListener, I
 	}
 	
 	@Override
-	public synchronized void poseChangeCallback(Pose poseChange)
+	public synchronized void poseChangeCallback(Pose poseChange, boolean changeIsRelativeToTheLastPosition)
 	{
-		
-//		poseChange = calcOffsetedChange(poseChange);
-		
 		
 		for (IPoseChangeListener listener : _changeListeners)
 		{
-			listener.poseChangeCallback(poseChange);
+			listener.poseChangeCallback(poseChange, changeIsRelativeToTheLastPosition);
 		}
 		
-		_pose.addToAll(poseChange);
+		if(!changeIsRelativeToTheLastPosition)
+			_pose.addToAll(poseChange);
+		else
+			_pose.addToAll(poseChange.transformPosePosition(_pose.getAngleInRadian()));
 		Pose newPose = new Pose(_pose);
 		
 		int updateDifferencePosition;
@@ -149,16 +146,6 @@ public class PoseSupplier implements IPoseChangeSupplier, IPoseChangeListener, I
 				}
 			}
 		}
-	}
-	
-	private Pose calcOffsetedChange(Pose changeWithoutOffset)
-	{
-		float x = (float) Math.cos(changeWithoutOffset.getAngleInRadian()) * _offsetFromBotCenter.x
-				- (float) Math.sin(changeWithoutOffset.getAngleInRadian()) * _offsetFromBotCenter.y;
-		float y = (float) Math.sin(changeWithoutOffset.getAngleInRadian()) * _offsetFromBotCenter.x
-				+ (float) Math.cos(changeWithoutOffset.getAngleInRadian()) * _offsetFromBotCenter.y;
-
-		return new Pose(x, y, changeWithoutOffset.getAngleInRadian());
 	}
 	
 	static public Pose addOffset(Pose botPosition, Pose offset)

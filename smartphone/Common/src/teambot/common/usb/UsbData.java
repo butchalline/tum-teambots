@@ -25,4 +25,16 @@ public class UsbData {
 	public byte[] asByteArray() {
 		return _data;
 	}
+	
+	public int[] asIntArray() {
+		
+		int[] dataIntArray = new int[_data.length];
+		
+		for(int i = 0; i < dataIntArray.length; i++)
+		{
+			dataIntArray[i] = _data[i] & 0xFF;
+		}
+		
+		return dataIntArray;
+	}
 }

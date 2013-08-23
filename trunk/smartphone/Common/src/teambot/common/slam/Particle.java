@@ -67,10 +67,10 @@ public class Particle
 
 	public synchronized void updatePose(Pose poseChange)
 	{
-		Pose noisyPoseChange = _noiseProvider.makePositionChangeNoisy(poseChange);
-
-		float newX = (float) (_pose.getX() + Math.cos(_pose.getAngleInRadian()) * noisyPoseChange.getX());
-		float newY = (float) (_pose.getY() + Math.sin(_pose.getAngleInRadian()) * noisyPoseChange.getX());
+		Pose noisyPoseChange = _noiseProvider.makePositionChangeNoisy(poseChange.transformPosePosition(_pose.getAngleInRadian()));
+		
+		float newX = _pose.getX() + noisyPoseChange.getX();
+		float newY = _pose.getY() + noisyPoseChange.getY();
 		float newAngle = Pose.normalizeAngle_plusMinusPi(_pose.getAngleInRadian()
 				+ noisyPoseChange.getAngleInRadian());
 		_pose = new Pose(newX, newY, newAngle);

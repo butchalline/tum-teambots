@@ -4,5 +4,5 @@ import teambot.common.data.Pose;
 
 public interface IPoseChangeListener
 {
-	public void poseChangeCallback(Pose poseChange);
+	public void poseChangeCallback(Pose poseChange, boolean changeIsRelativeToTheLastPosition);
 }

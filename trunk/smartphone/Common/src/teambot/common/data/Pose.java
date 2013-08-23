@@ -3,174 +3,224 @@ package teambot.common.data;
 import teambot.common.utils.Constants;
 import android.graphics.PointF;
 
-public class Pose {
+public class Pose
+{
 
-	protected PointF position;
-	protected float angleInRadian;
+	protected PointF _position;
+	protected float _angleInRadian;
 
-	public Pose(PointF position, float anlgeInRadian) {
-		this.position = position;
-		this.angleInRadian = anlgeInRadian;
+	public Pose(PointF position, float anlgeInRadian)
+	{
+		this._position = position;
+		this._angleInRadian = anlgeInRadian;
 	}
 
-	public Pose(float x, float y, float anlgeInRadian) {
-		position = new PointF(x, y);
-		this.angleInRadian = normalizeAngle_plusMinusPi(anlgeInRadian);
+	public Pose(float x, float y, float anlgeInRadian)
+	{
+		_position = new PointF(x, y);
+		this._angleInRadian = normalizeAngle_plusMinusPi(anlgeInRadian);
 	}
-	
-	public Pose(Pose pose) {
+
+	public Pose(Pose pose)
+	{
 		synchronized (pose)
 		{
-			this.position = new PointF(pose.getPosition());
-			this.angleInRadian = pose.getAngleInRadian();	
+			this._position = new PointF(pose.getPosition());
+			this._angleInRadian = pose.getAngleInRadian();
 		}
 	}
 
-	public synchronized void setPosition(PointF position) {
-		this.position = position;
+	public synchronized void setPosition(PointF position)
+	{
+		this._position = position;
 	}
 
-	public synchronized void setX(float x) {
-		position.x = x;
+	public synchronized void setX(float x)
+	{
+		_position.x = x;
 	}
 
-	public synchronized void setY(float y) {
-		position.y = y;
+	public synchronized void setY(float y)
+	{
+		_position.y = y;
 	}
 
-	public synchronized void setAngleInRadian(float angle) {
-		this.angleInRadian = angle;
+	public synchronized void setAngleInRadian(float angle)
+	{
+		this._angleInRadian = angle;
 	}
 
-	public synchronized void setAngleInDegree(float angle) {
-		this.angleInRadian = angle * Constants.DegreeToRadian;
+	public synchronized void setAngleInDegree(float angle)
+	{
+		this._angleInRadian = angle * Constants.DegreeToRadian;
 	}
 
-	public synchronized PointF getPosition() {
-		return position;
+	public synchronized PointF getPosition()
+	{
+		return _position;
 	}
 
-	public synchronized float getX() {
-		return position.x;
+	public synchronized float getX()
+	{
+		return _position.x;
 	}
 
-	public synchronized float getY() {
-		return position.y;
+	public synchronized float getY()
+	{
+		return _position.y;
 	}
 
-	public synchronized float getAngleInRadian() {
-		return angleInRadian;
+	public synchronized float getAngleInRadian()
+	{
+		return _angleInRadian;
 	}
 
-	public synchronized float getAngleInDegree() {
-		return angleInRadian * Constants.RadianToDegree;
+	public synchronized float getAngleInDegree()
+	{
+		return _angleInRadian * Constants.RadianToDegree;
 	}
 
-	public synchronized void increaseX() {
-		position.x++;
+	public synchronized void increaseX()
+	{
+		_position.x++;
 	}
-	
-	public synchronized void decreaseX() {
-		position.x--;
+
+	public synchronized void decreaseX()
+	{
+		_position.x--;
 	}
-	
-	public synchronized void addToX(float count) {
-		position.x += count;
+
+	public synchronized void addToX(float count)
+	{
+		_position.x += count;
 	}
-	
-	public synchronized void increaseY() {
-		position.y++;
+
+	public synchronized void increaseY()
+	{
+		_position.y++;
 	}
-	
-	public synchronized void decreaseY() {
-		position.y--;
+
+	public synchronized void decreaseY()
+	{
+		_position.y--;
 	}
-	
-	public synchronized void addToY(float count) {
-		position.y += count;
+
+	public synchronized void addToY(float count)
+	{
+		_position.y += count;
 	}
-	
-	public synchronized void addToAngleInRadian(float addition) {
-		angleInRadian += addition;
+
+	public synchronized void addToAngleInRadian(float addition)
+	{
+		_angleInRadian += addition;
 	}
-	
+
 	/**
 	 * Normalizes around +- PI
 	 * 
 	 * @param additionInDegree
 	 */
-	public synchronized void addToAngleInRadian_normalized(float addition) {
-		angleInRadian += addition;
-		angleInRadian = normalizeAngle_plusMinusPi(angleInRadian);
+	public synchronized void addToAngleInRadian_normalized(float addition)
+	{
+		_angleInRadian += addition;
+		_angleInRadian = normalizeAngle_plusMinusPi(_angleInRadian);
 	}
-	
-	public synchronized void addToAngleInDegree(float additionInDegree) {
-		angleInRadian += additionInDegree * Constants.DegreeToRadian;
+
+	public synchronized void addToAngleInDegree(float additionInDegree)
+	{
+		_angleInRadian += additionInDegree * Constants.DegreeToRadian;
 	}
-	
+
 	/**
 	 * Normalizes around +- 180°
 	 * 
 	 * @param additionInDegree
 	 */
-	public synchronized void addToAngleInDegree_normalized(float additionInDegree) {
-		angleInRadian += additionInDegree * Constants.DegreeToRadian;
-		angleInRadian = normalizeAngle_plusMinusPi(angleInRadian);
+	public synchronized void addToAngleInDegree_normalized(float additionInDegree)
+	{
+		_angleInRadian += additionInDegree * Constants.DegreeToRadian;
+		_angleInRadian = normalizeAngle_plusMinusPi(_angleInRadian);
 	}
-	
-	public synchronized void addToAll(Pose pose) {
-		position.x += pose.getX();
-		position.y += pose.getY();
-		angleInRadian += pose.getAngleInRadian();
+
+	public synchronized void addToAll(Pose pose)
+	{
+		_position.x += pose.getX();
+		_position.y += pose.getY();
+		_angleInRadian += pose.getAngleInRadian();
 	}
-	
-	public synchronized void subtractFromAll(Pose pose) {
-		position.x -= pose.getX();
-		position.y -= pose.getY();
-		angleInRadian -= pose.getAngleInRadian();
+
+	public synchronized void subtractFromAll(Pose pose)
+	{
+		_position.x -= pose.getX();
+		_position.y -= pose.getY();
+		_angleInRadian -= pose.getAngleInRadian();
 	}
-	
-	public synchronized void addToAll(float xAddition, float yAddition, float angleAdditionInRadian) {
-		position.x += xAddition;
-		position.y += yAddition;
-		angleInRadian += angleAdditionInRadian;
+
+	public synchronized void addToAll(float xAddition, float yAddition, float angleAdditionInRadian)
+	{
+		_position.x += xAddition;
+		_position.y += yAddition;
+		_angleInRadian += angleAdditionInRadian;
 	}
-	
-	static public float normalizeAngle_plusMinusPi(float angle) {
+
+	static public float normalizeAngle_plusMinusPi(float angle)
+	{
 		if (angle > Constants.piAsFloat)
 			angle -= 2 * Constants.piAsFloat;
 		else if (angle <= -Constants.piAsFloat)
 			angle += 2 * Constants.piAsFloat;
 		return angle;
 	}
-	
-	static public float normalizeAngle_plusTwoPi(float angle) {
+
+	static public float normalizeAngle_plusTwoPi(float angle)
+	{
 		if (angle < 0f)
-			angle = 2*Constants.piAsFloat - angle;
-		else if (angle >= 2*Constants.piAsFloat)
+			angle = 2 * Constants.piAsFloat - angle;
+		else if (angle >= 2 * Constants.piAsFloat)
 			angle -= 2 * Constants.piAsFloat;
 		return angle;
 	}
-	
-	static public float normalizeAngle_plusMinus180(float angle) {
+
+	static public float normalizeAngle_plusMinus180(float angle)
+	{
 		if (angle > 180f)
 			angle -= 360f;
 		else if (angle <= -180f)
 			angle += 360f;
 		return angle;
 	}
-	
-	static public float normalizeAngle_plusMinus360(float angle) {
+
+	static public float normalizeAngle_plusMinus360(float angle)
+	{
 		if (angle > 360f)
 			angle -= 720f;
 		else if (angle <= -360f)
 			angle += 720f;
 		return angle;
 	}
-	
-	static public float calculatDistance(Pose position1, Pose position2) {
+
+	static public float calculatDistance(Pose position1, Pose position2)
+	{
 		float x = (position1.getX() - position2.getX()) * (position1.getX() - position2.getX());
 		float y = (position1.getY() - position2.getY()) * (position1.getY() - position2.getY());
 		return (float) Math.sqrt(x + y);
+	}
+
+	/**
+	 * 
+	 * Returns a pose where the position is transformed by a rotation.
+	 * 
+	 * @param angle_rad
+	 *            the angle between the current system and the target system (in
+	 *            respect to the current system)
+	 * @return a new pose objects which is the pose in the target system without
+	 *         the angle being changed
+	 */
+	public Pose transformPosePosition(float angle_rad)
+	{
+		float newX = (float) Math.cos(angle_rad) * _position.x - (float) Math.sin(angle_rad) * _position.y;
+		float newY = (float) Math.sin(angle_rad) * _position.x + (float) Math.cos(angle_rad) * _position.y;
+
+		return new Pose(newX, newY, _angleInRadian);
 	}
 }

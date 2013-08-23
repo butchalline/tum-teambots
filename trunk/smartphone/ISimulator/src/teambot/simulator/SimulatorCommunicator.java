@@ -6,7 +6,6 @@ import teambot.communication.IDataServerPrx;
 import teambot.communication.IDataServerPrxHelper;
 import teambot.communication.TBFrame;
 import teambot.communication._IDataClientDisp;
-import teambot.communication._IDataServerDisp;
 import Ice.Application;
 
 public class SimulatorCommunicator extends Application implements Runnable

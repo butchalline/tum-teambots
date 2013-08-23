@@ -51,7 +51,7 @@ public class Bot extends _ITeambotDisp implements ICyclicCallback, IBotKeeper, I
 	{
 		{
 			PoseSupplier poseSupplier = new PoseSupplier(BotLayoutConstants.distanceSensorOffset_mm);
-//			_poseSupplier.registerForChangeUpdates(poseSupplier);
+			// _poseSupplier.registerForChangeUpdates(poseSupplier);
 			put(BotSensors.DISTANCE, new DistanceSensor(poseSupplier));
 		}
 	};
@@ -110,14 +110,13 @@ public class Bot extends _ITeambotDisp implements ICyclicCallback, IBotKeeper, I
 				e.printStackTrace();
 			}
 		}
-
 		// finish();
 	}
 
 	private void startParticleFilter()
 	{
 		NoiseProvider noiser = new NoiseProvider(0, 0, 0, 0.05f, 0.05f, 0.05f);
-		_particleFilter = new ParticleFilter(50, 1500, 0.5f, 0.8f, 0.2f, noiser, 300, new Pose(new PointF(500f * 10f,
+		_particleFilter = new ParticleFilter(50, 1500, 0.5f, 0.8f, 0.2f, noiser, Settings.numberOfParticles, new Pose(new PointF(500f * 10f,
 				Settings.mapOffsetY - 562.5f * 10f), 90 * Constants.DegreeToRadian));
 		_sensors.get(BotSensors.DISTANCE).registerForSensorValues(_particleFilter);
 		_poseSupplier.registerForChangeUpdates(_particleFilter);
@@ -144,6 +143,11 @@ public class Bot extends _ITeambotDisp implements ICyclicCallback, IBotKeeper, I
 	static public Pose getPose()
 	{
 		return _poseSupplier.getPose();
+	}
+	
+	static public PoseSupplier getPoseSupplier()
+	{
+		return _poseSupplier;
 	}
 
 	public synchronized boolean isRegistered(String botId)
@@ -233,30 +237,31 @@ public class Bot extends _ITeambotDisp implements ICyclicCallback, IBotKeeper, I
 		UsbHeader header = packet.getHeader();
 		if (header.compareTo(UsbHeader.TB_DATA_WHEEL_CHANGES) == 0)
 		{
-			byte[] data = packet.getData().asByteArray();
-			int changeLeft_steps = ((data[0] & 0xFF) << 8) | data[1];
-			int changeRight_steps = ((data[2] & 0xFF) << 8) | data[3];
+			int[] data = packet.getData().asIntArray();
+			int changeLeft_steps = (data[0] << 8) | data[1];
+			int changeRight_steps = (data[2] << 8) | data[3];
 
 			float changeLeft_radian = WheelTransform.wheelStepsToRadian(changeLeft_steps,
 					_displayInformation.leftWheelRefVelocity, true);
 			float changeRight_radian = WheelTransform.wheelStepsToRadian(changeRight_steps,
 					_displayInformation.rightWheelRefVelocity, false);
 
-			_poseSupplier.poseChangeCallback(convertChange(changeLeft_radian, changeRight_radian));
+			_poseSupplier.poseChangeCallback(convertChange(changeLeft_radian, changeRight_radian), true);
 			return;
 		}
 		if (header.compareTo(UsbHeader.TB_MOCK_POSITION_CHANGE) == 0)
 		{
-			byte[] data = packet.getData().asByteArray();
-			int changeX = ((data[0] & 0xFF) << 8) | data[1];
-			int changeY = ((data[2] & 0xFF) << 8) | data[3];
-			int angle_deziDeg = ((data[4] & 0xFF) << 8) | data[5];
-			
-//			if(changeX != 0)
+			int[] data = packet.getData().asIntArray();
+			int changeX = (data[0] << 8) | data[1];
+			int changeY = (data[2] << 8) | data[3];
+			int angle_deziDeg = (data[4] << 8) | data[5];
+
+			// if(changeX != 0)
 			_poseSupplier
-					.poseChangeCallback(new Pose(changeX, changeY, angle_deziDeg * 0.1f * Constants.DegreeToRadian));
-			
-//				System.out.println("pos change out: " + changeX + " : " + changeY + " a: " + angle_centiDeg);
+					.poseChangeCallback(new Pose(changeX, changeY, angle_deziDeg * 0.1f * Constants.DegreeToRadian), true);
+
+			 System.out.println("pos change in: " + changeX + " : " + changeY
+			 + " a: " + angle_deziDeg);
 			return;
 		}
 	}

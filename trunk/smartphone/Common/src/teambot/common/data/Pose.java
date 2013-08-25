@@ -223,4 +223,14 @@ public class Pose
 
 		return new Pose(newX, newY, _angleInRadian);
 	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if(!(obj instanceof Pose))
+			return false;
+		Pose pose = (Pose) obj;
+		if(_position.equals(pose._position) && _angleInRadian == pose._angleInRadian)
+			return true;
+		return false;	
+	}
 }

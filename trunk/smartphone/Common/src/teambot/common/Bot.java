@@ -121,6 +121,11 @@ public class Bot extends _ITeambotDisp implements ICyclicCallback, IBotKeeper, I
 		_sensors.get(BotSensors.DISTANCE).registerForSensorValues(_particleFilter);
 		_poseSupplier.registerForChangeUpdates(_particleFilter);
 	}
+	
+	public static ParticleFilter getFilter()
+	{
+		return _particleFilter;
+	}
 
 	protected void setupDisplayUpater()
 	{

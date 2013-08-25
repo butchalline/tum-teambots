@@ -14,8 +14,8 @@ import android.content.IntentFilter;
 import android.hardware.usb.UsbAccessory;
 import android.hardware.usb.UsbManager;
 import android.os.ParcelFileDescriptor;
-import teambot.common.SimpleEndlessThread;
 import teambot.common.interfaces.IUsbIO;
+import teambot.common.utils.SimpleEndlessThread;
 import teambot.common.utils.ThreadUtil;
 import tembot.common.SettingsAndroid;
 

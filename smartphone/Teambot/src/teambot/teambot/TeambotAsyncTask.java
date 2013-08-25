@@ -18,7 +18,8 @@ public class TeambotAsyncTask extends AsyncTask<String, teambot.DisplayInformati
 	@Override
 	protected Void doInBackground(String... params)
 	{
-		Bot bot = new Bot(params[0], _usbIo, this);
+		Bot bot = new Bot(params[0], this);
+		bot.setupUsb(_usbIo);
 		bot.run();
 		
 		return null;

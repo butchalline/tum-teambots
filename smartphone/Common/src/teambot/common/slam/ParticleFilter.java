@@ -7,6 +7,7 @@ import teambot.common.data.Pose;
 import teambot.common.hardware.SensorValue;
 import teambot.common.interfaces.IPoseChangeListener;
 import teambot.common.interfaces.ISensorListener;
+import teambot.visualizer.HistogramViewer;
 import android.graphics.PointF;
 
 public class ParticleFilter implements IPoseChangeListener, ISensorListener
@@ -14,11 +15,13 @@ public class ParticleFilter implements IPoseChangeListener, ISensorListener
 	private Random random = new Random(System.currentTimeMillis());
 	private int _particleAmount;
 	private float _nThresh;
-	private static float _nThresholdDivider = 2f;
+	private static float _nThresholdDivider = 3f;
 
 	protected Particle[] _particles;
 	protected Pose _latestPose = null;
-	// protected HistogramViewer histogramViewer;
+	protected Pose _lastMeasurePose = null;
+	protected float _lastMeasureDistance = 0;
+	protected HistogramViewer histogramViewer;
 
 	float _slidingFactor = 0.01f;
 	BeamModel _beamModel;
@@ -29,9 +32,11 @@ public class ParticleFilter implements IPoseChangeListener, ISensorListener
 		_particleAmount = particleAmount;
 		_nThresh = _particleAmount / _nThresholdDivider;
 		_particles = new Particle[_particleAmount];
+		
+		_latestPose = new Pose(startPose);
+		_lastMeasurePose = new Pose(startPose);
 
-		// histogramViewer = new HistogramViewer("Particle Histogram", 3.0f /
-		// _particleAmount);
+		histogramViewer = new HistogramViewer("Particle Histogram", 3.0f / _particleAmount);
 
 		BeamProbabilities rayProbability = new BeamProbabilities(p0, pOccupation, pFree);
 		_beamModel = new BeamModel(cellSize_mm, maxRange_mm);
@@ -51,6 +56,14 @@ public class ParticleFilter implements IPoseChangeListener, ISensorListener
 			throw new UnsupportedOperationException(
 					"Pose change updates other than relative to the last position are not supported (yet)");
 
+		_latestPose.addToAll(poseChange);
+		
+//		if(poseChange.getAngleInRadian() == 0 && poseChange.getX() == 0 && poseChange.getY() == 0)
+//		{
+////			System.out.println("no pos change");
+//			return;
+//		}
+		
 		for (Particle particle : _particles)
 		{
 			particle.updatePose(poseChange);
@@ -60,9 +73,19 @@ public class ParticleFilter implements IPoseChangeListener, ISensorListener
 	@Override
 	public void newSensorValueCallback(SensorValue distance_cm)
 	{
+//		if(distance_cm.value() == _lastMeasureDistance && _lastMeasurePose.equals(_latestPose))
+//		{
+////			System.out.println("no measurement change");
+//			return;
+//		}
+		
+		_lastMeasurePose = new Pose(_latestPose);
+		_lastMeasureDistance = distance_cm.value();
+		
 		float totalWeight = 0;
 		float heighestNewWeight = 0;
 		float tempWeight = 0;
+		float outOfRangeTotalWeight = 0;
 
 		Vector<Particle> outOfRangeParticles = new Vector<Particle>();
 
@@ -73,6 +96,7 @@ public class ParticleFilter implements IPoseChangeListener, ISensorListener
 			if (tempWeight < 0)
 			{
 				outOfRangeParticles.add(particle);
+				outOfRangeTotalWeight += particle.getWeight();
 				continue;
 			}
 
@@ -82,14 +106,33 @@ public class ParticleFilter implements IPoseChangeListener, ISensorListener
 			totalWeight += particle.getWeight();
 		}
 
-		if (heighestNewWeight == 0)
-			heighestNewWeight = 1;
-
-		for (Particle particle : outOfRangeParticles)
+//		if (heighestNewWeight == 0)
+//			heighestNewWeight = 1;
+//
+//		for (Particle particle : outOfRangeParticles)
+//		{
+//			particle.setWeigth(particle.getWeight() * heighestNewWeight);
+//			totalWeight += particle.getWeight();
+//		}
+		
+		float restWeightPart = 1 - outOfRangeTotalWeight;
+		
+		for (Particle particle : _particles)
 		{
-			particle.setWeigth(particle.getWeight() * heighestNewWeight);
-			totalWeight += particle.getWeight();
+			if(outOfRangeParticles.contains(particle))
+				continue;
+			
+			particle.setWeigth(particle.getWeight() * restWeightPart / totalWeight);
 		}
+		
+		float tempTotalWeight = 0;
+		
+		for (Particle particle : _particles)
+		{
+			tempTotalWeight += particle.getWeight();
+		}
+		
+//		System.out.println("Total weight: " + tempTotalWeight);
 
 		// Particle bestParticle = getBestParticle();
 		// float distanceBest = bestParticle.getDistanceOnMap();
@@ -100,14 +143,15 @@ public class ParticleFilter implements IPoseChangeListener, ISensorListener
 		float invNeff = 0;
 		for (Particle particle : _particles)
 		{
-			particle.setWeigth(particle.getWeight() / totalWeight);
+//			particle.setWeigth(particle.getWeight() / totalWeight);
 			invNeff += (particle.getWeight() * particle.getWeight());
 		}
 
+		updateParticleHistogram();
+
 		if (1 / invNeff < _nThresh)
 		{
-			// printParticlesInfo();
-			System.out.println("Resampling");
+			System.out.println("Resampling, 1 / invNeff:"+ (1/invNeff));
 			this.resample(1);
 		}
 	}
@@ -124,6 +168,7 @@ public class ParticleFilter implements IPoseChangeListener, ISensorListener
 		{
 			weightArray[i] = weightArray[i - 1] + _particles[i].getWeight() / totalWeight;
 		}
+		// to avoid numerical errors (it doesn't add up to 1 but it should)
 		weightArray[weightArray.length - 1] = 1;
 
 		// Generate random numbers (maybe not perfectly working)
@@ -179,7 +224,7 @@ public class ParticleFilter implements IPoseChangeListener, ISensorListener
 		for (int i = 0; i < _particles.length; ++i)
 			values[i] = _particles[i].getWeight();
 
-		// histogramViewer.updateHistogram(values);
+		histogramViewer.updateHistogram(values);
 	}
 
 	public Particle getBestParticle()

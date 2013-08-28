@@ -7,6 +7,7 @@ import java.util.Map;
 import teambot.DisplayInformation;
 import teambot.common.communication.BotNetworkLookUp;
 import teambot.common.communication.NetworkHub;
+import teambot.common.data.Direction;
 import teambot.common.data.Pose;
 import teambot.common.hardware.BotSensor;
 import teambot.common.hardware.BotSensors;
@@ -20,6 +21,7 @@ import teambot.common.slam.NoiseProvider;
 import teambot.common.slam.ParticleFilter;
 import teambot.common.usb.PacketDistribution;
 import teambot.common.usb.UsbConnectionParser;
+import teambot.common.usb.UsbData;
 import teambot.common.usb.UsbHeader;
 import teambot.common.usb.UsbPacket;
 import teambot.common.utils.Constants;
@@ -72,10 +74,10 @@ public class Bot extends _ITeambotDisp implements ICyclicCallback, IBotKeeper, I
 
 	protected void setupNetwork()
 	{
-		_networkHub = new NetworkHub(this, Settings.debugIceConnections);
+		_networkHub = new NetworkHub(this, _botId, Settings.debugIceConnections);
 		_networkHub.start();
-		_networkHub.addLocalTcpProxy(this, botProxyName(), Settings.registerPort);
-		// _lookUp = new BotNetworkLookUp(_networkHub, this);
+		_networkHub.addLocalTcpProxy(this, botProxyName(), Settings.botPort);
+		 _lookUp = new BotNetworkLookUp(_networkHub, this);
 	}
 
 	public void setupUsb(IUsbIO usbIO)
@@ -85,7 +87,9 @@ public class Bot extends _ITeambotDisp implements ICyclicCallback, IBotKeeper, I
 		_packetDistribution = new PacketDistribution(_connectionParser);
 		_connectionParser.registerPacketListener(_packetDistribution);
 		_connectionParser.start();
+		System.out.println("USB connection parser started");
 		_packetDistribution.start();
+		System.out.println("USB packet distributer started");
 		registerPacketListeners();
 	}
 
@@ -116,12 +120,13 @@ public class Bot extends _ITeambotDisp implements ICyclicCallback, IBotKeeper, I
 	private void startParticleFilter()
 	{
 		NoiseProvider noiser = new NoiseProvider(0, 0, 0, 0.05f, 0.05f, 0.05f);
-		_particleFilter = new ParticleFilter(50, 1500, 0.5f, 0.8f, 0.2f, noiser, Settings.numberOfParticles, new Pose(new PointF(500f * 10f,
-				Settings.mapOffsetY - 562.5f * 10f), 90 * Constants.DegreeToRadian));
+		_particleFilter = new ParticleFilter(50, 1500, 0.5f, 0.8f, 0.2f, noiser, Settings.numberOfParticles, new Pose(
+				new PointF(500f * 10f, Settings.mapOffsetY - 562.5f * 10f), 90 * Constants.DegreeToRadian));
 		_sensors.get(BotSensors.DISTANCE).registerForSensorValues(_particleFilter);
 		_poseSupplier.registerForChangeUpdates(_particleFilter);
+		System.out.println("Particle filter ready");
 	}
-	
+
 	public static ParticleFilter getFilter()
 	{
 		return _particleFilter;
@@ -131,6 +136,7 @@ public class Bot extends _ITeambotDisp implements ICyclicCallback, IBotKeeper, I
 	{
 		_displayUpdater = new CyclicCaller(this, 1000 / Settings.displayInfoRefreshRate_hz);
 		new Thread(_displayUpdater).start();
+		System.out.println("Display updates started");
 	}
 
 	protected void finish()
@@ -149,7 +155,7 @@ public class Bot extends _ITeambotDisp implements ICyclicCallback, IBotKeeper, I
 	{
 		return _poseSupplier.getPose();
 	}
-	
+
 	static public PoseSupplier getPoseSupplier()
 	{
 		return _poseSupplier;
@@ -227,9 +233,30 @@ public class Bot extends _ITeambotDisp implements ICyclicCallback, IBotKeeper, I
 		if (_usbIO == null)
 			return;
 
+		UsbHeader header = null;
+		byte[] data = { velocityPacket[1], velocityPacket[2] };
+		
+		switch (Direction.values()[velocityPacket[0]])
+		{
+			case FORWARD:
+				header = UsbHeader.TB_VELOCITY_FORWARD;
+				break;
+			case BACKWARDS:
+				header = UsbHeader.TB_VELOCITY_BACKWARD;
+				break;
+			case TURN_LEFT:
+				header = UsbHeader.TB_VELOCITY_TURN_LEFT;
+				break;
+			case TURN_RIGHT:
+				header = UsbHeader.TB_VELOCITY_TURN_RIGHT;
+				break;
+		}
+		
+		UsbPacket packet = new UsbPacket(header, new UsbData(data));
+		
 		try
 		{
-			_usbIO.write(velocityPacket);
+			_usbIO.write(packet.asByteArray());
 		} catch (IOException e)
 		{
 			e.printStackTrace();
@@ -262,11 +289,10 @@ public class Bot extends _ITeambotDisp implements ICyclicCallback, IBotKeeper, I
 			int angle_deziDeg = (data[4] << 8) | data[5];
 
 			// if(changeX != 0)
-			_poseSupplier
-					.poseChangeCallback(new Pose(changeX, changeY, angle_deziDeg * 0.1f * Constants.DegreeToRadian), true);
+			_poseSupplier.poseChangeCallback(
+					new Pose(changeX, changeY, angle_deziDeg * 0.1f * Constants.DegreeToRadian), true);
 
-			 System.out.println("pos change in: " + changeX + " : " + changeY
-			 + " a: " + angle_deziDeg);
+			System.out.println("pos change in: " + changeX + " : " + changeY + " a: " + angle_deziDeg);
 			return;
 		}
 	}

@@ -68,8 +68,7 @@ public class Particle
 	public synchronized void updatePose(Pose poseChange)
 	{
 		Pose noisyPoseChange = _noiseProvider.makePositionChangeNoisy(poseChange);
-		noisyPoseChange = noisyPoseChange.transformPosePosition(_pose
-				.getAngleInRadian());
+		noisyPoseChange = noisyPoseChange.transformPosePosition(_pose.getAngleInRadian());
 
 		float newX = _pose.getX() + noisyPoseChange.getX();
 		float newY = _pose.getY() + noisyPoseChange.getY();
@@ -110,8 +109,9 @@ public class Particle
 			else
 				newWeight = (float) normalDistributionZeroMean.density(mapDistance_mm - measuredDistance_mm);
 
-//			System.out.println("mapDistance_mm: " + mapDistance_mm + "; diff: " + (mapDistance_mm - measuredDistance_mm)
-//					+ "; newWeight: " + newWeight);
+			// System.out.println("mapDistance_mm: " + mapDistance_mm +
+			// "; diff: " + (mapDistance_mm - measuredDistance_mm)
+			// + "; newWeight: " + newWeight);
 
 			_weightUpdateCounter++;
 
@@ -131,27 +131,114 @@ public class Particle
 
 	}
 
-	public float getWeight()
+	public float updateAndGetNewWeight_new(float measuredDistance_mm)
 	{
+		float newWeight = 1;
+		float mapDistance_mm = 0;
+		float angleDiff = 0;
+		float resultDistance_mm = 0;
+		float resultAngleDiff = 0;
+
+		float angleStepSize = 1f / 30f;
+		int steps = 10;
+
+		float lowestDistances = Float.POSITIVE_INFINITY;
+
+		Point currentPoint = null;
+
+		Pose pose = getPose();
+		float angle = pose.getAngleInRadian();
+
+		float startAngle = angle - (steps * 0.5f * angleStepSize);
+		float endAngle = angle + (steps * 0.5f * angleStepSize);
+
+		for (float currentAngle = startAngle; currentAngle <= endAngle; currentAngle += angleStepSize)
+		{
+			pose.setAngleInDegree(currentAngle);
+			currentPoint = getWallHitOfRayFrom(pose);
+
+			if (currentPoint == null)
+				continue;
+
+			mapDistance_mm = MathHelper.calculateDistance(pose.getPosition(),
+					new PointF(currentPoint.x * _beamModel.getCellSize(), currentPoint.y * _beamModel.getCellSize()));
+			
+			angleDiff = Math.abs(currentAngle - angle);
+			
+			if(mapDistance_mm + angleDiff < lowestDistances)
+			{
+				lowestDistances = mapDistance_mm + angleDiff;
+				resultDistance_mm = mapDistance_mm;
+				resultAngleDiff = angleDiff;
+			}
+		}
+
+
+		if (lowestDistances != Float.POSITIVE_INFINITY)
+		{
+
+			if (Math.abs(resultDistance_mm - measuredDistance_mm) < _beamModel.getCellSize() * 0.5f)
+				newWeight = (float) normalDistributionZeroMean.density(_beamModel.getCellSize() * 0.5f + resultAngleDiff);
+			else
+				newWeight = (float) normalDistributionZeroMean.density(resultDistance_mm - measuredDistance_mm + resultAngleDiff);
+
+			// System.out.println("mapDistance_mm: " + mapDistance_mm +
+			// "; diff: " + (mapDistance_mm - measuredDistance_mm)
+			// + "; newWeight: " + newWeight);
+
+			_weightUpdateCounter++;
+
+			_weight = _weight * newWeight;
+			// _weight = _weight * (1 - _slidingFactor) + newWeight *
+			// _slidingFactor;
+			// _weight = _weight * (1 - (1 / _weightUpdateCounter)) + newWeight
+			// / _weightUpdateCounter;
+		} else
+			newWeight = -1;
+		
+		LinkedList<SimpleEntry<Point, Occupation>> measuredPoints = _beamModel.calculateBeam(measuredDistance_mm,
+				PoseSupplier.addOffset(_pose, BotLayoutConstants.distanceSensorOffset_mm));
+
+		_map.update(measuredPoints);
+		return newWeight;
+	}
+
+	protected Point getWallHitOfRayFrom(Pose pose)
+	{
+		Object[] pointsOnRay = _beamModel.getPointsOnRayFrom(pose);
+
+		for (Object point : pointsOnRay)
+		{
+			if (_map.getProbability((Point) point) > 0.5)
+				return (Point) point;
+		}
+
+		return null;
+	}
+
+	public synchronized float getWeight()
+	{
+		if (_weight == 0)
+			_weight = Float.MIN_NORMAL;
 		return _weight;
 	}
 
-	public Pose getPose()
+	public synchronized Pose getPose()
 	{
 		return _pose;
 	}
 
-	public ProbabilityMap getMap()
+	public synchronized ProbabilityMap getMap()
 	{
 		return _map;
 	}
 
-	public void setWeigth(float weight)
+	public synchronized void setWeigth(float weight)
 	{
 		_weight = weight;
 	}
 
-	public void resetWeightCounter()
+	public synchronized void resetWeightCounter()
 	{
 		_weightUpdateCounter = 1;
 	}

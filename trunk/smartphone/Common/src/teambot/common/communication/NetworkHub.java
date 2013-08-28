@@ -24,22 +24,34 @@ public class NetworkHub extends Application implements Runnable
 	Vector<Ice.ObjectAdapter> _objectAdapters = new Vector<Ice.ObjectAdapter>();
 
 	protected IBotKeeper _bot;
+	protected String _ownIp;
 
-	public NetworkHub(IBotKeeper bot)
+	public NetworkHub(IBotKeeper bot, String ownIp)
 	{
-		_bot = bot;
+		initialize(bot, ownIp, false);
 	}
 
-	public NetworkHub(IBotKeeper bot, boolean verbose)
+	public NetworkHub(IBotKeeper bot, String ownIp, boolean verbose)
+	{
+		initialize(bot, ownIp, verbose);
+	}
+	
+	protected void initialize(IBotKeeper bot, String ownIp, boolean verbose)
 	{
 		_bot = bot;
+		
+		if(ownIp == "")
+		{
+			System.out.println("Seems like something is wrong with the ip -> turn WLAN on?");
+		}
+		_ownIp = ownIp;
 		_verbose = verbose;
 	}
 
 	public synchronized void start()
 	{
 		new Thread(this).start();
-
+		
 		while (_communicator == null)
 		{
 			try
@@ -50,6 +62,8 @@ public class NetworkHub extends Application implements Runnable
 				e.printStackTrace();
 			}
 		}
+		
+		System.out.println("Network hub started");
 	}
 
 	public void stop()
@@ -95,17 +109,17 @@ public class NetworkHub extends Application implements Runnable
 		return 0;
 	}
 
-	public <T extends Ice.ObjectPrxHelperBase> void connectToRemoteUdpProxy(String proxyName, String ip, String port, T proxyHelper)
+	public <T extends Ice.ObjectPrxHelperBase> void connectToRemoteUdpProxy(String identity, String ip, String port, T proxyHelper)
 	{
-		connectToRemoteProxy(proxyName, ip, port, false, proxyHelper);
+		connectToRemoteProxy(identity, ip, port, false, proxyHelper);
 	}
 
-	public <T extends Ice.ObjectPrxHelperBase> void connectToRemoteTcpProxy(String proxyName, String ip, String port, T proxyHelper)
+	public <T extends Ice.ObjectPrxHelperBase> void connectToRemoteTcpProxy(String identity, String ip, String port, T proxyHelper)
 	{
-		connectToRemoteProxy(proxyName, ip, port, true, proxyHelper);
+		connectToRemoteProxy(identity, ip, port, true, proxyHelper);
 	}
 
-	public <T extends Ice.ObjectPrxHelperBase> void connectToRemoteProxy_Blocking(String proxyName, String ip,
+	public <T extends Ice.ObjectPrxHelperBase> void connectToRemoteProxy_Blocking(String identity, String ip,
 			String port, boolean useTcp, T proxyHelper)
 	{
 		while (!_bot.isRegistered(ip))
@@ -118,11 +132,10 @@ public class NetworkHub extends Application implements Runnable
 				e.printStackTrace();
 			}
 		}
-		connectToRemoteProxy(proxyName, ip, port, useTcp, proxyHelper);
+		connectToRemoteProxy(identity, ip, port, useTcp, proxyHelper);
 	}
 
-	@SuppressWarnings("unchecked")
-	protected synchronized <T extends Ice.ObjectPrxHelperBase> void connectToRemoteProxy(String proxyName, String ip,
+	protected synchronized <T extends Ice.ObjectPrxHelperBase> void connectToRemoteProxy(String identity, String ip,
 			String port, boolean useTcp, T proxyHelper)
 	{
 
@@ -134,10 +147,10 @@ public class NetworkHub extends Application implements Runnable
 
 		if (useTcp)
 		{
-			proxy = _communicator.stringToProxy(proxyName + ":tcp -h " + ip + " -p " + port);
+			proxy = _communicator.stringToProxy(identity + ":tcp -h " + ip + " -p " + port);
 		} else
 		{
-			proxy = _communicator.stringToProxy(proxyName + ":udp -h " + ip + " -p " + port);
+			proxy = _communicator.stringToProxy(identity + ":udp -h " + ip + " -p " + port);
 		}
 
 		try
@@ -172,7 +185,13 @@ public class NetworkHub extends Application implements Runnable
 
 		Ice.ObjectAdapter objectAdapter = null;
 		String endpoint = "";
-
+		
+		if(_communicator == null)
+		{
+			System.out.println("Seems like the communicator is not initialized -> did you call start() on the NetworkHub object?");
+			return null;
+		}
+		
 		if (useTcp)
 		{
 			endpoint = "tcp -h " + Bot.id() + " -p " + localPort;
@@ -197,7 +216,14 @@ public class NetworkHub extends Application implements Runnable
 		ITeambotPrx proxy = null;
 		Ice.ObjectPrx prx = null;
 
-		prx = _communicator.stringToProxy(Bot.idToProxyName(ip) + ":tcp -h " + ip + " -p " + Settings.registerPort
+		
+		if(_communicator == null)
+		{
+			System.out.println("Seems like the communicator is not initialized -> did you call start() on the NetworkHub object?");
+			return null;
+		}		
+		
+		prx = _communicator.stringToProxy(getBotIdentityString(ip) + ":tcp -h " + ip + " -p " + Settings.botPort
 				+ " -t " + Settings.timoutOnSingleBotLookUp_ms);
 
 		// System.out.println("Tried to connect to bot: " +
@@ -226,8 +252,18 @@ public class NetworkHub extends Application implements Runnable
 		return proxy;
 	}
 	
+	public String getBotIdentityString(String ip)
+	{
+		return "Bot_" + ip;
+	}
+	
 	public Ice.Identity getIdentity()
 	{
-		return _communicator.stringToIdentity("Bot_" + Bot.id());
+		return _communicator.stringToIdentity(getBotIdentityString(_ownIp));
+	}
+	
+	public String getIp()
+	{
+		return _ownIp;
 	}
 }

@@ -38,7 +38,7 @@ public class PoseSupplier implements IPoseChangeSupplier, IPoseChangeListener, I
 	public PoseSupplier(PoseSupplier poseSupplier)
 	{
 		_pose = new Pose(poseSupplier._pose);
-		_offsetFromBotCenter = new PointF(poseSupplier._offsetFromBotCenter);
+		_offsetFromBotCenter = new PointF(poseSupplier._offsetFromBotCenter.x, poseSupplier._offsetFromBotCenter.y);
 		_offsetAngleFromBotCenter = poseSupplier._offsetAngleFromBotCenter;
 	}
 

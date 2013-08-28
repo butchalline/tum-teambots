@@ -5,9 +5,9 @@ import java.util.Vector;
 
 import teambot.common.data.Pose;
 import teambot.common.hardware.SensorValue;
+import teambot.common.interfaces.IHistoVisualizer;
 import teambot.common.interfaces.IPoseChangeListener;
 import teambot.common.interfaces.ISensorListener;
-import teambot.visualizer.HistogramViewer;
 import android.graphics.PointF;
 
 public class ParticleFilter implements IPoseChangeListener, ISensorListener
@@ -21,7 +21,7 @@ public class ParticleFilter implements IPoseChangeListener, ISensorListener
 	protected Pose _latestPose = null;
 	protected Pose _lastMeasurePose = null;
 	protected float _lastMeasureDistance = 0;
-	protected HistogramViewer histogramViewer;
+	protected IHistoVisualizer _histogramViewer = null;
 
 	float _slidingFactor = 0.01f;
 	BeamModel _beamModel;
@@ -36,8 +36,6 @@ public class ParticleFilter implements IPoseChangeListener, ISensorListener
 		_latestPose = new Pose(startPose);
 		_lastMeasurePose = new Pose(startPose);
 
-		histogramViewer = new HistogramViewer("Particle Histogram", 3.0f / _particleAmount);
-
 		BeamProbabilities rayProbability = new BeamProbabilities(p0, pOccupation, pFree);
 		_beamModel = new BeamModel(cellSize_mm, maxRange_mm);
 
@@ -47,6 +45,11 @@ public class ParticleFilter implements IPoseChangeListener, ISensorListener
 			ProbabilityMap probMap = new ProbabilityMap(rayProbability);
 			_particles[i] = new Particle(particleStartPose, probMap, _beamModel, noiser, _slidingFactor);
 		}
+	}
+	
+	public void setHistogramVisualizer(IHistoVisualizer visualizer)
+	{
+		_histogramViewer = visualizer;
 	}
 
 	@Override
@@ -125,12 +128,12 @@ public class ParticleFilter implements IPoseChangeListener, ISensorListener
 			particle.setWeigth(particle.getWeight() * restWeightPart / totalWeight);
 		}
 		
-		float tempTotalWeight = 0;
-		
-		for (Particle particle : _particles)
-		{
-			tempTotalWeight += particle.getWeight();
-		}
+//		float tempTotalWeight = 0;
+//		
+//		for (Particle particle : _particles)
+//		{
+//			tempTotalWeight += particle.getWeight();
+//		}
 		
 //		System.out.println("Total weight: " + tempTotalWeight);
 
@@ -147,7 +150,7 @@ public class ParticleFilter implements IPoseChangeListener, ISensorListener
 			invNeff += (particle.getWeight() * particle.getWeight());
 		}
 
-		updateParticleHistogram();
+//		updateParticleHistogram();
 
 		if (1 / invNeff < _nThresh)
 		{
@@ -219,12 +222,15 @@ public class ParticleFilter implements IPoseChangeListener, ISensorListener
 
 	void updateParticleHistogram()
 	{
+		if(_histogramViewer == null)
+			return;
+		
 		double[] values = new double[_particles.length];
 
 		for (int i = 0; i < _particles.length; ++i)
 			values[i] = _particles[i].getWeight();
 
-		histogramViewer.updateHistogram(values);
+		_histogramViewer.update(values);
 	}
 
 	public Particle getBestParticle()

@@ -1,12 +1,9 @@
 package teambot.remote;
 
+import teambot.common.data.Direction;
+
 public class VelocityToPacketValues
 {
-	public enum Direction
-	{
-		FORWARD, BACKWARDS, TURN_LEFT, TURN_RIGHT
-	}
-
 	public static byte[] convert(float leftVelocity, float rightVelocity)
 	{
 		byte[] packet =

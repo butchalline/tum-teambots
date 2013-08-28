@@ -85,17 +85,19 @@ public class PathPlanningAgentUpdater implements Runnable, IUsbIO
 
 			Pose botPose = Bot.getPose();
 
-			Pose poseChange = new Pose(posChangeX_global, posChangeY_global, (newAngle
-					- _pose.getAngleInDegree()) * Constants.DegreeToRadian);
+			Pose poseChange = new Pose(posChangeX_global, posChangeY_global, (newAngle - _pose.getAngleInDegree())
+					* Constants.DegreeToRadian);
 
-//			System.out.println("newAngle: " + newAngle + "; old angle: " + _pose.getAngleInDegree() +"; change angle: " + poseChange.getAngleInDegree());
-			
+			// System.out.println("newAngle: " + newAngle + "; old angle: " +
+			// _pose.getAngleInDegree() +"; change angle: " +
+			// poseChange.getAngleInDegree());
+
 			poseChange = poseChange.transformPosePosition(-botPose.getAngleInRadian());
-			
-//			if(poseChange.getX() != 0)
-//				System.out.println("x change agent:" + poseChange.getX());
-//			if(poseChange.getY() != 0)
-//				System.out.println("y change agent:" + poseChange.getY());
+
+			// if(poseChange.getX() != 0)
+			// System.out.println("x change agent:" + poseChange.getX());
+			// if(poseChange.getY() != 0)
+			// System.out.println("y change agent:" + poseChange.getY());
 
 			_pose.setX(positionMeasurement.x);
 			_pose.setY(Settings.mapOffsetY - positionMeasurement.y);
@@ -112,7 +114,7 @@ public class PathPlanningAgentUpdater implements Runnable, IUsbIO
 			}
 
 			Bot.getPoseSupplier().poseChangeCallback(poseChange, true);
-			
+
 			Particle bestParticle = new Particle(_filter.getBestParticle());
 			// simulator.sendDebugMap(converter.convertSlamMap(bestParticle.getMap(),
 			// bestParticle.getPose()), (short) converter.getCellSize());
@@ -149,7 +151,18 @@ public class PathPlanningAgentUpdater implements Runnable, IUsbIO
 	@Override
 	public synchronized void write(byte[] buffer) throws IOException
 	{
+		System.out.print("Packet (length: " + buffer.length + ") sent to mc: ");
 
+		int i = 1;
+		for (byte packetByte : buffer)
+		{
+			System.out.print("[" + packetByte + "]");
+			if (i == UsbHeader.getHeaderLength())
+				System.out.print("||");
+			i++;
+		}
+
+		System.out.println();
 	}
 
 }

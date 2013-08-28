@@ -5,16 +5,18 @@ import java.util.List;
 
 import teambot.DisplayInformation;
 import teambot.common.Bot;
-import teambot.common.BotNetworkLookUp;
 import teambot.common.ITeambotPrx;
-import teambot.common.NetworkHub;
+import teambot.common.ITeambotPrxHelper;
+import teambot.common.communication.BotNetworkLookUp;
+import teambot.common.communication.NetworkHub;
+import teambot.common.data.Direction;
 import teambot.common.interfaces.IBotKeeper;
 import teambot.common.interfaces.IInformationDisplayer;
-import teambot.remote.VelocityToPacketValues.Direction;
+import android.app.Activity;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
 import android.os.Bundle;
-import android.app.Activity;
+import android.os.Handler;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
@@ -23,10 +25,10 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
-import android.widget.CompoundButton.OnCheckedChangeListener;
 
 public class RemoteActivity extends Activity implements IVelocityListener, IPitchRollListener, IInformationDisplayer,
 		IBotKeeper
@@ -58,6 +60,8 @@ public class RemoteActivity extends Activity implements IVelocityListener, IPitc
 
 	protected NetworkHub _networkHub;
 	protected BotNetworkLookUp _botlookUp;
+	
+	protected Handler _handler;
 
 	protected String _botId = null;
 	protected ITeambotPrx _bot = null;
@@ -67,6 +71,8 @@ public class RemoteActivity extends Activity implements IVelocityListener, IPitc
 	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_remote);
+		
+		_handler = new Handler();
 
 		_textView_status = ((TextView) findViewById(R.id.textView_status));
 		_textView_direction = ((TextView) findViewById(R.id.textView_direction));
@@ -99,7 +105,8 @@ public class RemoteActivity extends Activity implements IVelocityListener, IPitc
 		_accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
 		sensorManager.registerListener(_pitchRollSupplier, _accelerometer, SensorManager.SENSOR_DELAY_GAME);
 
-		_networkHub = new NetworkHub(this);
+		_networkHub = new NetworkHub(this, IpHelper.getIPAddress());
+		_networkHub.start();
 		_botlookUp = new BotNetworkLookUp(_networkHub, this);
 		// _botlookUp.
 	}
@@ -132,8 +139,10 @@ public class RemoteActivity extends Activity implements IVelocityListener, IPitc
 		{
 			System.out.println("Bot selected: " + position);
 			_botId = _spinnerAdapter.getItem(position);
-			_bot = _networkHub.connectToRemoteUdpProxy(Bot.idToProxyName(_botId), _botId,
-					teambot.common.Settings.remoteControlPort);
+			
+			ITeambotPrxHelper teambotProxy = new ITeambotPrxHelper();
+			_networkHub.connectToRemoteTcpProxy(_networkHub.getBotIdentityString(_botId), _botId, teambot.common.Settings.botPort, teambotProxy);
+			_bot = teambotProxy;
 		}
 
 		@Override
@@ -227,7 +236,17 @@ public class RemoteActivity extends Activity implements IVelocityListener, IPitc
 	@Override
 	public synchronized void registerBot(String botId, ITeambotPrx proxy)
 	{
-		_spinnerAdapter.add(botId);
+		final String id = botId;
+		
+		_handler.post(new Runnable()
+		{
+			
+			@Override
+			public void run()
+			{
+				_spinnerAdapter.add(id);
+			}
+		});
 	}
 
 }

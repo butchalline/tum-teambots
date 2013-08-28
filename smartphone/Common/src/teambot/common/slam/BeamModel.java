@@ -62,12 +62,12 @@ public class BeamModel
 		// Occupation>(rayEndDiscretized, Occupation.occupied));
 		// }
 
-		for (Object freePoint : calculateFreePoints(distance_mm, rayStart, rayEnd))
+		for (Object freePoint : calculatePointsOnRay(rayStart, rayEnd))
 		{
-			pointsOnBeam.add(new SimpleEntry<Point, Occupation>((Point)freePoint, Occupation.free));
+			pointsOnBeam.add(new SimpleEntry<Point, Occupation>((Point) freePoint, Occupation.free));
 		}
 
-		if(distance_mm < _maxRange_mm)
+		if (distance_mm < _maxRange_mm)
 			pointsOnBeam.getLast().setValue(Occupation.occupied);
 
 		return pointsOnBeam;
@@ -100,7 +100,20 @@ public class BeamModel
 		return gridPoints;
 	}
 
-	private Object[] calculateFreePoints(float distance, PointF rayStart, PointF rayEnd)
+	protected Object[] getPointsOnRayFrom(Pose pose)
+	{
+		PointF rayEnd = new PointF();
+
+		rayEnd.x = (float) (pose.getX() + Math.cos(pose.getAngleInRadian()) * _maxRange_mm);
+		rayEnd.y = (float) (pose.getY() + Math.sin(pose.getAngleInRadian()) * _maxRange_mm);
+
+		rayEnd = realToGridCoordinates(rayEnd);
+		PointF rayStart = realToGridCoordinates(pose.getPosition());
+
+		return calculatePointsOnRay(rayStart, rayEnd);
+	}
+
+	public Object[] calculatePointsOnRay(PointF rayStart, PointF rayEnd)
 	{
 		float deltaX = rayEnd.x - rayStart.x;
 		float deltaY = rayEnd.y - rayStart.y;
@@ -157,7 +170,7 @@ public class BeamModel
 
 		Object[] freePointsArray = freePoints.toArray();
 
-		if(reverseArray)
+		if (reverseArray)
 			ArrayUtils.reverse(freePointsArray);
 
 		return freePointsArray;

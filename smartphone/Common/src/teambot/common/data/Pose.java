@@ -25,7 +25,7 @@ public class Pose
 	{
 		synchronized (pose)
 		{
-			this._position = new PointF(pose.getPosition());
+			this._position = new PointF(pose.getPosition().x, pose.getPosition().y);
 			this._angleInRadian = pose.getAngleInRadian();
 		}
 	}

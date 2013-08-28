@@ -1,10 +1,9 @@
 package teambot.common.communication;
 
-import teambot.common.Bot;
 import teambot.common.ITeambotPrx;
 import teambot.common.Settings;
-import teambot.common.interfaces.ICyclicCallback;
 import teambot.common.interfaces.IBotKeeper;
+import teambot.common.interfaces.ICyclicCallback;
 import teambot.common.utils.CyclicCaller;
 
 public class BotNetworkLookUp implements ICyclicCallback
@@ -18,7 +17,7 @@ public class BotNetworkLookUp implements ICyclicCallback
 
 	public BotNetworkLookUp(NetworkHub networkHub, IBotKeeper objectForCallback)
 	{
-		String[] ipParts = Bot.id().split("\\.");
+		String[] ipParts = networkHub.getIp().split("\\.");
 		_constIpPart = ipParts[0] + "." + ipParts[1] + "." + ipParts[2] + ".";
 		_lastByeOfLocalBotIp = Integer.parseInt(ipParts[3]);
 
@@ -27,6 +26,7 @@ public class BotNetworkLookUp implements ICyclicCallback
 		
 		_cyclicCaller = new CyclicCaller(this, Settings.sleepTimeBetweenBotLookUps_ms);
 		new Thread(_cyclicCaller).start();
+		System.out.println("Network lookup started");
 	}
 
 	public void stop()
@@ -39,7 +39,6 @@ public class BotNetworkLookUp implements ICyclicCallback
 	{
 		String ip = "";
 		ITeambotPrx proxy = null;
-		System.out.println("running...");
 
 		for (int i = 1; i < 255; i++)
 		{

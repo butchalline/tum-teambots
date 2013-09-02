@@ -2,6 +2,8 @@ package teambot.teambot;
 
 import java.util.concurrent.ExecutionException;
 
+import org.opencv.android.OpenCVLoader;
+
 import teambot.usb.UsbConnectionManager;
 import android.app.Activity;
 import android.os.Bundle;
@@ -20,6 +22,10 @@ public class TeambotActivity extends Activity
 		setContentView(R.layout.activity_teambot);
 		getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
+	    if (!OpenCVLoader.initDebug()) {
+	        // Handle initialization error
+	    }
+		
 		_usbConnectionManager = new UsbConnectionManager(this);
 		
 		_usbConnectionManager.start();

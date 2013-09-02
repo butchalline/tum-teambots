@@ -10,16 +10,22 @@ public class FloatArrayData extends Data {
 	
 	public FloatArrayData(long timestamp, float[] data) {
 		super(timestamp);
-		this.data = data;
+		this.data = new float[data.length];
+		System.arraycopy(data, 0, this.data, 0, data.length);
 	}
 	
 	public FloatArrayData(long timestamp, float[] data, DataType type) {
 		super(timestamp, type);
-		this.data = data;
+		this.data = new float[data.length];
+		System.arraycopy(data, 0, this.data, 0, data.length);
 	}
 
 	public float[] getData() {
 		return data;
 	}
 
+	@Override
+	public FloatArrayData getClone() {
+		return new FloatArrayData(this.timestamp, this.data, this.type);
+	}
 }

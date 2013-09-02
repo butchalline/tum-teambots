@@ -1,11 +1,8 @@
 package teambot.common.hardware;
 
 import teambot.common.BotLayoutConstants;
-import teambot.common.PoseSupplier;
 import teambot.common.data.Pose;
-import teambot.common.usb.UsbHeader;
 import teambot.common.usb.UsbPacket;
-import teambot.common.utils.Constants;
 
 public class BotPoseUpdater 
 {

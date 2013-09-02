@@ -36,4 +36,6 @@ public abstract class Data {
 	public int getBotId() {
 		return botId;
 	}
+	
+	public abstract Data getClone();
 }

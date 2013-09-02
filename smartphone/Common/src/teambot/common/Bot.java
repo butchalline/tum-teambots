@@ -3,8 +3,12 @@ package teambot.common;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Vector;
 
 import teambot.DisplayInformation;
+import teambot.IInformationDisplayerPrx;
+import teambot.IInformationDisplayerPrxHelper;
+import teambot.RegisterClass;
 import teambot.common.communication.BotNetworkLookUp;
 import teambot.common.communication.NetworkHub;
 import teambot.common.data.Direction;
@@ -27,18 +31,25 @@ import teambot.common.usb.UsbPacket;
 import teambot.common.utils.Constants;
 import teambot.common.utils.CyclicCaller;
 import teambot.common.utils.WheelTransform;
+import teambot.remote.IStreamReceiverPrx;
+import teambot.remote.IStreamReceiverPrxHelper;
 import Ice.Current;
+import Ice.Identity;
 import android.graphics.PointF;
 
 public class Bot extends _ITeambotDisp implements ICyclicCallback, IBotKeeper, IPacketListener
 {
 	private static final long serialVersionUID = 1L;
-	static protected String _botId = null;
+	static public String _botId = null;
 	static protected PoseSupplier _poseSupplier = new PoseSupplier();
 
 	static protected NetworkHub _networkHub = null;
 	static protected BotNetworkLookUp _lookUp;
 	static protected Map<String, ITeambotPrx> _registeredBots = new HashMap<String, ITeambotPrx>(30);
+
+	static protected Vector<IStreamReceiverPrx> _streamReceivers = new Vector<IStreamReceiverPrx>(10);
+	static protected Vector<IInformationDisplayerPrx> _displayer = new Vector<IInformationDisplayerPrx>(10);
+	static protected IInformationDisplayer _localDisplayer;
 
 	static protected UsbConnectionParser _connectionParser;
 	static protected PacketDistribution _packetDistribution;
@@ -59,16 +70,15 @@ public class Bot extends _ITeambotDisp implements ICyclicCallback, IBotKeeper, I
 	};
 
 	protected IUsbIO _usbIO;
-	protected IInformationDisplayer _display;
 
-	public Bot(String ip, IInformationDisplayer display)
+	public Bot(String ip, IInformationDisplayer localDisplayer)
 	{
 		_botId = ip;
+		_localDisplayer = localDisplayer;
 
 		setupNetwork();
 		startParticleFilter();
-
-		_display = display;
+		
 		// setupDisplayUpater();
 	}
 
@@ -77,7 +87,7 @@ public class Bot extends _ITeambotDisp implements ICyclicCallback, IBotKeeper, I
 		_networkHub = new NetworkHub(this, _botId, Settings.debugIceConnections);
 		_networkHub.start();
 		_networkHub.addLocalTcpProxy(this, botProxyName(), Settings.botPort);
-		 _lookUp = new BotNetworkLookUp(_networkHub, this);
+		_lookUp = new BotNetworkLookUp(_networkHub, this);
 	}
 
 	public void setupUsb(IUsbIO usbIO)
@@ -175,7 +185,7 @@ public class Bot extends _ITeambotDisp implements ICyclicCallback, IBotKeeper, I
 		System.out.println("New bot registered, id: " + botId);
 	}
 
-	static public synchronized void unregisterBot(String botId)
+	public synchronized void unregisterBot(String botId)
 	{
 		_registeredBots.remove(botId);
 		System.out.println("Bot unregistered, id: " + botId);
@@ -220,11 +230,11 @@ public class Bot extends _ITeambotDisp implements ICyclicCallback, IBotKeeper, I
 	@Override
 	public void callback_cyclic(int callbackIntervalInfo_ms)
 	{
-		if (_display == null)
-			return;
-
-		_display.display(new DisplayInformation());
-		// TODO
+		if(_localDisplayer != null)
+			_localDisplayer.display(_displayInformation);
+		
+		for(IInformationDisplayerPrx infoDisplay : _displayer)
+			infoDisplay.begin_infoCallback(_displayInformation);
 	}
 
 	@Override
@@ -234,26 +244,27 @@ public class Bot extends _ITeambotDisp implements ICyclicCallback, IBotKeeper, I
 			return;
 
 		UsbHeader header = null;
-		byte[] data = { velocityPacket[1], velocityPacket[2] };
-		
+		byte[] data =
+		{ velocityPacket[1], velocityPacket[2] };
+
 		switch (Direction.values()[velocityPacket[0]])
 		{
-			case FORWARD:
-				header = UsbHeader.TB_VELOCITY_FORWARD;
-				break;
-			case BACKWARDS:
-				header = UsbHeader.TB_VELOCITY_BACKWARD;
-				break;
-			case TURN_LEFT:
-				header = UsbHeader.TB_VELOCITY_TURN_LEFT;
-				break;
-			case TURN_RIGHT:
-				header = UsbHeader.TB_VELOCITY_TURN_RIGHT;
-				break;
+		case FORWARD:
+			header = UsbHeader.TB_VELOCITY_FORWARD;
+			break;
+		case BACKWARDS:
+			header = UsbHeader.TB_VELOCITY_BACKWARD;
+			break;
+		case TURN_LEFT:
+			header = UsbHeader.TB_VELOCITY_TURN_LEFT;
+			break;
+		case TURN_RIGHT:
+			header = UsbHeader.TB_VELOCITY_TURN_RIGHT;
+			break;
 		}
-		
+
 		UsbPacket packet = new UsbPacket(header, new UsbData(data));
-		
+
 		try
 		{
 			_usbIO.write(packet.asByteArray());
@@ -312,5 +323,45 @@ public class Bot extends _ITeambotDisp implements ICyclicCallback, IBotKeeper, I
 		float angleChange = (changeRight_mm - changeLeft_mm) / BotLayoutConstants.DistanceBeweenWheelCenters_mm;
 
 		return new Pose(d * (float) Math.cos(angleChange), d * (float) Math.sin(angleChange), angleChange);
+	}
+
+	@Override
+	public void addClient(Identity ident, RegisterClass registerType, Current __current)
+	{
+		Ice.ObjectPrx proxy = __current.con.createProxy(ident);
+
+		System.out.println("Client added: " + ident.name);
+		System.out.println("Client added, proxy: " + proxy.ice_getConnection()._toString());
+		
+		switch (registerType)
+		{
+		case STREAMRECEIVER:
+			synchronized (_streamReceivers)
+			{
+				_streamReceivers.add(IStreamReceiverPrxHelper.uncheckedCast(proxy));
+			}
+			break;
+
+		case INFORMATIONDISPLAYER:
+			synchronized (_displayer)
+			{
+				_displayer.add(IInformationDisplayerPrxHelper.uncheckedCast(proxy));
+			}
+			break;
+
+		case SERVER:
+			// TODO
+			break;
+		}
+	}
+	
+	public static Vector<IStreamReceiverPrx> getStreamReceivers()
+	{
+		Vector<IStreamReceiverPrx> receiverCopy = null;
+		synchronized (_streamReceivers)
+		{
+			receiverCopy = new Vector<IStreamReceiverPrx>(_streamReceivers);
+		}		
+		return receiverCopy;
 	}
 }

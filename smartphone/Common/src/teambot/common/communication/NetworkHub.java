@@ -3,7 +3,6 @@ package teambot.common.communication;
 import java.util.Vector;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import teambot.common.Bot;
 import teambot.common.ITeambotPrx;
 import teambot.common.ITeambotPrxHelper;
 import teambot.common.Settings;
@@ -23,7 +22,7 @@ public class NetworkHub extends Application implements Runnable
 	private Ice.Communicator _communicator = null;
 	Vector<Ice.ObjectAdapter> _objectAdapters = new Vector<Ice.ObjectAdapter>();
 
-	protected IBotKeeper _bot;
+	protected IBotKeeper _botKeeper;
 	protected String _ownIp;
 
 	public NetworkHub(IBotKeeper bot, String ownIp)
@@ -38,7 +37,7 @@ public class NetworkHub extends Application implements Runnable
 	
 	protected void initialize(IBotKeeper bot, String ownIp, boolean verbose)
 	{
-		_bot = bot;
+		_botKeeper = bot;
 		
 		if(ownIp == "")
 		{
@@ -122,7 +121,7 @@ public class NetworkHub extends Application implements Runnable
 	public <T extends Ice.ObjectPrxHelperBase> void connectToRemoteProxy_Blocking(String identity, String ip,
 			String port, boolean useTcp, T proxyHelper)
 	{
-		while (!_bot.isRegistered(ip))
+		while (!_botKeeper.isRegistered(ip))
 		{
 			try
 			{
@@ -158,10 +157,10 @@ public class NetworkHub extends Application implements Runnable
 			proxy.ice_getConnection();
 		} catch (ConnectFailedException ex)
 		{
-			Bot.unregisterBot(ip);
+			_botKeeper.unregisterBot(ip);
 		} catch (NoEndpointException ex)
 		{
-			Bot.unregisterBot(ip);
+			_botKeeper.unregisterBot(ip);
 		}
 		
 		proxyHelper.__copyFrom(proxy);
@@ -169,14 +168,14 @@ public class NetworkHub extends Application implements Runnable
 		_remoteBotProxies.add(proxyHelper);
 	}
 
-	public <T extends Ice.ObjectImpl> Ice.ObjectAdapter addLocalUdpProxy(T localObject, String proxyName, String localPort)
+	public <T extends Ice.ObjectImpl> Ice.ObjectAdapter addLocalUdpProxy(T localObject, String adapterName, String localPort)
 	{
-		return addLocalProxy(localObject, proxyName, localPort, false);
+		return addLocalProxy(localObject, adapterName, localPort, false);
 	}
 
-	public <T extends Ice.ObjectImpl> Ice.ObjectAdapter addLocalTcpProxy(T localObject, String proxyName, String localPort)
+	public <T extends Ice.ObjectImpl> Ice.ObjectAdapter addLocalTcpProxy(T localObject, String adapterName, String localPort)
 	{
-		return addLocalProxy(localObject, proxyName, localPort, true);
+		return addLocalProxy(localObject, adapterName, localPort, true);
 	}
 
 	protected synchronized <T extends Ice.ObjectImpl> Ice.ObjectAdapter addLocalProxy(T localObject, String adapterName, String localPort,
@@ -194,12 +193,12 @@ public class NetworkHub extends Application implements Runnable
 		
 		if (useTcp)
 		{
-			endpoint = "tcp -h " + Bot.id() + " -p " + localPort;
+			endpoint = "tcp -h " + _ownIp + " -p " + localPort;
 			objectAdapter = _communicator.createObjectAdapterWithEndpoints(adapterName, endpoint);
 			objectAdapter.add(localObject, getIdentity());
 		} else
 		{
-			endpoint = "udp -h " + Bot.id() + " -p " + localPort;
+			endpoint = "udp -h " + _ownIp + " -p " + localPort;
 			objectAdapter = _communicator.createObjectAdapterWithEndpoints(adapterName, endpoint);
 			objectAdapter.add(localObject, getIdentity());
 		}
@@ -225,10 +224,6 @@ public class NetworkHub extends Application implements Runnable
 		
 		prx = _communicator.stringToProxy(getBotIdentityString(ip) + ":tcp -h " + ip + " -p " + Settings.botPort
 				+ " -t " + Settings.timoutOnSingleBotLookUp_ms);
-
-		// System.out.println("Tried to connect to bot: " +
-		// Bot.idToProxyName(ip) + ":tcp -h " + ip + " -p "
-		// + Settings.registerPort);
 
 		proxy = ITeambotPrxHelper.uncheckedCast(prx);
 

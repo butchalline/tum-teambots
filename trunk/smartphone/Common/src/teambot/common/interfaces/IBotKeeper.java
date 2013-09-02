@@ -6,4 +6,5 @@ public interface IBotKeeper
 {
 	public boolean isRegistered(String botId);
 	public void registerBot(String botId, ITeambotPrx proxy);
+	public void unregisterBot(String botId);
 }

@@ -49,18 +49,19 @@ public class BotNetworkLookUp implements ICyclicCallback
 
 			if (_callbackListener.isRegistered(ip))
 				continue;
-
+			
 			proxy = _networkHub.connectionPossible(ip);
 			if (proxy != null)
 			{
 				try
 				{
+					System.out.println("Bot found! IP: " + ip);
 					_callbackListener.registerBot(proxy.getIdRemote(), proxy);
 				} catch (Ice.TimeoutException timoutEx)
 				{
 					Settings.timoutOnSingleBotLookUp_ms += 50;
 					i--;
-					System.out.println("Timeout is too low, increased to " + Settings.timoutOnSingleBotLookUp_ms);
+//					System.out.println("Timeout is too low, increased to " + Settings.timoutOnSingleBotLookUp_ms);
 					continue;
 				}
 				if(Settings.timoutOnSingleBotLookUp_ms >= 30)

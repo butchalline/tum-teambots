@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import teambot.DisplayInformation;
-import teambot.common.Bot;
 import teambot.common.ITeambotPrx;
 import teambot.common.ITeambotPrxHelper;
 import teambot.common.communication.BotNetworkLookUp;
@@ -108,7 +107,6 @@ public class RemoteActivity extends Activity implements IVelocityListener, IPitc
 		_networkHub = new NetworkHub(this, IpHelper.getIPAddress());
 		_networkHub.start();
 		_botlookUp = new BotNetworkLookUp(_networkHub, this);
-		// _botlookUp.
 	}
 
 	private OnCheckedChangeListener _listener_onOffSwitch = new OnCheckedChangeListener()
@@ -240,11 +238,25 @@ public class RemoteActivity extends Activity implements IVelocityListener, IPitc
 		
 		_handler.post(new Runnable()
 		{
-			
 			@Override
 			public void run()
 			{
 				_spinnerAdapter.add(id);
+			}
+		});
+	}
+
+	@Override
+	public void unregisterBot(String botId)
+	{
+		final String id = botId;
+		
+		_handler.post(new Runnable()
+		{
+			@Override
+			public void run()
+			{
+				_spinnerAdapter.remove(id);
 			}
 		});
 	}

@@ -784,7 +784,8 @@ namespace teambot
         {
             Valid,
             Invalid,
-            Wall
+            Wall,
+            Cyan
         }
 
         [_System.Runtime.InteropServices.ComVisible(false)]
@@ -900,7 +901,7 @@ namespace teambot
                 os__.writeInt(x);
                 os__.writeInt(y);
                 os__.writeByte(alpha);
-                os__.writeEnum((int)status, 2);
+                os__.writeEnum((int)status, 3);
                 os__.endWriteSlice();
             }
 
@@ -911,7 +912,7 @@ namespace teambot
                 x = is__.readInt();
                 y = is__.readInt();
                 alpha = is__.readByte();
-                status = (teambot.communication.DebugGridPointStatus)is__.readEnum(2);
+                status = (teambot.communication.DebugGridPointStatus)is__.readEnum(3);
                 is__.endReadSlice();
             }
 

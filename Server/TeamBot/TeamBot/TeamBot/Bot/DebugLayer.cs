@@ -98,6 +98,10 @@ namespace teambot.Bot
                                 _WallColor.A = (byte)(point.alpha + 50);
                                 spriteBatch.Draw(DebugGridTexture, targetPosition, _WallColor);
                                 break;
+                            case communication.DebugGridPointStatus.Cyan:
+                                _WallColor.A = (byte)(point.alpha + 50);
+                                spriteBatch.Draw(DebugGridTexture, targetPosition, Color.DarkCyan);
+                                break;
                         }
 
                     }

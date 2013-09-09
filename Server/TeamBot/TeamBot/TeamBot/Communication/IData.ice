@@ -47,7 +47,7 @@ module teambot
 		//Debug stuff
 		enum DebugGridPointStatus
 		{
-			Valid, Invalid, Wall
+			Valid, Invalid, Wall, Cyan
 		};
 		class DebugGridPoint
 		{

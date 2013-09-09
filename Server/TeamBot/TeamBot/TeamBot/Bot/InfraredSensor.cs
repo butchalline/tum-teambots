@@ -49,6 +49,7 @@ namespace teambot.Bot
         const float LeftSensorLength = 20 * Map.CmToPixel;
         const float RightSensorLength = 20 * Map.CmToPixel;
         const float MiddleSensorLength = 150 * Map.CmToPixel;
+        const float sensorAccuracy_cm = 1.0f;
         readonly Vector2 LeftSensorPosition;
         readonly Vector2 RightSensorPosition;
         readonly Vector2 MiddleSensorPosition;
@@ -129,9 +130,11 @@ namespace teambot.Bot
             _MiddleSensorLine.stop.X = (float)(position.X + posEnd.X * Math.Cos(cAngle) - posEnd.Y * Math.Sin(cAngle));
             _MiddleSensorLine.stop.Y = (float)(position.Y + posEnd.X * Math.Sin(cAngle) + posEnd.Y * Math.Cos(cAngle));
 
-            for (int i = 0; i < MiddleSensorLength / 5; i++)
+            float accuracyStepSize = sensorAccuracy_cm * Map.CmToPixel;
+
+            for (int i = 0; i < MiddleSensorLength / accuracyStepSize; i++)
             {
-                Vector2 pos = Vector2.Lerp(_MiddleSensorLine.start, _MiddleSensorLine.stop, i * (1.0f / (MiddleSensorLength / 5.0f)));
+                Vector2 pos = Vector2.Lerp(_MiddleSensorLine.start, _MiddleSensorLine.stop, i * (1.0f / (MiddleSensorLength / accuracyStepSize)));
                 if (_Map.isWallAt((int)pos.X, (int)pos.Y))
                     return Math.Max(0, (float)Math.Round(Vector2.Distance(_MiddleSensorLine.start, pos) * Map.PixelToCm, 2));
             }

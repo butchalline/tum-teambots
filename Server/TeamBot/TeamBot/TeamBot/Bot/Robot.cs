@@ -240,7 +240,8 @@ namespace teambot.Bot
             this._InfraSensor = new InfraredSensor(_Map,
                 new Vector2(((_BotTexture.Width / 2) * SensorToHalfSizeRelation) * scaleFactor, ((_BotTexture.Height / 2) - 2) * scaleFactor),
                 new Vector2(-((_BotTexture.Width / 2) * SensorToHalfSizeRelation) * scaleFactor, ((_BotTexture.Height / 2) - 2) * scaleFactor),
-                new Vector2(0, ((_BotTexture.Height / 2) - 2) * scaleFactor));
+                new Vector2(0, 0));
+                //new Vector2(0, ((_BotTexture.Height / 2) - 2) * scaleFactor));
             this._InfraSensor.LoadContent(manager);
         }
 

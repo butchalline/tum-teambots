@@ -92,7 +92,7 @@ namespace teambot
             _DataHandler = new communication.DataHandler(_Bot);
             _Adapter.add(_DataHandler, _Communicator.stringToIdentity("Simulator"));
             _Adapter.activate();
-
+            
             graphics.ApplyChanges();
             base.Initialize();
         }
@@ -109,7 +109,7 @@ namespace teambot
             _Bot.LoadContent(this.Content);
             _Map.LoadContent(this.Content);
             DebugLayer.LoadContent(this.Content);
-            DebugLayer.setDebugColors(Color.Green, Color.Blue, Color.Red); 
+            DebugLayer.setDebugColors(Color.Yellow, Color.Blue, Color.Red); 
 
 
             //Test debugLayeMap

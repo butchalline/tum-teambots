@@ -2,7 +2,7 @@
 
 module teambot
 {
-	enum RegisterClass
+	enum ClassType
 	{
 		SERVER, INFORMATIONDISPLAYER, STREAMRECEIVER
 	};
@@ -13,7 +13,7 @@ module teambot
 		interface ITeambot {
 			string getIdRemote();
 			void setVelocity(Packet velocityPacket);
-			void addClient(Ice::Identity ident, RegisterClass clientClass);
+			void addClient(Ice::Identity ident, ClassType clientClass);
 		};
 	};
 };

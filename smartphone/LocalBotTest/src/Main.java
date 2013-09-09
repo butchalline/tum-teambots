@@ -6,6 +6,7 @@ import teambot.common.utils.Constants;
 import teambot.communication.IDataServerPrxHelper;
 import teambot.pathplanning.Agent;
 import teambot.simulator.SimulatorProxy;
+import teambot.visualizer.HistogramViewer;
 import android.graphics.PointF;
 
 
@@ -19,6 +20,7 @@ public class Main
 		Pose pose = new Pose(new PointF(5000, Settings.mapOffsetY - 5625), 90 * Constants.DegreeToRadian);
 		
 		Bot bot = new Bot(_ip, null);
+//		Bot.getFilter().setHistogramVisualizer(new HistogramViewer("Particles", 3.0f / Settings.numberOfParticles));
 		Bot.getPose().addToAll(pose);
 		IDataServerPrxHelper simulatorProxy = new IDataServerPrxHelper();
 		Bot.networkHub().connectToRemoteTcpProxy("Simulator", "127.0.0.1", "55001", simulatorProxy);

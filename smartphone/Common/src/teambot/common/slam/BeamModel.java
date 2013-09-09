@@ -67,7 +67,7 @@ public class BeamModel
 			pointsOnBeam.add(new SimpleEntry<Point, Occupation>((Point) freePoint, Occupation.free));
 		}
 
-		if (distance_mm < _maxRange_mm)
+		if (distance_mm < _maxRange_mm - 20)
 			pointsOnBeam.getLast().setValue(Occupation.occupied);
 
 		return pointsOnBeam;

@@ -2,7 +2,6 @@ package teambot.remote;
 
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
@@ -15,7 +14,7 @@ import Ice.Current;
 public class StreamReceiver extends _IStreamReceiverDisp
 {
 	private static final long serialVersionUID = -9055500091444481319L;
-	private static final String imagePath1 = "src/images/1.jpg";
+//	private static final String imagePath1 = "src/images/1.jpg";
 	
 	protected JLabel _labelOfWindowForBitmap;
 	protected SourceDataLine _line;
@@ -27,7 +26,7 @@ public class StreamReceiver extends _IStreamReceiverDisp
 	}
 
 	@Override
-	public void bitmapCallback_async(AMD_IStreamReceiver_bitmapCallback __cb, BitmapSlice newBitmap, Current __current)
+	public void bitmapCallback(BitmapSlice newBitmap, Current __current)
 	{
 		BufferedImage image;
 //		System.out.println("New image: " + newBitmap.width + "x" + newBitmap.height);
@@ -42,10 +41,11 @@ public class StreamReceiver extends _IStreamReceiverDisp
 		
 		ImageIcon icon = new ImageIcon(image);
 		_labelOfWindowForBitmap.setIcon(icon);
+		image.flush();
 	}
 
 	@Override
-	public void audioCallback_async(AMD_IStreamReceiver_audioCallback __cb, byte[] newAudioBytes, Current __current)
+	public void audioCallback(byte[] newAudioBytes, Current __current)
 	{
 		_line.write(newAudioBytes, 0, newAudioBytes.length);
 	}

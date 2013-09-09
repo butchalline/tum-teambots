@@ -6,7 +6,7 @@ import java.util.List;
 import teambot.DisplayInformation;
 import teambot.common.ITeambotPrx;
 import teambot.common.ITeambotPrxHelper;
-import teambot.common.communication.BotNetworkLookUp;
+import teambot.common.communication.BotNetworkDiscovery;
 import teambot.common.communication.NetworkHub;
 import teambot.common.data.Direction;
 import teambot.common.interfaces.IBotKeeper;
@@ -58,7 +58,7 @@ public class RemoteActivity extends Activity implements IVelocityListener, IPitc
 	protected Sensor _accelerometer;
 
 	protected NetworkHub _networkHub;
-	protected BotNetworkLookUp _botlookUp;
+	protected BotNetworkDiscovery _botlookUp;
 	
 	protected Handler _handler;
 
@@ -106,7 +106,7 @@ public class RemoteActivity extends Activity implements IVelocityListener, IPitc
 
 		_networkHub = new NetworkHub(this, IpHelper.getIPAddress());
 		_networkHub.start();
-		_botlookUp = new BotNetworkLookUp(_networkHub, this);
+		_botlookUp = new BotNetworkDiscovery(_networkHub, this);
 	}
 
 	private OnCheckedChangeListener _listener_onOffSwitch = new OnCheckedChangeListener()

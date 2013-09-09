@@ -9,7 +9,9 @@ import org.jfree.data.statistics.HistogramType;
 import org.jfree.ui.ApplicationFrame;
 import org.jfree.ui.RefineryUtilities;
 
-public class HistogramViewer extends ApplicationFrame
+import teambot.common.interfaces.IHistoVisualizer;
+
+public class HistogramViewer extends ApplicationFrame implements IHistoVisualizer
 {
 	protected ChartPanel chartPanel;
 	private static final long serialVersionUID = 1L;
@@ -21,11 +23,11 @@ public class HistogramViewer extends ApplicationFrame
 		_maxValue = maxValue; 
 	}
 
-	public void updateHistogram(double[] values)
+	public void update(double[] newValues)
 	{
 		HistogramDataset dataSet = new HistogramDataset();
 		dataSet.setType(HistogramType.RELATIVE_FREQUENCY);
-		dataSet.addSeries("H1", values, 1000, 0.0, _maxValue);
+		dataSet.addSeries("H1", newValues, 1000, 0.0, _maxValue);
 
 		JFreeChart chart = ChartFactory.createHistogram("Histogram", "", "", dataSet, PlotOrientation.VERTICAL, false,
 				false, false);

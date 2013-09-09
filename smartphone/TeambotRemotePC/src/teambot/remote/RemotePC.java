@@ -12,7 +12,7 @@ import javax.swing.JPanel;
 
 import teambot.common.Bot;
 import teambot.common.Settings;
-import teambot.common.communication.BotNetworkLookUp;
+import teambot.common.communication.BotNetworkDiscovery;
 import teambot.common.communication.NetworkHub;
 import teambot.common.utils.ThreadUtil;
 
@@ -59,18 +59,18 @@ public class RemotePC
 			return;
 		}
         
-        line.start();
+//        line.start();
 	    
 		StreamReceiver streamReceiver = new StreamReceiver(label, line);
 		
 		BotKeeper botkeeper = new BotKeeper();
 		NetworkHub networkHub = new NetworkHub(botkeeper, ip);
 		networkHub.start();
-		Ice.ObjectAdapter streamObjectAdapter = networkHub.addLocalUdpProxy(streamReceiver, "StreamReceiver", Settings.streamingPort);
+		Ice.ObjectAdapter streamObjectAdapter = networkHub.addLocalTcpProxy(streamReceiver, "StreamReceiver", Settings.streamingPort);
 		botkeeper.addNetworkHub(networkHub);
 		botkeeper.addStreamObjectAdapter(streamObjectAdapter);
 		@SuppressWarnings("unused")
-		BotNetworkLookUp botlookUp = new BotNetworkLookUp(networkHub, botkeeper);
+		BotNetworkDiscovery botlookUp = new BotNetworkDiscovery(networkHub, botkeeper);
         
 		while(true)
 		{

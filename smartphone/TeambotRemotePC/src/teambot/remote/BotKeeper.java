@@ -1,6 +1,6 @@
 package teambot.remote;
 
-import teambot.RegisterClass;
+import teambot.ClassType;
 import teambot.common.ITeambotPrx;
 import teambot.common.communication.NetworkHub;
 import teambot.common.interfaces.IBotKeeper;
@@ -37,7 +37,7 @@ public class BotKeeper implements IBotKeeper
 			return;
 		
 		proxy.ice_getConnection().setAdapter(_streamObjectAdapter);
-		proxy.addClient(_hub.getIdentity(), RegisterClass.STREAMRECEIVER);
+		proxy.addClient(_hub.getIdentity(), ClassType.STREAMRECEIVER);
 		_bot = proxy;
 		_botIp = botId;	
 	}

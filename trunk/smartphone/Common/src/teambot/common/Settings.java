@@ -12,6 +12,6 @@ public class Settings
 
 	public static int timoutOnSingleBotLookUp_ms = 50;
 	
-	public static final int numberOfParticles = 300;
+	public static final int numberOfParticles = 100;
 	public static final int soundBufferSizeMultiplier = 2;
 }

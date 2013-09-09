@@ -12,7 +12,7 @@ module teambot
 			ByteArray data;
 		};
 		
-		["amd"] interface IStreamReceiver
+		interface IStreamReceiver
 		{
 			void bitmapCallback(BitmapSlice newBitmap);
 			void audioCallback(ByteArray newAudioBytes);

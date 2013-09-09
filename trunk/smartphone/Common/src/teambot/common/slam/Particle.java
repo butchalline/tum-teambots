@@ -138,6 +138,7 @@ public class Particle
 		float angleDiff = 0;
 		float resultDistance_mm = 0;
 		float resultAngleDiff = 0;
+		float resultAngleDiffWeight = 1200;
 
 		float angleStepSize = 1f / 30f;
 		int steps = 10;
@@ -146,7 +147,7 @@ public class Particle
 
 		Point currentPoint = null;
 
-		Pose pose = getPose();
+		Pose pose = new Pose(getPose());
 		float angle = pose.getAngleInRadian();
 
 		float startAngle = angle - (steps * 0.5f * angleStepSize);
@@ -162,40 +163,34 @@ public class Particle
 
 			mapDistance_mm = MathHelper.calculateDistance(pose.getPosition(),
 					new PointF(currentPoint.x * _beamModel.getCellSize(), currentPoint.y * _beamModel.getCellSize()));
-			
-			angleDiff = Math.abs(currentAngle - angle);
-			
-			if(mapDistance_mm + angleDiff < lowestDistances)
+
+			angleDiff = Math.abs(currentAngle - angle) * resultAngleDiffWeight;
+
+			if (Math.abs(measuredDistance_mm - mapDistance_mm) + angleDiff < lowestDistances)
 			{
-				lowestDistances = mapDistance_mm + angleDiff;
-				resultDistance_mm = mapDistance_mm;
+				lowestDistances = Math.abs(measuredDistance_mm - mapDistance_mm) + angleDiff;
+				resultDistance_mm = measuredDistance_mm;
 				resultAngleDiff = angleDiff;
+				
+				if(lowestDistances == 0)
+					break;
 			}
 		}
 
-
 		if (lowestDistances != Float.POSITIVE_INFINITY)
 		{
-
+//			System.out.println("Point hit at diff: " + (resultDistance_mm - measuredDistance_mm) + "; angleDiff: " + resultAngleDiff);
 			if (Math.abs(resultDistance_mm - measuredDistance_mm) < _beamModel.getCellSize() * 0.5f)
-				newWeight = (float) normalDistributionZeroMean.density(_beamModel.getCellSize() * 0.5f + resultAngleDiff);
+				newWeight = (float) normalDistributionZeroMean.density(_beamModel.getCellSize() * 0.5f
+						+ resultAngleDiff);
 			else
-				newWeight = (float) normalDistributionZeroMean.density(resultDistance_mm - measuredDistance_mm + resultAngleDiff);
-
-			// System.out.println("mapDistance_mm: " + mapDistance_mm +
-			// "; diff: " + (mapDistance_mm - measuredDistance_mm)
-			// + "; newWeight: " + newWeight);
-
-			_weightUpdateCounter++;
+				newWeight = (float) normalDistributionZeroMean.density(resultDistance_mm - measuredDistance_mm
+						+ resultAngleDiff);
 
 			_weight = _weight * newWeight;
-			// _weight = _weight * (1 - _slidingFactor) + newWeight *
-			// _slidingFactor;
-			// _weight = _weight * (1 - (1 / _weightUpdateCounter)) + newWeight
-			// / _weightUpdateCounter;
 		} else
 			newWeight = -1;
-		
+
 		LinkedList<SimpleEntry<Point, Occupation>> measuredPoints = _beamModel.calculateBeam(measuredDistance_mm,
 				PoseSupplier.addOffset(_pose, BotLayoutConstants.distanceSensorOffset_mm));
 
@@ -207,9 +202,16 @@ public class Particle
 	{
 		Object[] pointsOnRay = _beamModel.getPointsOnRayFrom(pose);
 
+		Float pointProbability = null;
+
 		for (Object point : pointsOnRay)
 		{
-			if (_map.getProbability((Point) point) > 0.5)
+			pointProbability = _map.getProbability((Point) point);
+
+			if (pointProbability == null)
+				continue;
+
+			if (pointProbability > 0.5)
 				return (Point) point;
 		}
 

@@ -6,7 +6,7 @@ import teambot.common.interfaces.IBotKeeper;
 import teambot.common.interfaces.ICyclicCallback;
 import teambot.common.utils.CyclicCaller;
 
-public class BotNetworkLookUp implements ICyclicCallback
+public class BotNetworkDiscovery implements ICyclicCallback
 {
 	protected CyclicCaller _cyclicCaller;
 	protected String _constIpPart = "0.0.0.";
@@ -15,7 +15,7 @@ public class BotNetworkLookUp implements ICyclicCallback
 	protected NetworkHub _networkHub;
 	protected IBotKeeper _callbackListener;
 
-	public BotNetworkLookUp(NetworkHub networkHub, IBotKeeper objectForCallback)
+	public BotNetworkDiscovery(NetworkHub networkHub, IBotKeeper objectForCallback)
 	{
 		String[] ipParts = networkHub.getIp().split("\\.");
 		_constIpPart = ipParts[0] + "." + ipParts[1] + "." + ipParts[2] + ".";

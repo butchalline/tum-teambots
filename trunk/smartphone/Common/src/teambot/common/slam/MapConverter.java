@@ -43,15 +43,20 @@ public class MapConverter
 			if(currentPoint.x > botPose_grid.x - 1 && currentPoint.x < botPose_grid.x + 1
 					&& currentPoint.y > botPose_grid.y - 1 && currentPoint.y < botPose_grid.y + 1)
 			{
-				status = teambot.communication.DebugGridPointStatus.Wall;
+				status = teambot.communication.DebugGridPointStatus.Cyan;
 				simCoordinates = convertCoordinatesToSimulator(currentPoint);
 				debugPoints[i] = new DebugGridPoint((short)simCoordinates.x, (short)simCoordinates.y, (byte)100, status);
 				i++;
 				continue;
 			}
 			
-			status = DebugGridPointStatus.Invalid;
-			simCoordinates = convertCoordinatesToSimulator(currentPoint);
+			
+			if(map.getProbability(currentPoint) > 0.5)
+				status = DebugGridPointStatus.Wall;
+			else
+				status = DebugGridPointStatus.Invalid;
+			
+			simCoordinates = convertCoordinatesToSimulator(currentPoint);			
 			debugPoints[i] = new DebugGridPoint((short)simCoordinates.x, (short)simCoordinates.y, (byte)(map.getProbability(currentPoint) * 100), status);
 			i++;
 		}
@@ -71,7 +76,7 @@ public class MapConverter
 		{
 			currentPoint = new Point((int)(particle.getPose().getX() / _cellSize), (int)(particle.getPose().getY() / _cellSize));
 			simCoordinates = convertCoordinatesToSimulator(currentPoint);
-			debugPoints[i] = new DebugGridPoint((short)simCoordinates.x, (short)simCoordinates.y, (byte)100, teambot.communication.DebugGridPointStatus.Wall);
+			debugPoints[i] = new DebugGridPoint((short)simCoordinates.x, (short)simCoordinates.y, (byte)100, teambot.communication.DebugGridPointStatus.Cyan);
 			
 			orientationOffset = getOrientationPixelOffset(particle.getPose().getAngleInDegree());
 			currentPoint.x += orientationOffset.x;

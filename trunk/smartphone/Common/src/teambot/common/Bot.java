@@ -5,11 +5,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Vector;
 
+import teambot.ClassType;
 import teambot.DisplayInformation;
 import teambot.IInformationDisplayerPrx;
 import teambot.IInformationDisplayerPrxHelper;
-import teambot.RegisterClass;
-import teambot.common.communication.BotNetworkLookUp;
+import teambot.common.communication.BotNetworkDiscovery;
 import teambot.common.communication.NetworkHub;
 import teambot.common.data.Direction;
 import teambot.common.data.Pose;
@@ -44,7 +44,7 @@ public class Bot extends _ITeambotDisp implements ICyclicCallback, IBotKeeper, I
 	static protected PoseSupplier _poseSupplier = new PoseSupplier();
 
 	static protected NetworkHub _networkHub = null;
-	static protected BotNetworkLookUp _lookUp;
+	static protected BotNetworkDiscovery _lookUp;
 	static protected Map<String, ITeambotPrx> _registeredBots = new HashMap<String, ITeambotPrx>(30);
 
 	static protected Vector<IStreamReceiverPrx> _streamReceivers = new Vector<IStreamReceiverPrx>(10);
@@ -87,7 +87,7 @@ public class Bot extends _ITeambotDisp implements ICyclicCallback, IBotKeeper, I
 		_networkHub = new NetworkHub(this, _botId, Settings.debugIceConnections);
 		_networkHub.start();
 		_networkHub.addLocalTcpProxy(this, botProxyName(), Settings.botPort);
-		_lookUp = new BotNetworkLookUp(_networkHub, this);
+		_lookUp = new BotNetworkDiscovery(_networkHub, this);
 	}
 
 	public void setupUsb(IUsbIO usbIO)
@@ -326,7 +326,7 @@ public class Bot extends _ITeambotDisp implements ICyclicCallback, IBotKeeper, I
 	}
 
 	@Override
-	public void addClient(Identity ident, RegisterClass registerType, Current __current)
+	public void addClient(Identity ident, ClassType registerType, Current __current)
 	{
 		Ice.ObjectPrx proxy = __current.con.createProxy(ident);
 

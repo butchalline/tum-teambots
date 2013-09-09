@@ -1,6 +1,5 @@
 package teambot.simulator;
 
-import teambot.common.Bot;
 import teambot.communication.AMD_IDataClient_update;
 import teambot.communication.DebugGridPoint;
 import teambot.communication.IDataServerPrx;

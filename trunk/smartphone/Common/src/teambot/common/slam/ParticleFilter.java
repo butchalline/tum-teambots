@@ -15,7 +15,7 @@ public class ParticleFilter implements IPoseChangeListener, ISensorListener
 	private Random random = new Random(System.currentTimeMillis());
 	private int _particleAmount;
 	private float _nThresh;
-	private static float _nThresholdDivider = 3f;
+	private static float _nThresholdDivider = 3f; //smaller = faster re-sampling, min > 1
 
 	protected Particle[] _particles;
 	protected Pose _latestPose = null;
@@ -61,12 +61,6 @@ public class ParticleFilter implements IPoseChangeListener, ISensorListener
 
 		_latestPose.addToAll(poseChange);
 		
-//		if(poseChange.getAngleInRadian() == 0 && poseChange.getX() == 0 && poseChange.getY() == 0)
-//		{
-////			System.out.println("no pos change");
-//			return;
-//		}
-		
 		for (Particle particle : _particles)
 		{
 			particle.updatePose(poseChange);
@@ -75,13 +69,7 @@ public class ParticleFilter implements IPoseChangeListener, ISensorListener
 
 	@Override
 	public void newSensorValueCallback(SensorValue distance_cm)
-	{
-//		if(distance_cm.value() == _lastMeasureDistance && _lastMeasurePose.equals(_latestPose))
-//		{
-////			System.out.println("no measurement change");
-//			return;
-//		}
-		
+	{		
 		_lastMeasurePose = new Pose(_latestPose);
 		_lastMeasureDistance = distance_cm.value();
 		
@@ -94,7 +82,7 @@ public class ParticleFilter implements IPoseChangeListener, ISensorListener
 
 		for (Particle particle : _particles)
 		{
-			tempWeight = particle.updateAndGetNewWeight(distance_cm.value() * 10f);
+			tempWeight = particle.updateAndGetNewWeight_new(distance_cm.value() * 10f);
 
 			if (tempWeight < 0)
 			{
@@ -143,18 +131,22 @@ public class ParticleFilter implements IPoseChangeListener, ISensorListener
 		// "; Map: " + distanceBest);
 
 		// check if re-sampling is needed
-		float invNeff = 0;
+		float invNeff = 0; 
 		for (Particle particle : _particles)
 		{
 //			particle.setWeigth(particle.getWeight() / totalWeight);
 			invNeff += (particle.getWeight() * particle.getWeight());
 		}
 
-//		updateParticleHistogram();
+		updateParticleHistogram();
 
+		//invNeff big = weights diverge -> (1 / invNeff) small
+		//the smaller (1 / invNeff), the bigger the dispersion
+		//the bigger (1 / invNeff), the smaller the dispersion -> high nThres = fast re-sampling
 		if (1 / invNeff < _nThresh)
 		{
-			System.out.println("Resampling, 1 / invNeff:"+ (1/invNeff));
+			System.out.println("Resampling, 1 / invNeff: "+ (1/invNeff) + "; _nThresh: " + _nThresh);
+			System.out.println("outOfRangeParticles: "+ outOfRangeParticles.size());
 			this.resample(1);
 		}
 	}

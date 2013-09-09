@@ -1,9 +1,11 @@
 package teambot.streaming;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.List;
 
 import org.opencv.android.Utils;
+import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.core.Size;
 import org.opencv.highgui.Highgui;
@@ -15,17 +17,20 @@ import teambot.common.utils.ThreadUtil;
 import teambot.remote.BitmapSlice;
 import teambot.remote.IStreamReceiverPrx;
 import android.graphics.Bitmap;
+import android.graphics.Point;
 import android.util.Log;
 
 public class VideoStreamer extends SimpleEndlessThread
 {
 	private static final String TAG = "VideoStreamer";
 	protected VideoCapture _CameraCapture;
+	protected Point _imageSize = new Point(320, 240);
+	protected Mat _capturedImage = new Mat(_imageSize.x, _imageSize.y, CvType.CV_8UC4);
 
 	public VideoStreamer()
 	{
 		openCamera();
-		setupCamera(640, 480);
+		setupCamera(_imageSize.x, _imageSize.y);
 	}
 
 	public boolean openCamera()
@@ -93,21 +98,43 @@ public class VideoStreamer extends SimpleEndlessThread
 
 	protected void streamFrame(VideoCapture capture)
 	{
-		Mat mRgba = new Mat();
-		if (!capture.retrieve(mRgba, Highgui.CV_CAP_ANDROID_COLOR_FRAME_RGBA))
+		// long timestamp = System.currentTimeMillis();
+
+		if (!capture.retrieve(_capturedImage, Highgui.CV_CAP_ANDROID_COLOR_FRAME_RGBA))
 			return;
 
-		Bitmap bmp = Bitmap.createBitmap(mRgba.cols(), mRgba.rows(), Bitmap.Config.ARGB_8888);
-		Utils.matToBitmap(mRgba, bmp);
-		
-		ByteArrayOutputStream bitmapStream_png = new ByteArrayOutputStream();
-		bmp.compress(Bitmap.CompressFormat.PNG, 100, bitmapStream_png);
+		Bitmap bmp = Bitmap.createBitmap(_capturedImage.cols(), _capturedImage.rows(), Bitmap.Config.ARGB_8888);
+		Utils.matToBitmap(_capturedImage, bmp);
+		//
+		// long timestamp2 = System.currentTimeMillis();
+		// System.out.println("Frame capture took: " + (timestamp2 -
+		// timestamp));
+
+		ByteArrayOutputStream bitmapStream = new ByteArrayOutputStream();
+		bmp.compress(Bitmap.CompressFormat.JPEG, 100, bitmapStream);
+
+		// timestamp = System.currentTimeMillis();
+		// System.out.println("Compressing took: " + (timestamp - timestamp2));
 
 		for (IStreamReceiverPrx streamReceiver : Bot.getStreamReceivers())
-			streamReceiver.begin_bitmapCallback(new BitmapSlice(bmp.getWidth(), bmp.getHeight(), bitmapStream_png.toByteArray()));
-//		System.out.println("Image dispatched");
+		{
+			Ice.AsyncResult r = streamReceiver.begin_bitmapCallback(new BitmapSlice(bmp.getWidth(), bmp.getHeight(), bitmapStream
+					.toByteArray()));
+			streamReceiver.end_bitmapCallback(r);
+		}
+		System.out.println("Image dispatched");
+
 		bmp.recycle();
-		mRgba.release();
+		bmp = null;
+
+		try
+		{
+			bitmapStream.reset();
+			bitmapStream.close();			
+		} catch (IOException e)
+		{
+			e.printStackTrace();
+		}
 	}
 
 	@Override
@@ -125,6 +152,7 @@ public class VideoStreamer extends SimpleEndlessThread
 			}
 
 			streamFrame(_CameraCapture);
+
 			ThreadUtil.sleepMSecs(10);
 		}
 	}
